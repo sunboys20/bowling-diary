@@ -21,12 +21,18 @@
 |---|---|
 | `index.html` | 앱 전체 (화면·점수 계산 `BW`·IndexedDB 저장·인쇄·AI 사진 읽기). 버전 `APP_VER` |
 | `manifest.webmanifest`, `icons/` | 홈 화면 이름·아이콘 |
-| `sw.js` | 오프라인 열기 (https 에서만 등록). 캐시 이름 `bowling-diary-v1` |
+| `help.html`, `help/*.jpg` | 사용 설명서. 사진은 375px 화면을 찍은 것 — 화면이 크게 바뀌면 다시 찍는다 (사진 속 이름·기록은 예시) |
+| `sw.js` | 오프라인 열기 (https 에서만 등록). 캐시 이름 `bowling-diary-v2` — 고치면 숫자를 올린다. 글꼴(Pretendard)·아이콘(Tabler) CDN 도 저장 |
 | `docs/server2.md`, `tools/setup_server2.ps1` | server2 예비 주소(8892) |
 
 - 주소: https://sunboys20.github.io/bowling-diary/ — main 에 push 하면 1분쯤 뒤 반영.
 - 기록은 각 휴대폰 브라우저(IndexedDB)에만 있다. 주소가 바뀌면 기록이 안 보인다(주소별 저장).
 - AI 자동 입력: 브라우저에서 Claude API 직접 호출. SDK `@anthropic-ai/sdk@1.6.0` (jsdelivr ESM), 기본 모델 `claude-opus-5-5`, 키는 사용자가 [설정]에 넣는다.
+
+## 디자인
+- 글꼴 Pretendard, 아이콘 Tabler webfont (jsdelivr, 버전 고정). 색은 `:root` 변수 — 어두운 모드 두 곳(`@media`, `[data-theme=dark]`)도 같이 고친다.
+- 볼링 그림(핀·공·레인)은 index.html 맨 위 `<symbol>` + `LANE_SVG`·`PINS_SVG`·`ballSVG`.
+- 중간 점수 고치기: 게임에 `cumFix: {프레임번호(0~9): 누적점수}`. 계산은 `BW.cumFixed`·`BW.scoreOf`.
 
 ## 시험
 - 로컬: 폴더에서 `php -S localhost:8920` 또는 `npx serve` 후 브라우저 375px 폭으로 본다.

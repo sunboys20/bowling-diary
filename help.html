@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1b33">
+<title>볼링 연습일지 사용 설명서</title>
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#f3f5f9;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#e4e8f0;--accent:#2563eb;--accent-2:#eff6ff;--top:#0b1b33;--tip:#fef3c7;--tip-ink:#92400e}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1220;--card:#131c2e;--ink:#e6ebf2;--muted:#94a3b8;--line:#24304a;--accent:#60a5fa;--accent-2:#16274a;--top:#07101f;--tip:#3a2e0b;--tip-ink:#fcd34d}}
+:root[data-theme="dark"]{--bg:#0b1220;--card:#131c2e;--ink:#e6ebf2;--muted:#94a3b8;--line:#24304a;--accent:#60a5fa;--accent-2:#16274a;--top:#07101f;--tip:#3a2e0b;--tip-ink:#fcd34d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Pretendard Variable",Pretendard,system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.01em}
+.ti{vertical-align:-.12em}
+header{background:var(--top);color:#fff;padding:22px 16px 20px;padding-top:calc(22px + env(safe-area-inset-top));position:relative;overflow:hidden}
+header .in{max-width:880px;margin:0 auto;position:relative}
+header h1{margin:0;font-size:24px;font-weight:800}
+header p{margin:6px 0 0;color:#cbd5e1;font-size:15px}
+header .pins{position:absolute;right:0;top:-6px;height:70px;opacity:.18}
+.back{display:inline-flex;align-items:center;gap:6px;margin-top:14px;background:#2563eb;color:#fff;text-decoration:none;border-radius:10px;padding:8px 14px;font-weight:700;font-size:15px}
+main{max-width:880px;margin:0 auto;padding:16px 16px 40px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:18px}
+.toc b{font-size:14px;color:var(--muted)}
+.toc ol{margin:6px 0 0;padding-left:22px}
+.toc a{color:var(--accent);text-decoration:none;font-weight:600}
+.step{display:grid;grid-template-columns:1fr 250px;gap:18px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;scroll-margin-top:12px}
+.step.noshot{grid-template-columns:1fr}
+.num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;margin-right:8px;flex:none}
+.step h2{display:flex;align-items:center;margin:0 0 8px;font-size:19px;font-weight:800}
+.step ol,.step ul{margin:6px 0;padding-left:22px}
+.step li{margin:3px 0}
+.key{display:inline-block;border:1px solid var(--line);background:var(--accent-2);color:var(--accent);border-radius:7px;padding:0 7px;font-weight:700;font-size:14px;white-space:nowrap}
+.tip{background:var(--tip);color:var(--ink);border-radius:10px;padding:8px 12px;font-size:14px;margin-top:10px}
+.tip b{color:var(--tip-ink)}
+.shot{margin:0}
+.shot img{display:block;width:100%;border-radius:18px;border:6px solid #0b1b33;background:#0b1b33;cursor:zoom-in}
+.shot figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.two div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:15px}
+.two b{display:block;margin-bottom:4px}
+.viewer{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;z-index:9}
+.viewer img{max-width:100%;max-height:100%}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:10px 0 30px}
+@media (max-width:640px){
+  .step{grid-template-columns:1fr}
+  .shot{max-width:260px;margin:4px auto 0}
+  .two{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header><div class="in">
+  <svg class="pins" viewBox="0 0 70 40" aria-hidden="true"><defs><symbol id="p" viewBox="0 0 20 50"><path d="M10 2c3 0 4 3 3.5 7-.4 3-1.6 4-1.6 6 0 3 4.6 8 4.6 18 0 9-3 15-6.5 15S3.5 42 3.5 33c0-10 4.6-15 4.6-18 0-2-1.2-3-1.6-6C6 5 7 2 10 2z" fill="#fff"/><rect x="7.4" y="13" width="5.2" height="1.6" fill="#dc2626"/><rect x="7.2" y="16" width="5.6" height="1.6" fill="#dc2626"/></symbol></defs><use href="#p" x="0" y="8" width="13" height="32"/><use href="#p" x="14" y="4" width="13" height="32"/><use href="#p" x="28" y="0" width="13" height="32"/><use href="#p" x="42" y="4" width="13" height="32"/><use href="#p" x="56" y="8" width="13" height="32"/></svg>
+  <h1>볼링 연습일지 사용 설명서</h1>
+  <p>처음 열었을 때 이 순서대로 하면 5분이면 준비가 끝나요.</p>
+  <a class="back" href="./"><i class="ti ti-arrow-left" aria-hidden="true"></i> 앱으로 돌아가기</a>
+</div></header>
+<main>
+  <nav class="toc"><b>순서</b>
+    <ol>
+      <li><a href="#s1">홈 화면에 앱 아이콘 만들기</a></li>
+      <li><a href="#s2">내 이름 정하고 고르기</a></li>
+      <li><a href="#s3">내 볼 등록</a></li>
+      <li><a href="#s4">첫 연습일지 쓰기</a></li>
+      <li><a href="#s5">점수판 입력</a></li>
+      <li><a href="#s6">중간 점수 고치기</a></li>
+      <li><a href="#s7">기록지 보기 · 인쇄</a></li>
+      <li><a href="#s8">백업과 사진 AI (선택)</a></li>
+    </ol>
+  </nav>
+
+  <section class="step noshot" id="s1">
+    <div>
+      <h2><span class="num">1</span>홈 화면에 앱 아이콘 만들기</h2>
+      <p>받은 주소를 휴대폰 브라우저로 연 뒤, 홈 화면에 추가하면 앱처럼 바로 열려요. 볼링장 와이파이가 끊겨도 열려요.</p>
+      <div class="two">
+        <div><b><i class="ti ti-brand-android" aria-hidden="true"></i> 안드로이드 (크롬)</b>오른쪽 위 <span class="key">⋮</span> → <span class="key">홈 화면에 추가</span> → <span class="key">설치</span></div>
+        <div><b><i class="ti ti-brand-apple" aria-hidden="true"></i> 아이폰 (사파리)</b>아래쪽 <span class="key"><i class="ti ti-share-2" aria-hidden="true"></i> 공유</span> → <span class="key">홈 화면에 추가</span> → <span class="key">추가</span></div>
+      </div>
+      <div class="tip"><b>꼭 알아두세요</b> — 기록은 서버가 아니라 <b>이 휴대폰 안에</b> 저장돼요. 다른 주소로 열거나 다른 브라우저로 열면 기록이 안 보여요. 늘 같은 아이콘으로 여세요.</div>
+    </div>
+  </section>
+
+  <section class="step" id="s2">
+    <div>
+      <h2><span class="num">2</span>내 이름 정하고 고르기</h2>
+      <ol>
+        <li>처음엔 "사용자1~6"이 있어요. 아래 탭에서 <span class="key"><i class="ti ti-settings" aria-hidden="true"></i> 설정</span>을 눌러요.</li>
+        <li><b>사용자 이름</b> 칸에 내 이름을 쓰고 <span class="key">이름 저장</span>을 눌러요. 한 휴대폰을 가족이 같이 쓰면 이름을 여러 개 넣어요.</li>
+        <li>오른쪽 위 이름 단추를 누르면 <b>"누가 쓰나요?"</b> 화면이 나와요. 내 이름을 눌러요.</li>
+      </ol>
+      <div class="tip"><b>팁</b> — 사람마다 기록·볼·통계가 따로 저장돼요.</div>
+    </div>
+    <figure class="shot"><img src="help/02-names.jpg" alt="설정 화면의 사용자 이름 칸과 이름 저장 단추" loading="lazy"><figcaption>설정 › 사용자 이름</figcaption></figure>
+  </section>
+
+  <section class="step" id="s2b">
+    <div>
+      <h2><span class="num">2</span>내 이름 고르기 (이어서)</h2>
+      <p>파란 테두리가 지금 고른 사람이에요. 나중에 다른 사람으로 바꿀 때도 오른쪽 위 이름 단추를 눌러요.</p>
+    </div>
+    <figure class="shot"><img src="help/01-who.jpg" alt="누가 쓰나요 화면, 이름 단추 여섯 개" loading="lazy"><figcaption>누가 쓰나요?</figcaption></figure>
+  </section>
+
+  <section class="step" id="s3">
+    <div>
+      <h2><span class="num">3</span>내 볼 등록</h2>
+      <ol>
+        <li>아래 탭 <span class="key"><i class="ti ti-circle-dot" aria-hidden="true"></i> 내 볼</span> → <span class="key">+ 볼 등록</span></li>
+        <li>볼 이름, 무게(파운드), 원핸드/투핸드를 고르고 <span class="key">저장</span></li>
+        <li>스페어볼도 있으면 하나 더 등록해요.</li>
+      </ol>
+      <div class="tip"><b>팁</b> — 볼을 등록해 두면 통계에서 <b>볼별 평균</b>을 볼 수 있어요. 안 쓰는 볼은 지우지 말고 "지금 쓰는 볼"을 꺼 두세요.</div>
+    </div>
+    <figure class="shot"><img src="help/03-ball.jpg" alt="볼 등록 화면, 이름·무게·투구 방식 입력" loading="lazy"><figcaption>내 볼 › 볼 등록</figcaption></figure>
+  </section>
+
+  <section class="step" id="s4">
+    <div>
+      <h2><span class="num">4</span>첫 연습일지 쓰기</h2>
+      <ol>
+        <li>아래 탭 <span class="key"><i class="ti ti-list-details" aria-hidden="true"></i> 기록</span>에서 레인 그림의 <span class="key">+ 오늘 연습일지 쓰기</span>를 눌러요.</li>
+        <li>날짜·볼링장·레인·오늘 볼을 넣어요. 볼링장은 한 번 쓰면 다음부터 자동으로 들어가요.</li>
+        <li>맨 위 남색 칸에 <b>이번 달 평균·최고·게임 수</b>가 나오고, 아래에 날짜별 기록이 쌓여요.</li>
+      </ol>
+    </div>
+    <figure class="shot"><img src="help/04-list.jpg" alt="기록 화면, 이번 달 평균과 레인 그림 단추, 날짜별 기록 카드" loading="lazy"><figcaption>기록 화면</figcaption></figure>
+  </section>
+
+  <section class="step" id="s5">
+    <div>
+      <h2><span class="num">5</span>점수판 입력</h2>
+      <ol>
+        <li>공마다 <b>넘어뜨린 핀 수</b>를 눌러요. <span class="key">X</span> 스트라이크, <span class="key">/</span> 스페어, <span class="key">-</span> 0개.</li>
+        <li>첫 공 뒤 스플릿이었으면 바로 <span class="key">스플릿</span>을 눌러요. 점수판 숫자에 동그라미가 생겨요.</li>
+        <li>잘못 눌렀으면 <span class="key">⌫ 한 칸 지우기</span></li>
+        <li>점수·스트라이크·스플릿·오픈 개수는 자동으로 계산돼요. 다 치면 <span class="key">저장</span></li>
+      </ol>
+      <div class="tip"><b>점수만 적고 싶을 때</b> — 게임 오른쪽 위 <span class="key">점수만 적기</span>를 누르면 점수·개수만 숫자로 넣어요.<br><b>점수판 사진</b> — <span class="key"><i class="ti ti-camera" aria-hidden="true"></i> 점수판 사진 넣기</span>로 볼링장 화면을 찍어 두면 기록지에 같이 붙어요.</div>
+    </div>
+    <figure class="shot"><img src="help/05-pad.jpg" alt="점수판과 숫자 단추, 스플릿·한 칸 지우기 단추" loading="lazy"><figcaption>숫자 단추로 입력</figcaption></figure>
+  </section>
+
+  <section class="step" id="s6">
+    <div>
+      <h2><span class="num">6</span>중간 점수 고치기</h2>
+      <p>볼링장 화면 점수와 앱 점수가 다를 때(핀 수를 잘못 눌렀거나 볼링장 기계가 다르게 셌을 때) 누적 점수를 직접 고쳐요.</p>
+      <ol>
+        <li>점수판 <b>아랫줄 누적 점수</b> 칸을 눌러요.</li>
+        <li>노란 상자에 맞는 점수를 넣고 <span class="key">적용</span></li>
+        <li>고친 칸은 <b>노란색 ✎</b>로 표시되고, 뒤 프레임도 같은 만큼 바뀌어요.</li>
+        <li>되돌리려면 그 칸을 다시 눌러 <span class="key">계산값으로</span></li>
+      </ol>
+      <div class="tip"><b>팁</b> — 마지막 칸(10프레임)을 고치면 그게 그 게임 점수가 돼요. 평균·통계에도 고친 점수가 들어가요.</div>
+    </div>
+    <figure class="shot"><img src="help/06-fix.jpg" alt="누적 점수 고치기 노란 상자, 4프레임이 노란색으로 표시됨" loading="lazy"><figcaption>누적 점수를 눌러 고치기</figcaption></figure>
+  </section>
+
+  <section class="step" id="s7">
+    <div>
+      <h2><span class="num">7</span>기록지 보기 · 인쇄</h2>
+      <ol>
+        <li>저장하면 그날 <b>A4 기록지</b>가 나와요. 기록 목록에서 날짜 카드를 눌러도 나와요.</li>
+        <li><span class="key"><i class="ti ti-printer" aria-hidden="true"></i> 인쇄 · PDF 저장</span> → 프린터를 <b>PDF로 저장</b>으로 고르면 파일로 남아요.</li>
+        <li>고칠 게 있으면 <span class="key">고치기</span></li>
+      </ol>
+    </div>
+    <figure class="shot"><img src="help/07-sheet.jpg" alt="A4 기록지, 게임별 점수판과 합계" loading="lazy"><figcaption>A4 기록지</figcaption></figure>
+  </section>
+
+  <section class="step" id="s8">
+    <div>
+      <h2><span class="num">8</span>백업과 사진 AI (선택)</h2>
+      <ul>
+        <li><b>백업</b> — <span class="key">설정</span> › <span class="key">백업 파일 저장</span>. 한 달에 한 번쯤 만들어 카톡 '나에게 보내기'나 구글 드라이브에 두세요. 휴대폰을 바꾸면 <span class="key">백업 파일 불러오기</span>로 옮겨요.</li>
+        <li><b>사진 AI 자동 입력</b> — Anthropic 콘솔에서 만든 API 키를 <span class="key">설정</span> › <span class="key">사진 자동 입력 (AI)</span>에 넣으면, 점수판 사진으로 점수판을 자동으로 채워요. 사진 한 장마다 사용료가 조금 나와요. 콘솔에서 <b>월 사용 한도</b>를 꼭 정해 두세요.</li>
+      </ul>
+      <div class="tip"><b>AI가 읽은 뒤</b> — 앱이 계산한 누적 점수와 사진의 누적 점수가 다르면 그 칸이 빨갛게 나와요. 사진과 비교해 고치세요.</div>
+    </div>
+    <figure class="shot"><img src="help/08-settings.jpg" alt="설정 화면의 백업 단추와 AI 키 입력 칸" loading="lazy"><figcaption>설정 › 백업 · AI</figcaption></figure>
+  </section>
+</main>
+<footer>사진 속 이름과 기록은 예시예요.</footer>
+<script>
+document.querySelectorAll('.shot img').forEach(im => im.onclick = () => {
+  const ov = document.createElement('div'); ov.className = 'viewer';
+  ov.innerHTML = '<img alt="">'; ov.firstChild.src = im.src; ov.firstChild.alt = im.alt;
+  const close = () => { ov.remove(); document.removeEventListener('keydown', k); };
+  const k = e => { if (e.key === 'Escape') close(); };
+  ov.onclick = close; document.addEventListener('keydown', k); document.body.append(ov);
+});
+</script>
+</body>
+</html>

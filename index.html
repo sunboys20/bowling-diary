@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1d4f91">
+<meta name="theme-color" content="#0b1b33">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="볼링일지">
@@ -11,42 +11,58 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
 :root{
-  --bg:#eef2f7;--card:#fff;--ink:#1b2333;--muted:#667085;--line:#d9dfe8;
-  --accent:#1d4f91;--accent-2:#e3edfb;--danger:#c0392b;--warn:#a85d00;
-  --x:#1d4f91;--sp:#0f7b5f;--split:#c0392b;
-  --sb-h:#1d4f91;--sb-line:#9fb0c8;--sb-bg:#fff;--sb-ink:#1b2333;
+  --bg:#f3f5f9;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#e4e8f0;
+  --accent:#2563eb;--accent-2:#eff6ff;--danger:#dc2626;--warn:#b45309;
+  --x:#dc2626;--sp:#2563eb;--split:#7c3aed;
+  --sb-h:#0b1b33;--sb-line:#cbd5e1;--sb-bg:#fff;--sb-ink:#0f172a;
+  --top:#0b1b33;--top-2:#14284a;--fix:#fef3c7;--fix-ink:#92400e;
+  --chip-x:#fee2e2;--chip-x-ink:#991b1b;--chip-s:#ede9fe;--chip-s-ink:#5b21b6;
+  --lane:#d6b98c;--lane-2:#b08d5a;--lane-bg:#1e3a5f;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#11161f;--card:#1a212d;--ink:#e6ebf2;--muted:#98a2b3;--line:#2c3545;
-    --accent:#5b9bec;--accent-2:#1e2c42;--danger:#ef6b5b;--warn:#f0a43a;
-    --x:#8dbbf7;--sp:#4fd1a5;--split:#ff7b6b;
-    --sb-h:#2a4f80;--sb-line:#3a4a62;--sb-bg:#141b26;--sb-ink:#e6ebf2;
+    --bg:#0b1220;--card:#131c2e;--ink:#e6ebf2;--muted:#94a3b8;--line:#24304a;
+    --accent:#60a5fa;--accent-2:#16274a;--danger:#f87171;--warn:#fbbf24;
+    --x:#f87171;--sp:#60a5fa;--split:#a78bfa;
+    --sb-h:#1b3360;--sb-line:#2c3a55;--sb-bg:#0f1727;--sb-ink:#e6ebf2;
+    --top:#07101f;--top-2:#12203a;--fix:#3a2e0b;--fix-ink:#fcd34d;
+    --chip-x:#3b1414;--chip-x-ink:#fca5a5;--chip-s:#2a1f4d;--chip-s-ink:#c4b5fd;
+    --lane:#8a7350;--lane-2:#6b5636;--lane-bg:#10223b;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#11161f;--card:#1a212d;--ink:#e6ebf2;--muted:#98a2b3;--line:#2c3545;
-  --accent:#5b9bec;--accent-2:#1e2c42;--danger:#ef6b5b;--warn:#f0a43a;
-  --x:#8dbbf7;--sp:#4fd1a5;--split:#ff7b6b;
-  --sb-h:#2a4f80;--sb-line:#3a4a62;--sb-bg:#141b26;--sb-ink:#e6ebf2;
+  --bg:#0b1220;--card:#131c2e;--ink:#e6ebf2;--muted:#94a3b8;--line:#24304a;
+  --accent:#60a5fa;--accent-2:#16274a;--danger:#f87171;--warn:#fbbf24;
+  --x:#f87171;--sp:#60a5fa;--split:#a78bfa;
+  --sb-h:#1b3360;--sb-line:#2c3a55;--sb-bg:#0f1727;--sb-ink:#e6ebf2;
+  --top:#07101f;--top-2:#12203a;--fix:#3a2e0b;--fix-ink:#fcd34d;
+  --chip-x:#3b1414;--chip-x-ink:#fca5a5;--chip-s:#2a1f4d;--chip-s-ink:#c4b5fd;
+  --lane:#8a7350;--lane-2:#6b5636;--lane-bg:#10223b;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Pretendard Variable",Pretendard,system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;letter-spacing:-.01em}
 a{color:inherit}
-.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top));background:#1d4f91;color:#fff}
-.top .title{font-weight:800;font-size:17px;flex:1;white-space:nowrap}
-.who{border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.12);color:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
-main{max-width:760px;margin:0 auto;padding:14px 16px 96px}
-h2{font-size:20px;margin:6px 0 12px}
-h3.month{font-size:14px;color:var(--muted);margin:18px 2px 8px}
+.ti{line-height:1;vertical-align:-.12em}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top));background:var(--top);color:#fff;overflow:hidden}
+.top .title{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;flex:1;white-space:nowrap;position:relative;z-index:1}
+.top .title svg{width:24px;height:24px;flex:none}
+.top .pins{position:absolute;right:120px;top:2px;height:46px;opacity:.16;pointer-events:none}
+.who{position:relative;z-index:1;display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.help-btn{padding:6px 9px;text-decoration:none;font-size:17px}
+main{max-width:760px;margin:0 auto;padding:14px 16px 104px}
+h2{font-size:21px;font-weight:800;margin:6px 0 12px}
+h3.month{font-size:13px;font-weight:700;color:var(--muted);margin:18px 2px 8px;letter-spacing:.02em}
 .tabs{position:fixed;z-index:20;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
-.tabs a{flex:1;text-align:center;padding:13px 0;color:var(--muted);text-decoration:none;font-weight:700;font-size:15px}
-.tabs a.on{color:var(--accent);box-shadow:inset 0 3px 0 var(--accent)}
+.tabs a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 9px;color:var(--muted);text-decoration:none;font-weight:700;font-size:12px}
+.tabs a .ti{font-size:23px}
+.tabs a.on{color:var(--accent)}
 body.editing .tabs{display:none}
-.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;text-decoration:none}
+.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;text-decoration:none}
 .muted{color:var(--muted)}
 .hint{font-size:13px;color:var(--muted);margin:6px 2px}
 .empty{text-align:center;color:var(--muted);padding:40px 10px}
@@ -124,7 +140,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .ai-box .note{color:var(--muted);margin-top:4px}
 /* sheet (paper) */
 .sheet-wrap{margin-top:6px}
-.sheet{--sb-h:#2b3a55;--sb-line:#6b7280;--sb-bg:#fff;--sb-ink:#111;--x:#1d4f91;--sp:#0f7b5f;--split:#c0392b;--accent-2:#fff;
+.sheet{--sb-h:#0b1b33;--sb-line:#6b7280;--sb-bg:#fff;--sb-ink:#111;--x:#dc2626;--sp:#2563eb;--split:#7c3aed;--accent-2:#fff;--fix:#fef3c7;--fix-ink:#92400e;
   background:#fff;color:#111;max-width:800px;margin:0 auto 16px;padding:22px 20px;border-radius:6px;box-shadow:0 1px 6px rgba(0,0,0,.18);font-size:14px}
 .sh-title{text-align:center;font-size:22px;font-weight:900;letter-spacing:2px;margin-bottom:10px}
 .sh-info{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:14px}
@@ -179,6 +195,51 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 .viewer button{position:absolute;top:calc(12px + env(safe-area-inset-top));right:12px;font:inherit;font-weight:800;background:#fff;color:#111;border:0;border-radius:999px;padding:8px 14px}
 #toast{position:fixed;z-index:60;left:50%;bottom:90px;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
 #toast.on{opacity:.95}
+/* manual running total */
+.sb .cum.fx{background:var(--fix);color:var(--fix-ink)}
+.sb .cum.fx::before{content:"✎";font-size:.75em;margin-right:1px}
+.sb td.tot.fx{background:var(--fix);color:var(--fix-ink)}
+.board.editable .cum{cursor:pointer}
+.board.editable .cum.sel{box-shadow:inset 0 0 0 2px var(--accent)}
+.fixbox{margin-top:10px;background:var(--fix);border:1px solid #fcd34d;border-radius:12px;padding:10px 12px;color:var(--ink)}
+.fixbox .fx-t{font-weight:800;font-size:14px;color:var(--fix-ink)}
+.fixbox .fx-row{display:flex;gap:8px;align-items:center;margin-top:8px}
+.fixbox .fx-row input{flex:1;font-size:20px;font-weight:800;text-align:center;padding:7px;border:2px solid var(--accent)}
+.fixbox .fx-row span{font-size:14px;color:var(--muted);white-space:nowrap}
+.fixbox .fx-btns{display:flex;gap:8px;margin-top:8px}.fixbox .fx-btns .btn{flex:1;padding:9px 6px;font-size:14px}
+.fixbox .fx-msg{font-size:13px;color:var(--danger);margin-top:6px}
+.tag.fx{background:var(--fix);color:var(--fix-ink);border-color:transparent}
+/* bowling art & list */
+.hero{position:relative;overflow:hidden;background:var(--top);color:#fff;border-radius:16px;padding:14px;margin-bottom:12px}
+.hero .pins{position:absolute;right:-6px;top:4px;height:56px;opacity:.13;pointer-events:none}
+.hero .h-name{font-size:13px;color:#94a3b8;font-weight:600}
+.hero .h-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;position:relative}
+.hero .h-kpi{background:rgba(255,255,255,.08);border-radius:10px;padding:8px 10px}
+.hero .h-kpi .l{font-size:12px;color:#94a3b8}
+.hero .h-kpi .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+.lane-cta{position:relative;display:block;width:100%;height:96px;border:0;padding:0;border-radius:16px;overflow:hidden;background:var(--lane-bg);color:#fff;cursor:pointer;font:inherit;text-align:left;margin-bottom:6px}
+.lane-cta svg{position:absolute;inset:0;width:100%;height:100%}
+.lane-cta .l-t{position:absolute;left:14px;top:12px;font-weight:800;font-size:16px}
+.lane-cta .l-b{position:absolute;left:14px;bottom:12px;display:inline-flex;align-items:center;gap:5px;background:var(--accent);color:#fff;border-radius:10px;padding:6px 12px;font-weight:700;font-size:14px}
+.day{display:flex;gap:12px;align-items:center}
+.day .dd{width:44px;text-align:center;flex:none}
+.day .dd .m{font-size:11px;color:var(--muted);font-weight:600}
+.day .dd .d{font-size:24px;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums}
+.day .dd .w{font-size:11px;color:var(--muted)}
+.day .di{flex:1;min-width:0}
+.day .di .t{font-weight:800}
+.day .di .s{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.day .chips{display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.chip{display:inline-block;border-radius:7px;padding:2px 7px;font-size:12px;font-weight:700;white-space:nowrap}
+.chip.x{background:var(--chip-x);color:var(--chip-x-ink)}
+.chip.s{background:var(--chip-s);color:var(--chip-s-ink)}
+.chip.best{background:var(--accent-2);color:var(--accent)}
+.art-empty{text-align:center;color:var(--muted);padding:26px 10px}
+.art-empty svg{width:120px;height:70px;display:block;margin:0 auto 8px}
+.ball-card{display:flex;gap:12px;align-items:center}
+.ball-card svg{width:42px;height:42px;flex:none}
+.trend svg{width:100%;height:110px;display:block}
+.trend .tl{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
 /* narrow screens */
 @media screen and (max-width:600px){
   .sheet{padding:14px 10px;font-size:13px}
@@ -219,23 +280,30 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-pin" viewBox="0 0 20 50"><path d="M10 2c3 0 4 3 3.5 7-.4 3-1.6 4-1.6 6 0 3 4.6 8 4.6 18 0 9-3 15-6.5 15S3.5 42 3.5 33c0-10 4.6-15 4.6-18 0-2-1.2-3-1.6-6C6 5 7 2 10 2z" fill="#fff" stroke="#cbd5e1" stroke-width="1"/><rect x="7.4" y="13" width="5.2" height="1.6" fill="#dc2626"/><rect x="7.2" y="16" width="5.6" height="1.6" fill="#dc2626"/></symbol>
+  <symbol id="i-ball" viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="currentColor"/><circle cx="14" cy="13" r="2.6" fill="#0b1b33"/><circle cx="21" cy="11" r="2.6" fill="#0b1b33"/><circle cx="18" cy="19" r="3.2" fill="#0b1b33"/><path d="M8 28c4 4 10 6 17 4" stroke="#fff" stroke-opacity=".35" stroke-width="2" fill="none"/></symbol>
+  <symbol id="i-pins5" viewBox="0 0 70 40"><use href="#i-pin" x="0" y="8" width="13" height="32"/><use href="#i-pin" x="14" y="4" width="13" height="32"/><use href="#i-pin" x="28" y="0" width="13" height="32"/><use href="#i-pin" x="42" y="4" width="13" height="32"/><use href="#i-pin" x="56" y="8" width="13" height="32"/></symbol>
+</defs></svg>
 <header class="top noprint">
-  <div class="title">🎳 볼링 연습일지</div>
+  <svg class="pins" viewBox="0 0 70 40" aria-hidden="true"><use href="#i-pins5"/></svg>
+  <div class="title"><svg style="color:#3b82f6" aria-hidden="true"><use href="#i-ball"/></svg>볼링 연습일지</div>
+  <a class="who help-btn" href="help.html" aria-label="사용 설명서"><i class="ti ti-help" aria-hidden="true"></i></a>
   <button type="button" class="who" id="whoBtn">사용자 선택</button>
 </header>
 <main id="app"></main>
 <nav class="tabs noprint" id="tabs">
-  <a href="#list" data-tab="list">기록</a>
-  <a href="#balls" data-tab="balls">내 볼</a>
-  <a href="#stats" data-tab="stats">통계</a>
-  <a href="#settings" data-tab="settings">설정</a>
+  <a href="#list" data-tab="list"><i class="ti ti-list-details" aria-hidden="true"></i>기록</a>
+  <a href="#balls" data-tab="balls"><i class="ti ti-circle-dot" aria-hidden="true"></i>내 볼</a>
+  <a href="#stats" data-tab="stats"><i class="ti ti-chart-line" aria-hidden="true"></i>통계</a>
+  <a href="#settings" data-tab="settings"><i class="ti ti-settings" aria-hidden="true"></i>설정</a>
 </nav>
 <input type="file" id="filePick" accept="image/*" hidden>
 <input type="file" id="backupPick" accept="application/json,.json" hidden>
 <div id="toast" role="status"></div>
 <script>
 'use strict';
-const APP_VER = '0.3';
+const APP_VER = '0.4';
 const MAXG = 10;
 const app = document.getElementById('app');
 const $ = (s, el = document) => el.querySelector(s);
@@ -250,6 +318,18 @@ const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
 const sum = a => a.reduce((x, y) => x + y, 0);
 const f1 = v => v == null ? '-' : (Math.round(v * 10) / 10).toFixed(1);
 const ballLabel = b => b ? `${b.name}${b.weight ? ' ' + b.weight + 'lb' : ''} · ${b.hand || ''}` : '';
+
+/* bowling art */
+const LANE_SVG = `<svg viewBox="0 0 320 96" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <polygon points="150,96 270,96 236,0 184,0" fill="var(--lane)"/><polygon points="150,96 270,96 236,0 184,0" fill="none" stroke="var(--lane-2)"/>
+  <line x1="210" y1="0" x2="210" y2="96" stroke="var(--lane-2)" stroke-dasharray="3 5" opacity=".6"/>
+  <path d="M190 80 Q200 50 208 22" stroke="#93c5fd" stroke-width="1.6" fill="none" stroke-dasharray="2 4"/>
+  <use href="#i-ball" x="178" y="70" width="22" height="22" style="color:#2563eb"/>
+  <use href="#i-pin" x="200" y="2" width="6" height="15"/><use href="#i-pin" x="207" y="2" width="6" height="15"/><use href="#i-pin" x="214" y="2" width="6" height="15"/>
+  <use href="#i-pin" x="203.5" y="9" width="6" height="15"/><use href="#i-pin" x="210.5" y="9" width="6" height="15"/><use href="#i-pin" x="207" y="16" width="6" height="15"/></svg>`;
+const PINS_SVG = `<svg viewBox="0 0 120 70" aria-hidden="true"><use href="#i-pins5" x="10" y="0" width="100" height="58"/><use href="#i-ball" x="2" y="44" width="24" height="24" style="color:#2563eb"/></svg>`;
+const BALL_COLORS = ['#2563eb', '#dc2626', '#7c3aed', '#059669', '#d97706', '#db2777', '#0891b2'];
+const ballSVG = (i, size = 42) => `<svg width="${size}" height="${size}" style="color:${BALL_COLORS[i % BALL_COLORS.length]}" aria-hidden="true"><use href="#i-ball"/></svg>`;
 
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.classList.add('on');
@@ -312,6 +392,22 @@ const BW = {
       out.push(t);
     }
     return out;
+  },
+  // running totals with hand-fixed values: a fixed frame shows its value and moves every later
+  // computed frame by the same difference (fix: {frameIndex: total}); null where nothing to show
+  cumFixed(rolls, fix) {
+    const c = this.cum(rolls), out = []; let delta = 0;
+    for (let f = 0; f < 10; f++) {
+      const v = fix ? fix[f] : undefined;
+      if (v != null) { out.push(v); if (c[f] !== undefined) delta = v - c[f]; }
+      else out.push(c[f] !== undefined ? c[f] + delta : null);
+    }
+    return out;
+  },
+  // final score: fixed total if given, otherwise the 10th frame once the game is over
+  scoreOf(rolls, fix) {
+    if (fix && fix[9] != null) return fix[9];
+    return this.done(rolls) ? this.cumFixed(rolls, fix)[9] : null;
   },
   summary(rolls) {
     let strike = 0, split = 0, open = 0;
@@ -439,7 +535,8 @@ async function render() {
 function renderWho() {
   app.innerHTML = `<h2>누가 쓰나요?</h2>
     <div class="who-grid">${profiles.map(p => `<button type="button" class="who-btn${CUR && CUR.id === p.id ? ' on' : ''}" data-id="${p.id}">${esc(p.name)}</button>`).join('')}</div>
-    <p class="hint">이름은 [설정]에서 바꿀 수 있어요.</p>`;
+    <p class="hint">이름은 [설정]에서 바꿀 수 있어요.</p>
+    <a class="btn" href="help.html" style="width:100%;margin-top:10px"><i class="ti ti-book" aria-hidden="true"></i> 처음이세요? 사용 설명서 보기</a>`;
   app.querySelectorAll('.who-btn').forEach(b => b.onclick = async () => {
     CUR = profiles.find(p => p.id === b.dataset.id); await setMeta('cur', CUR.id); go('#list');
   });
@@ -452,19 +549,31 @@ function dayStats(d) {
 }
 async function renderList() {
   const days = (await myDays()).sort((a, b) => b.date.localeCompare(a.date) || (b.updated || 0) - (a.updated || 0));
-  let h = `<button type="button" class="btn big primary" id="newDay">+ 오늘 연습일지 쓰기</button>`;
+  const ym = today().slice(0, 7);
+  const monthSc = days.filter(d => d.date.startsWith(ym)).flatMap(d => (d.games || []).map(g => g.score).filter(v => v != null));
+  let h = `<div class="hero"><svg class="pins" viewBox="0 0 70 40" aria-hidden="true"><use href="#i-pins5"/></svg>
+    <div class="h-name">${esc(CUR.name)} · ${+ym.slice(5)}월 기록</div>
+    <div class="h-kpis"><div class="h-kpi"><div class="l">이번 달 평균</div><div class="v">${f1(avg(monthSc))}</div></div>
+      <div class="h-kpi"><div class="l">최고</div><div class="v">${monthSc.length ? Math.max(...monthSc) : '-'}</div></div>
+      <div class="h-kpi"><div class="l">게임</div><div class="v">${monthSc.length}</div></div></div></div>
+    <button type="button" class="lane-cta" id="newDay" aria-label="오늘 연습일지 쓰기">${LANE_SVG}
+      <span class="l-t">${days.some(d => d.date === today()) ? '오늘 한 번 더?' : '오늘도 한 게임?'}</span>
+      <span class="l-b"><i class="ti ti-plus" aria-hidden="true"></i> 오늘 연습일지 쓰기</span></button>`;
   const lastBackup = await getMeta('lastBackup');
   if (days.length >= 3 && (!lastBackup || Date.now() - lastBackup > 30 * 864e5))
-    h += `<div class="banner">기록은 이 휴대폰에만 저장돼요. 백업한 지 오래됐어요 → <a href="#settings">백업하기</a></div>`;
-  if (!days.length) h += `<div class="empty">아직 기록이 없어요.<br>위 버튼을 눌러 첫 일지를 써 보세요.</div>`;
+    h += `<div class="banner"><i class="ti ti-cloud-upload" aria-hidden="true"></i> 기록은 이 휴대폰에만 저장돼요. 백업한 지 오래됐어요 → <a href="#settings">백업하기</a></div>`;
+  if (!days.length) h += `<div class="art-empty">${PINS_SVG}아직 기록이 없어요.<br>위 레인을 눌러 첫 일지를 써 보세요.</div>`;
   let month = '';
   for (const d of days) {
     const m = d.date.slice(0, 7);
     if (m !== month) { month = m; h += `<h3 class="month">${m.slice(0, 4)}년 ${+m.slice(5)}월</h3>`; }
-    const s = dayStats(d);
-    h += `<a class="card" href="#view/${d.id}">
-      <div class="day-top"><b>${fmtDate(d.date)}</b><span class="muted">${esc(d.place)}${d.lane ? ' · 레인 ' + esc(d.lane) : ''}</span></div>
-      <div class="day-nums"><span>${s.n}게임</span><span>평균 <b>${f1(s.avg)}</b></span><span>최고 <b>${s.max ?? '-'}</b></span></div></a>`;
+    const s = dayStats(d), [, mm, dd] = d.date.split('-');
+    const gs = d.games || [], xs = sum(gs.map(g => g.strike || 0)), sps = sum(gs.map(g => g.split || 0));
+    h += `<a class="card day" href="#view/${d.id}">
+      <div class="dd"><div class="m">${+mm}월</div><div class="d">${+dd}</div><div class="w">${WD[new Date(d.date + 'T00:00').getDay()]}</div></div>
+      <div class="di"><div class="t">${s.n}게임 · 평균 ${f1(s.avg)}</div>
+        <div class="s"><i class="ti ti-map-pin" aria-hidden="true"></i> ${esc(d.place) || '볼링장 미입력'}${d.lane ? ' · 레인 ' + esc(d.lane) : ''}</div></div>
+      <div class="chips">${s.max != null ? `<span class="chip best">최고 ${s.max}</span>` : ''}${xs ? `<span class="chip x">X ${xs}</span>` : ''}${sps ? `<span class="chip s">S ${sps}</span>` : ''}</div></a>`;
   }
   app.innerHTML = h;
   $('#newDay').onclick = () => go('#edit/new');
@@ -473,10 +582,12 @@ async function renderList() {
 /* ---------- day editor ---------- */
 const blankGame = () => ({ mode: 'frames', rolls: [], score: null, strike: null, split: null, open: null, ballId: '', memo: '', photoId: null });
 const isEmptyGame = g => !(g.rolls || []).length && g.score == null && g.strike == null && g.split == null && g.open == null && !g.memo && !g.photoId;
+const hasFix = g => !!(g.cumFix && Object.keys(g.cumFix).length);
 function applySummary(g) {
-  if (!g.rolls.length) { g.score = g.strike = g.split = g.open = null; return; }
+  if (g.cumFix && !Object.keys(g.cumFix).length) delete g.cumFix;
+  if (!g.rolls.length && !hasFix(g)) { g.score = g.strike = g.split = g.open = null; return; }
   const s = BW.summary(g.rolls);
-  g.score = s.score; g.strike = s.strike; g.split = s.split; g.open = s.open;
+  g.score = BW.scoreOf(g.rolls, g.cumFix); g.strike = s.strike; g.split = s.split; g.open = s.open;
 }
 function checkQuick(g) {
   const errors = [], warns = [];
@@ -503,8 +614,9 @@ function ballOptions(balls, sel, emptyLabel) {
   if (sel && !balls.find(b => b.id === sel)) o += `<option value="${esc(sel)}" selected>(지운 볼)</option>`;
   return o;
 }
-function boardHTML(rolls, cursor, noTotal, bad) {
-  const M = BW.marks(rolls), c = BW.cum(rolls), nx = cursor ? BW.next(rolls) : null;
+function boardHTML(rolls, cursor, noTotal, bad, fix, sel) {
+  const M = BW.marks(rolls), c = BW.cumFixed(rolls, fix), nx = cursor ? BW.next(rolls) : null;
+  const isFx = f => !!(fix && fix[f] != null);
   let h = `<table class="sb${noTotal ? ' nt' : ''}"><colgroup>${'<col>'.repeat(9)}<col class="c10">${noTotal ? '' : '<col class="ct">'}</colgroup><thead><tr>`;
   for (let f = 1; f <= 10; f++) h += `<th>${f}</th>`;
   h += `${noTotal ? '' : '<th>합계</th>'}</tr></thead><tbody><tr>`;
@@ -518,11 +630,24 @@ function boardHTML(rolls, cursor, noTotal, bad) {
       cells += `<span class="${cls}">${m ? esc(m.t) : ''}</span>`;
     }
     const tdc = [f === 9 ? 'f10' : '', bad && bad.includes(f) ? 'bad' : ''].join(' ').trim();
-    h += `<td class="${tdc}"><div class="balls">${cells}</div><div class="cum">${c[f] ?? ''}</div></td>`;
+    const cc = ['cum', isFx(f) ? 'fx' : '', sel === f ? 'sel' : ''].join(' ').trim();
+    h += `<td class="${tdc}"><div class="balls">${cells}</div><div class="${cc}" data-act="cum" data-f="${f}">${c[f] ?? ''}</div></td>`;
   }
-  const done = BW.done(rolls);
-  h += `${noTotal ? '' : `<td class="tot">${done ? c[c.length - 1] : ''}</td>`}</tr></tbody></table>`;
+  const score = BW.scoreOf(rolls, fix);
+  h += `${noTotal ? '' : `<td class="tot${isFx(9) ? ' fx' : ''}">${score ?? ''}</td>`}</tr></tbody></table>`;
   return h;
+}
+function fixBoxHTML(g) {
+  const f = g._fixF, shown = BW.cumFixed(g.rolls, g.cumFix)[f];
+  const fixed = g.cumFix && g.cumFix[f] != null;
+  const other = { ...(g.cumFix || {}) }; delete other[f];
+  const c = BW.cumFixed(g.rolls, other);
+  return `<div class="fixbox" data-fixbox>
+    <div class="fx-t"><i class="ti ti-pencil" aria-hidden="true"></i> ${f + 1}프레임 누적 점수 고치기</div>
+    <div class="fx-row"><span>계산 ${c[f] ?? '-'} →</span><input data-fix inputmode="numeric" pattern="[0-9]*" maxlength="3" value="${shown ?? ''}" aria-label="${f + 1}프레임 누적 점수"></div>
+    <div class="fx-msg" data-fixmsg></div>
+    <div class="fx-btns"><button type="button" class="btn" data-act="fixClose">닫기</button>${fixed ? '<button type="button" class="btn" data-act="fixReset">계산값으로</button>' : ''}<button type="button" class="btn primary" data-act="fixApply">적용</button></div>
+    <p class="hint" style="margin:6px 0 0">점수판과 실제 점수가 다를 때 고쳐요. 뒤 프레임도 같은 만큼 바뀌어요.</p></div>`;
 }
 function padHTML(g) {
   const nx = BW.next(g.rolls), live = !nx.done;
@@ -539,15 +664,20 @@ function padHTML(g) {
 function cardHTML(i) {
   const g = ED.games[i], frames = g.mode !== 'quick', open = padOpen === i;
   let scoreTxt = '';
-  if (frames && g.rolls.length) { const s = BW.summary(g.rolls); scoreTxt = s.done ? s.score : (s.cum.length ? s.cum[s.cum.length - 1] + '…' : '…'); }
+  if (frames && (g.rolls.length || hasFix(g))) {
+    const sc = BW.scoreOf(g.rolls, g.cumFix), cf = BW.cumFixed(g.rolls, g.cumFix).filter(v => v != null);
+    scoreTxt = sc != null ? sc : (cf.length ? cf[cf.length - 1] + '…' : '…');
+  }
   if (!frames && g.score != null) scoreTxt = g.score;
   let h = `<div class="card game${open ? ' open' : ''}" data-i="${i}">
     <div class="game-head"><b>${i + 1}게임</b><span class="gscore">${scoreTxt}</span><span class="sp"></span>
       <button type="button" class="link" data-act="mode">${frames ? '점수만 적기' : '점수판으로 적기'}</button>
       ${ED.games.length > 1 ? '<button type="button" class="link danger" data-act="del">빼기</button>' : ''}</div>`;
   if (frames) {
-    h += `<div class="board" data-act="openpad">${boardHTML(g.rolls, open, false, g._ai && g._ai.bad)}</div>
-      <div class="counts"><span class="c-x">스트라이크 <b>${g.strike ?? 0}</b></span><span class="c-split">스플릿 <b>${g.split ?? 0}</b></span><span class="c-open">오픈 <b>${g.open ?? 0}</b></span></div>`;
+    h += `<div class="board editable" data-act="openpad">${boardHTML(g.rolls, open, false, g._ai && g._ai.bad, g.cumFix, g._fixF)}</div>
+      ${g._fixF != null ? fixBoxHTML(g) : ''}
+      <div class="counts"><span class="c-x">스트라이크 <b>${g.strike ?? 0}</b></span><span class="c-split">스플릿 <b>${g.split ?? 0}</b></span><span class="c-open">오픈 <b>${g.open ?? 0}</b></span>${hasFix(g) ? '<span class="tag fx">✎ 점수 고침</span>' : ''}</div>
+      ${g._fixF == null && (g.rolls.length || hasFix(g)) ? '<p class="hint" style="margin-top:0">누적 점수(아랫줄)를 누르면 직접 고칠 수 있어요.</p>' : ''}`;
     h += open ? padHTML(g) : `<button type="button" class="btn small" data-act="openpad">점수판 입력</button>`;
   } else {
     h += `<div class="g4 num">${[['score', '점수', 3], ['strike', '스트라이크', 2], ['split', '스플릿', 2], ['open', '오픈', 2]]
@@ -558,13 +688,13 @@ function cardHTML(i) {
     <label class="f">메모</label><textarea data-k="memo" rows="2" placeholder="이 게임에서 느낀 점">${esc(g.memo)}</textarea>
     <div class="photo">${g.photoId
       ? `<img class="thumb" data-act="viewPhoto" data-pid="${g.photoId}" alt="${i + 1}게임 사진"><div class="photo-btns"><button type="button" class="btn small" data-act="photo">사진 바꾸기</button><button type="button" class="btn small" data-act="rmPhoto">사진 빼기</button></div>`
-      : `<button type="button" class="btn small" data-act="photo">📷 점수판 사진 넣기</button>`}</div>
-    ${g.photoId && !(g._ai && g._ai.state === 'busy') ? '<div class="ai-row"><button type="button" class="btn small ai" data-act="ai">🤖 사진으로 점수판 자동 입력</button></div>' : ''}
+      : `<button type="button" class="btn small" data-act="photo"><i class="ti ti-camera" aria-hidden="true"></i> 점수판 사진 넣기</button>`}</div>
+    ${g.photoId && !(g._ai && g._ai.state === 'busy') ? '<div class="ai-row"><button type="button" class="btn small ai" data-act="ai"><i class="ti ti-sparkles" aria-hidden="true"></i> 사진으로 점수판 자동 입력</button></div>' : ''}
     ${g._ai ? aiHTML(g._ai) : ''}</div>`;
   return h;
 }
 function aiHTML(s) {
-  if (s.state === 'busy') return '<div class="ai-box">🤖 사진을 읽는 중이에요… (보통 10~40초)</div>';
+  if (s.state === 'busy') return '<div class="ai-box"><i class="ti ti-loader-2" aria-hidden="true"></i> 사진을 읽는 중이에요… (보통 10~40초)</div>';
   if (s.state === 'err') return `<div class="ai-box"><span class="ng">⚠ ${esc(s.msg)}</span></div>`;
   if (s.state === 'pick') return `<div class="ai-box"><b>사진에 여러 줄이 있어요. 어느 줄이 내 점수인가요?</b><div class="pick">${s.players
     .map((p, n) => `<button type="button" class="btn small" data-act="aiPick" data-n="${n}">${esc(p.name || '(이름 없음)')} · ${p.total ?? '?'}점</button>`).join('')}</div>
@@ -630,6 +760,12 @@ async function renderEdit(id) {
   box.addEventListener('click', onGameClick);
   box.addEventListener('input', onGameInput);
   box.addEventListener('change', onGameInput);
+  box.addEventListener('keydown', e => {
+    if (!e.target.matches('[data-fix]')) return;
+    const i = +e.target.closest('.game').dataset.i;
+    if (e.key === 'Enter') { e.preventDefault(); applyFix(i); }
+    else if (e.key === 'Escape') { delete ED.games[i]._fixF; updateCard(i); }
+  });
   $('#addGame').onclick = () => {
     if (ED.games.length >= MAXG) return;
     ED.games.push(blankGame()); padOpen = ED.games.length - 1; dirty = true; renderGames();
@@ -662,6 +798,19 @@ async function onGameClick(e) {
   const a = e.target.closest('[data-act]'); if (!a) return;
   switch (a.dataset.act) {
     case 'openpad': if (padOpen !== i) { padOpen = i; renderGames(); } break;
+    case 'cum': {
+      const f = +a.dataset.f;
+      if (f !== 9 && BW.frames(g.rolls).length <= f) { toast(`${f + 1}프레임은 아직 투구가 없어요`); return; }
+      ED.games.forEach(x => { delete x._fixF; });
+      g._fixF = f; renderGames();
+      setTimeout(() => { const inp = document.querySelector(`.game[data-i="${i}"] [data-fix]`); if (inp) { inp.focus(); inp.select(); } }, 30);
+      break;
+    }
+    case 'fixClose': delete g._fixF; updateCard(i); break;
+    case 'fixReset':
+      if (g.cumFix) delete g.cumFix[g._fixF];
+      delete g._fixF; applySummary(g); dirty = true; updateCard(i); break;
+    case 'fixApply': applyFix(i); break;
     case 'split': {
       if (!BW.canSplit(g.rolls)) return;
       const last = g.rolls[g.rolls.length - 1]; last.s = !last.s; if (!last.s) delete last.s;
@@ -690,7 +839,7 @@ async function onGameClick(e) {
     case 'mode':
       if (g.mode !== 'quick') {
         if (g.rolls.length && !confirm('점수판 기록을 지우고 점수만 적을까요?\n(지금 점수·개수 숫자는 그대로 남아요)')) return;
-        g.rolls = []; g.mode = 'quick';
+        g.rolls = []; g.mode = 'quick'; delete g.cumFix; delete g._fixF;
       } else {
         if ((g.score != null || g.strike != null || g.split != null || g.open != null) && !confirm('점수판으로 바꾸면 적어 둔 숫자가 지워져요. 바꿀까요?')) return;
         g.mode = 'frames'; g.rolls = []; applySummary(g); padOpen = i;
@@ -706,6 +855,20 @@ async function onGameClick(e) {
     case 'viewPhoto': showPhoto(await photoURL(g.photoId)); break;
   }
 }
+function applyFix(i) {
+  const g = ED.games[i], f = g._fixF, card = document.querySelector(`.game[data-i="${i}"]`);
+  const raw = (card.querySelector('[data-fix]').value || '').replace(/\D/g, ''), msg = card.querySelector('[data-fixmsg]');
+  if (raw === '') { msg.textContent = '점수를 넣어 주세요.'; return; }
+  const v = +raw;
+  if (v > 300) { msg.textContent = '누적 점수는 0~300이에요.'; return; }
+  const shown = BW.cumFixed(g.rolls, g.cumFix);
+  const prev = shown.slice(0, f).filter(x => x != null).pop();
+  if (prev != null && v < prev) { msg.textContent = `앞 프레임 누적(${prev})보다 작을 수 없어요.`; return; }
+  const fix = { ...(g.cumFix || {}) }; delete fix[f];
+  const base = BW.cumFixed(g.rolls, fix)[f];
+  if (base === v) delete fix[f]; else fix[f] = v;
+  g.cumFix = fix; delete g._fixF; applySummary(g); dirty = true; updateCard(i);
+}
 async function saveDay() {
   ED.date = $('#e-date').value;
   if (!ED.date) return alert('날짜를 넣어 주세요.');
@@ -719,7 +882,7 @@ async function saveDay() {
   const rec = structuredClone(ED);
   delete rec._new;
   rec.games = rec.games.filter(g => !isEmptyGame(g));
-  rec.games.forEach(g => { delete g._ai; });
+  rec.games.forEach(g => { delete g._ai; delete g._fixF; if (g.cumFix && !Object.keys(g.cumFix).length) delete g.cumFix; });
   rec.updated = Date.now();
   try { await DB.put('days', rec); } catch (e) { return alert('저장하지 못했어요: ' + e.message); }
   dirty = false; toast('저장했어요'); cleanupPhotos();
@@ -839,7 +1002,7 @@ function compareCum(rolls, printed) {
 function applyAI(g, pl, notes) {
   if (g.rolls.length && !confirm('지금 적어 둔 점수판을 사진에서 읽은 기록으로 바꿀까요?')) { g._ai = null; return; }
   const { rolls, problems } = marksToRolls(pl);
-  g.mode = 'frames'; g.rolls = rolls; applySummary(g); dirty = true;
+  g.mode = 'frames'; g.rolls = rolls; delete g.cumFix; delete g._fixF; applySummary(g); dirty = true;
   const bad = compareCum(rolls, pl.cumulative), msgs = [];
   if (problems.length) msgs.push({ t: `${problems[0]}프레임 기호가 볼링 규칙에 맞지 않아 거기서 멈췄어요. 그 프레임부터 직접 이어서 눌러 주세요.` });
   if (bad.length) msgs.push({ t: `${bad[0] + 1}프레임부터 누적 점수가 사진과 달라요 (빨간 칸). ${bad[0] + 1}~${Math.min(bad[0] + 3, 10)}프레임 투구를 사진과 비교해 확인해 주세요.` });
@@ -884,15 +1047,16 @@ async function renderView(id) {
     const quick = g.mode === 'quick', extra = [];
     if (g.ballId && g.ballId !== d.ballId) extra.push('볼: ' + esc(bm[g.ballId] ? ballLabel(bm[g.ballId]) : '(지운 볼)'));
     if (g.memo) extra.push(esc(g.memo));
+    if (hasFix(g)) extra.push('✎ 누적 점수 손으로 고침');
     const partial = !quick && (g.rolls || []).length && g.score == null;
     rows += `<div class="sg"><div class="sg-no">${i + 1}</div>
-      <div class="sg-board">${quick ? '<div class="quick-note">점수만 기록</div>' : boardHTML(g.rolls || [], false, true)}${extra.length ? `<div class="sg-memo">${extra.join(' · ')}</div>` : ''}</div>
+      <div class="sg-board">${quick ? '<div class="quick-note">점수만 기록</div>' : boardHTML(g.rolls || [], false, true, null, g.cumFix)}${extra.length ? `<div class="sg-memo">${extra.join(' · ')}</div>` : ''}</div>
       ${cells(g, partial)}</div>`;
   }
   const photoGames = games.map((g, i) => ({ g, i })).filter(x => x.g.photoId);
   app.innerHTML = `
     <div class="actions noprint">
-      <button type="button" class="btn primary" id="printBtn">🖨 인쇄 · PDF 저장</button>
+      <button type="button" class="btn primary" id="printBtn"><i class="ti ti-printer" aria-hidden="true"></i> 인쇄 · PDF 저장</button>
       <a class="btn" href="#edit/${d.id}">고치기</a>
       <a class="btn" href="#list">목록</a>
     </div>
@@ -930,11 +1094,11 @@ async function renderView(id) {
 /* ---------- balls ---------- */
 async function renderBalls() {
   const balls = (await myBalls()).sort((a, b) => (a.active === false) - (b.active === false) || (a.created || 0) - (b.created || 0));
-  app.innerHTML = `<button type="button" class="btn big primary" id="newBall">+ 볼 등록</button>` +
-    (balls.length ? balls.map(b => `<a class="card ball${b.active === false ? ' off' : ''}" href="#ball/${b.id}">
-      <div><b>${esc(b.name)}</b>${b.active === false ? '<span class="tag">쉬는 중</span>' : ''}</div>
-      <div class="muted">${b.weight ? b.weight + ' lb · ' : ''}${esc(b.hand)}${b.memo ? ' · ' + esc(b.memo) : ''}</div></a>`).join('')
-      : '<div class="empty">등록한 볼이 없어요.<br>볼을 등록하면 일지와 통계에서 볼별로 볼 수 있어요.</div>');
+  app.innerHTML = `<button type="button" class="btn big primary" id="newBall"><i class="ti ti-plus" aria-hidden="true"></i> 볼 등록</button>` +
+    (balls.length ? balls.map((b, n) => `<a class="card ball ball-card${b.active === false ? ' off' : ''}" href="#ball/${b.id}">${ballSVG(n)}
+      <div style="flex:1;min-width:0"><div><b>${esc(b.name)}</b>${b.active === false ? '<span class="tag">쉬는 중</span>' : ''}</div>
+      <div class="muted">${b.weight ? b.weight + ' lb · ' : ''}${esc(b.hand)}${b.memo ? ' · ' + esc(b.memo) : ''}</div></div><i class="ti ti-chevron-right muted" aria-hidden="true"></i></a>`).join('')
+      : `<div class="art-empty">${PINS_SVG}등록한 볼이 없어요.<br>볼을 등록하면 일지와 통계에서 볼별로 볼 수 있어요.</div>`);
   $('#newBall').onclick = () => go('#ball/new');
 }
 async function renderBallForm(id) {
@@ -979,6 +1143,19 @@ function periodFrom(p) {
   if (p === '30d') { d.setDate(d.getDate() - 30); return ymd(d); }
   return null;
 }
+// line chart of practice-day averages, oldest -> newest
+function trendHTML(pts) {
+  if (pts.length < 2) return '';
+  const v = pts.map(x => x.s.avg), lo = Math.floor(Math.min(...v) / 10) * 10 - 5, hi = Math.ceil(Math.max(...v) / 10) * 10 + 5;
+  const W = 300, H = 100, X = i => 8 + i * (W - 16) / (pts.length - 1), Y = a => 8 + (hi - a) / (hi - lo) * (H - 16);
+  const line = v.map((a, i) => `${X(i).toFixed(1)},${Y(a).toFixed(1)}`).join(' ');
+  return `<div class="card trend"><b>평균 추이</b> <span class="muted" style="font-size:13px">최근 ${pts.length}일</span>
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="연습일별 평균 ${f1(v[0])}에서 ${f1(v[v.length - 1])}">
+      <line x1="0" y1="${Y((lo + hi) / 2)}" x2="${W}" y2="${Y((lo + hi) / 2)}" stroke="var(--line)"/>
+      <polyline points="${line}" fill="none" stroke="var(--accent)" stroke-width="2.2" vector-effect="non-scaling-stroke"/>
+      ${v.map((a, i) => `<circle cx="${X(i).toFixed(1)}" cy="${Y(a).toFixed(1)}" r="2.6" fill="var(--accent)"/>`).join('')}</svg>
+    <div class="tl"><span>${pts[0].d.date.slice(5).replace('-', '/')} · ${f1(v[0])}</span><span>${pts[pts.length - 1].d.date.slice(5).replace('-', '/')} · ${f1(v[v.length - 1])}</span></div></div>`;
+}
 async function renderStats() {
   const days = await myDays(), bm = Object.fromEntries((await myBalls()).map(b => [b.id, b]));
   const from = periodFrom(statPeriod);
@@ -993,7 +1170,7 @@ async function renderStats() {
   const periods = [['all', '전체'], ['year', '올해'], ['3m', '최근 3달'], ['30d', '최근 30일']];
   let h = `<h2>${esc(CUR.name)} 누적 기록</h2>
     <div class="seg">${periods.map(([k, l]) => `<button type="button" data-p="${k}" class="${statPeriod === k ? 'on' : ''}">${l}</button>`).join('')}</div>`;
-  if (!G.length) h += '<div class="empty">이 기간에 끝난 게임이 없어요.</div>';
+  if (!G.length) h += `<div class="art-empty">${PINS_SVG}이 기간에 끝난 게임이 없어요.</div>`;
   else {
     h += `<div class="kpis">
       <div class="kpi"><div class="v">${G.length}</div><div class="l">게임</div></div>
@@ -1007,6 +1184,7 @@ async function renderStats() {
     </div>`;
     const recent = ds.map(d => ({ d, s: dayStats(d) })).filter(x => x.s.n).sort((a, b) => b.d.date.localeCompare(a.d.date)).slice(0, 12);
     const top = Math.max(...recent.map(x => x.s.avg));
+    h += trendHTML(recent.slice().reverse());
     h += `<div class="card"><b>최근 연습일 평균</b><div class="bars">${recent.map(x => `<div class="bar-row"><span>${x.d.date.slice(5).replace('-', '/')} (${x.s.n}G)</span><div class="bar" style="width:${Math.max(4, x.s.avg / top * 100)}%"></div><b>${f1(x.s.avg)}</b></div>`).join('')}</div></div>`;
     h += `<div class="card"><b>월별</b><div class="tbl-wrap"><table class="st">${head('월')}<tbody>${group(g => g.date.slice(0, 7)).sort((a, b) => b[0].localeCompare(a[0])).map(([k, arr]) => line(`${k.slice(0, 4)}.${k.slice(5)}`, arr)).join('')}</tbody></table></div></div>`;
     h += `<div class="card"><b>볼별</b><div class="tbl-wrap"><table class="st">${head('볼')}<tbody>${group(g => g.ball).map(([k, arr]) => line(k ? esc(bm[k] ? ballLabel(bm[k]) : '(지운 볼)') : '볼 안 고름', arr)).join('')}</tbody></table></div></div>`;
@@ -1045,6 +1223,7 @@ async function renderSettings() {
       <select id="aiModel">${AI_MODELS.map(([v, l]) => `<option value="${v}"${aiModel === v ? ' selected' : ''}>${l}</option>`).join('')}</select>
       <div class="actions" style="margin-top:10px"><button type="button" class="btn primary small" id="aiSave">AI 설정 저장</button>${aiKey ? '<button type="button" class="btn small danger" id="aiDel">키 지우기</button>' : ''}</div>
     </div>
+    <a class="btn" href="help.html" style="width:100%;margin-bottom:8px"><i class="ti ti-book" aria-hidden="true"></i> 사용 설명서 (처음 설정 순서)</a>
     <p class="hint">볼링 연습일지 v${APP_VER}</p>`;
   $('#aiSave').onclick = async () => {
     const k = $('#aiKey').value.trim();
