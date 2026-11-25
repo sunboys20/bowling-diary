@@ -6,6 +6,8 @@
 ## 시작할 때 / 끝낼 때
 - 시작: `git pull` → `HANDOFF.md` 읽고 `상태: 진행중` 항목이 있으면 이어서 할지 묻는다.
 - 끝: `HANDOFF.md` 맨 위 항목 갱신 → 저장 기록 남기기 → 보관함에 올리기(push). 올리지 않으면 다른 컴퓨터에서 안 보인다.
+- **"볼링 (프로그램) 이어서 하자"** 라고 하면: 묻지 말고 `git pull` → `HANDOFF.md` 맨 위 `진행중` 항목을 3~4줄로 요약 → 그 항목의 "남은 일" 1번부터 바로 이어 간다. 사용자가 정해야 하는 일이면 그 결정부터 묻는다.
+- 새 컴퓨터 처음 한 번: `git clone https://github.com/sunboys20/bowling-diary C:\workspace\bowling-diary` → `powershell -ExecutionPolicy Bypass -File C:\workspace\bowling-diary\tools\setup_claude.ps1` (저장 기록 이메일 + 어느 폴더에서든 "볼링 이어서"가 통하게 `~/.claude/CLAUDE.md` 에 안내 추가)
 - 사용자는 git 초보에 가깝다. 설명은 쉬운 우리말로 한다 (ERP 쪽 소통 규칙과 같음).
 
 ## ⚠️ 공개 보관함

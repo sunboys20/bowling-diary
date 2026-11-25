@@ -3,7 +3,8 @@
 ## 2026-11-26  서버 방식(Supabase) 설계 초안
 - 상태: 진행중 (설계 초안 — 사용자 결정 기다림)
 - 작업 기기: 집 컴
-- 대상 파일: docs/supabase.md (새 파일). 앱 코드는 안 고침
+- 대상 파일: docs/supabase.md (새 파일), tools/setup_claude.ps1·tools/claude-global.md (새 파일). 앱 코드는 안 고침
+- "볼링 프로그램 이어서하자"로 이어 가기: 집 컴은 설정 끝. 다른 컴퓨터는 처음 한 번 CLAUDE.md "시작할 때"의 새 컴퓨터 두 줄 실행
 - 한 일:
   - 지금 저장 구조(IndexedDB: profiles·balls·days·photos·meta) 확인 후 Supabase 로 옮기는 설계 초안 작성
   - 핵심: 오프라인 먼저(IndexedDB 먼저 저장 → 서버 동기화), 표 3개 + 사진 비공개 버킷, RLS 로 내 것만, anon 키만 앱에 (service_role 금지)
