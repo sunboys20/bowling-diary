@@ -24,6 +24,7 @@
 | `help.html`, `help/*.jpg` | 사용 설명서. 사진은 375px 화면을 찍은 것 — 화면이 크게 바뀌면 다시 찍는다 (사진 속 이름·기록은 예시) |
 | `sw.js` | 오프라인 열기 (https 에서만 등록). 캐시 이름 `bowling-diary-v2` — 고치면 숫자를 올린다. 글꼴(Pretendard)·아이콘(Tabler) CDN 도 저장 |
 | `docs/server2.md`, `tools/setup_server2.ps1` | server2 예비 주소(8892) |
+| `docs/supabase.md` | 서버 방식(Supabase) 설계 초안 — 아직 앱에 반영 안 됨 |
 
 - 주소: https://sunboys20.github.io/bowling-diary/ — main 에 push 하면 1분쯤 뒤 반영.
 - 기록은 각 휴대폰 브라우저(IndexedDB)에만 있다. 주소가 바뀌면 기록이 안 보인다(주소별 저장).
