@@ -317,6 +317,10 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 .optrow input{width:22px;height:22px;margin:0;flex:none;accent-color:var(--accent)}
 .optrow .t{display:block;font-size:15px;font-weight:700}.optrow .d{display:block;font-size:12px;color:var(--muted)}
 .printonly{display:none}
+.who-tag{display:inline-block;vertical-align:middle;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--accent-2);color:var(--accent);text-decoration:none;letter-spacing:0}
+.hello{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 4px 12px}
+.hello .muted{font-size:13px}.hello b{font-size:22px;font-weight:900;letter-spacing:-.03em}
+.hello .btn{min-height:44px}
 .demo-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;max-width:760px;margin:0 auto;padding:8px 16px;background:var(--k-match);color:var(--k-match-ink);font-size:13px}
 .demo-bar a{font-weight:800;color:inherit;white-space:nowrap;min-height:32px;display:inline-flex;align-items:center}
 /* narrow screens */
@@ -621,6 +625,8 @@ function renderWho() {
 
 /* ---------- v0.7 shared pieces: kinds, 5x2 scoreboard, game card, places ---------- */
 const KINDS = ['대회', '개인연습', '단체연습', '기타'];
+// 지금 누구의 기록을 보고 있는지 — 제목 옆 작은 이름표
+const whoTag = () => CUR ? `<a class="who-tag" href="#who" aria-label="${esc(CUR.name)} 님의 기록 · 사람 바꾸기">${esc(CUR.name)} 님</a>` : '';
 const ktag = k => k ? `<span class="ktag k-${esc(k)}">${esc(k)}</span>` : '';
 const spareCount = rolls => BW.marks(rolls || []).flat().filter(m => m.t === '/').length;
 // screen scoreboard: frames 1-5 and 6-10 in two rows, running total under each frame (kept quiet)
@@ -711,7 +717,9 @@ async function renderList() {
   const scOf = pre => days.filter(d => d.date.startsWith(pre)).flatMap(d => (d.games || []).map(g => g.score).filter(v => v != null));
   const monthSc = scOf(ym), lastSc = scOf(lm);
   const diff = monthSc.length && lastSc.length ? avg(monthSc) - avg(lastSc) : null;
-  let h = `<div class="home-hero"><div class="ring"><div class="v">${f1(avg(monthSc))}</div><div class="l">${+ym.slice(5)}월 평균</div></div>
+  let h = `<div class="hello"><div><div class="muted">${profiles.length > 1 ? '지금 보는 기록' : '내 기록'}</div><b>${esc(CUR.name)} 님</b></div>
+      ${profiles.length > 1 ? '<a class="btn small" href="#who"><i class="ti ti-switch-horizontal" aria-hidden="true"></i> 사람 바꾸기</a>' : ''}</div>
+    <div class="home-hero"><div class="ring"><div class="v">${f1(avg(monthSc))}</div><div class="l">${+ym.slice(5)}월 평균</div></div>
     <div class="hero-rows"><div><span>최고</span><b>${monthSc.length ? Math.max(...monthSc) : '-'}</b></div>
       <div><span>게임</span><b>${monthSc.length}</b></div>
       <div><span>지난달보다</span><b class="${diff == null ? '' : diff >= 0 ? 'up' : 'down'}">${diff == null ? '-' : (diff >= 0 ? '+' : '') + f1(diff)}</b></div></div></div>
@@ -755,7 +763,7 @@ async function renderPhotos() {
   const days = (await myDays()).sort((a, b) => b.date.localeCompare(a.date));
   const all = days.flatMap(d => (d.games || []).map((g, i) => ({ g, d, i })).filter(x => x.g.photoId));
   const shown = all.filter(x => galKind === '전체' || x.d.kind === galKind);
-  let h = `<h2 style="margin-bottom:2px">사진 모아보기</h2><p class="hint" style="margin-top:0">사진 ${shown.length}장 · 새 사진부터. 누르면 그날 일지로 가요.</p>
+  let h = `<h2 style="margin-bottom:2px">사진 모아보기 ${whoTag()}</h2><p class="hint" style="margin-top:0">사진 ${shown.length}장 · 새 사진부터. 누르면 그날 일지로 가요.</p>
     <div class="seg">${['전체', ...KINDS].map(k => `<button type="button" data-gk="${k}" class="${galKind === k ? 'on' : ''}">${k}</button>`).join('')}</div>`;
   if (!shown.length) h += `<div class="art-empty">${PINS_SVG}${all.length ? '이 종류의 사진이 없어요.' : '아직 넣은 사진이 없어요.<br>일지의 게임마다 점수판 사진을 넣을 수 있어요.'}</div>`;
   let month = '';
@@ -928,7 +936,7 @@ async function renderEdit(id) {
     padOpen = ED.games.findIndex(g => g.mode === 'frames' && !BW.done(g.rolls));
   }
   const places = placeNames(days);
-  app.innerHTML = `<h2>${ED._new ? '새 연습일지' : '일지 고치기'}</h2>
+  app.innerHTML = `<h2>${ED._new ? '새 연습일지' : '일지 고치기'} ${whoTag()}</h2>
     <div class="card"><label class="f" style="margin-top:0">무슨 볼링이었나요?</label>
       <div class="kinds" id="kinds">${KINDS.map(k => `<button type="button" data-kind="${k}" class="k-${k}${ED.kind === k ? ' on' : ''}" aria-pressed="${ED.kind === k}">${k}</button>`).join('')}</div>
       <div id="matchBox"${ED.kind === '대회' ? '' : ' hidden'}><label class="f" for="e-match">대회 이름</label><input id="e-match" maxlength="40" placeholder="예: 시장배 볼링대회"></div>
@@ -1287,7 +1295,7 @@ async function renderView(id) {
   }).join('');
   app.innerHTML = `<div class="screenonly">
       <div class="gear-top" style="margin:4px 2px 12px">
-        <div class="gi"><div style="font-size:19px;font-weight:900">${fmtDate(d.date)} ${ktag(d.kind)}</div>
+        <div class="gi"><div style="margin-bottom:4px">${whoTag()}</div><div style="font-size:19px;font-weight:900">${fmtDate(d.date)} ${ktag(d.kind)}</div>
           <div class="muted">${[d.match ? esc(d.match) : '', esc(d.place) || '볼링장 미입력', d.lane ? '레인 ' + esc(d.lane) : '', esc(ballTxt)].filter(Boolean).join(' · ')}</div></div>
         <a class="btn small" href="#edit/${d.id}">고치기</a></div>
       <div class="dkpis"><div><div class="l">평균</div><div class="v">${sc.length ? f1(avg(sc)) : '-'}</div></div>
@@ -1336,7 +1344,7 @@ async function renderBalls() {
   const days = await myDays();
   const G = days.flatMap(d => (d.games || []).filter(g => g.score != null).map(g => ({ ...g, ball: g.ballId || d.ballId || '', place: d.place || '', lane: d.lane || '', date: d.date })));
   const st = arr => { const s = arr.map(g => g.score); return { avg: s.length ? f1(avg(s)) : '-', max: s.length ? Math.max(...s) : '-', n: s.length }; };
-  let h = `<div style="display:flex;align-items:center;justify-content:space-between;margin:4px 2px 10px"><h2 style="margin:0">볼·장소</h2>
+  let h = `<div style="display:flex;align-items:center;justify-content:space-between;margin:4px 2px 10px"><h2 style="margin:0">볼·장소 ${whoTag()}</h2>
       <button type="button" class="btn primary small" id="gearAdd" style="min-height:44px"><i class="ti ti-plus" aria-hidden="true"></i> ${gearTab === 'ball' ? '볼 추가' : '장소 추가'}</button></div>
     <div class="segtab"><button type="button" data-gt="ball" class="${gearTab === 'ball' ? 'on' : ''}">내 볼</button><button type="button" data-gt="place" class="${gearTab === 'place' ? 'on' : ''}">볼링장</button></div>`;
   if (gearTab === 'ball') {
@@ -1368,7 +1376,7 @@ async function renderPlaceForm(key) {
   const isNew = key === 'new', oldName = isNew ? '' : decodeURIComponent(key || '');
   const saved = placesOf(CUR), info = saved.find(x => x.name === oldName) || { name: oldName, memo: '' };
   const days = await myDays(), used = days.filter(d => d.place === oldName).length;
-  app.innerHTML = `<h2>${isNew ? '볼링장 추가' : '볼링장 고치기'}</h2>
+  app.innerHTML = `<h2>${isNew ? '볼링장 추가' : '볼링장 고치기'} ${whoTag()}</h2>
     <div class="card">
       <label class="f" for="p-name">볼링장 이름</label><input id="p-name" maxlength="40" placeholder="예: 스타볼링장">
       <label class="f" for="p-memo">메모</label><input id="p-memo" maxlength="60" placeholder="예: 레인 24개, 오일 짧음, 수요일 모임">
@@ -1400,7 +1408,7 @@ async function renderBallForm(id) {
   if (id === 'new') b = { id: newId(), pid: CUR.id, name: '', weight: 14, hand: '원핸드', memo: '', active: true, created: Date.now(), _new: true };
   else { b = await DB.get('balls', id); if (!b || b.pid !== CUR.id) return go('#balls'); }
   const weights = []; for (let w = 6; w <= 16; w++) weights.push(w);
-  app.innerHTML = `<h2>${b._new ? '볼 등록' : '볼 고치기'}</h2>
+  app.innerHTML = `<h2>${b._new ? '볼 등록' : '볼 고치기'} ${whoTag()}</h2>
     <div class="card">
       <label class="f" for="b-name">볼 이름</label><input id="b-name" placeholder="예: Phaze II">
       <label class="f" for="b-weight">무게</label>
@@ -1462,7 +1470,7 @@ async function renderStats() {
   const head = first => `<thead><tr><th>${first}</th><th>게임</th><th>평균</th><th>최고</th><th>스트라이크</th><th>스플릿</th><th>오픈</th></tr></thead>`;
   const sc = G.map(g => g.score);
   const periods = [['all', '전체'], ['year', '올해'], ['3m', '최근 3달'], ['30d', '최근 30일']];
-  let h = `<h2>${esc(CUR.name)} 누적 기록</h2>
+  let h = `<h2>누적 기록 ${whoTag()}</h2>
     <div class="seg">${periods.map(([k, l]) => `<button type="button" data-p="${k}" class="${statPeriod === k ? 'on' : ''}">${l}</button>`).join('')}</div>`;
   if (!G.length) h += `<div class="art-empty">${PINS_SVG}이 기간에 끝난 게임이 없어요.</div>`;
   else {
@@ -1821,7 +1829,7 @@ async function renderSettings() {
   const canShare = !!(navigator.canShare && navigator.canShare({ files: [new File(['x'], 't.json', { type: 'application/json' })] }));
   app.innerHTML = `<h2>설정</h2>
     <div class="card"><b>메인에 보일 점수판</b>
-      <p class="hint" style="margin:4px 0 10px">여러 개 고를 수 있어요. 2개 이상이면 메인에서 위 단추를 눌러 바꿔 봐요.</p>
+      <p class="hint" style="margin:4px 0 10px">여러 개 고를 수 있어요. 2개 이상이면 메인에서 위 단추를 눌러 바꿔 봐요. 이 휴대폰의 모든 사람에게 같이 적용돼요.</p>
       <div id="hbOpts">${HB_OPTS.map(([k, t, d]) => `<label class="optrow${hb.keys.includes(k) ? ' on' : ''}"><input type="checkbox" value="${k}"${hb.keys.includes(k) ? ' checked' : ''}><span style="flex:1;min-width:0"><span class="t">${t}</span><span class="d">${d}</span></span></label>`).join('')}</div>
       <label class="f">최고·최저 등을 고를 기간</label>
       <div class="seg" id="hbPeriod" style="margin-bottom:0">${HB_PERIODS.map(([k, l]) => `<button type="button" data-hp="${k}" class="${hb.period === k ? 'on' : ''}">${l}</button>`).join('')}</div>
