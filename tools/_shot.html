@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>shot</title>
+<style>html,body{margin:0;background:#f2f7fd}iframe{display:block;width:375px;height:812px;border:0}</style></head>
+<body><iframe id="f"></iframe>
+<script>
+// 설명서 사진 찍기용 (보관함에 안 올림): ?s=이름 으로 체험 모드 화면을 열고 눌러 둔 상태를 만든다
+const s = location.hash.slice(1);
+const f = document.getElementById('f');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const START = { who: 'who', names: 'settings', server: 'settings', gear: 'balls', edit: 'edit/new', pad: 'edit/new', fix: 'edit/demo-d1', list: 'list', view: 'view/demo-d9', photos: 'photos', backup: 'settings', main: 'settings' };
+f.src = (s === 'server' ? '/' : '/?demo') + '#' + (START[s] || 'list');
+f.onload = async () => {
+  const w = f.contentWindow, d = w.document, q = x => d.querySelector(x);
+  await sleep(2500);
+  const top = el => { if (el) w.scrollTo(0, el.getBoundingClientRect().top + w.scrollY - 70); };
+  if (s === 'names') top(q('#profs').closest('.card'));
+  if (s === 'main') top(q('#hbOpts').closest('.card'));
+  if (s === 'backup') top(q('#expDl').closest('.card'));
+  if (s === 'pad') {
+    for (const k of ['X', '9', '/', '7', '-', 'X', '8']) { q(`.game[data-i="0"] [data-pin="${k}"]`).click(); await sleep(80); }
+    top(q('.game[data-i="0"]'));
+  }
+  if (s === 'fix') {
+    q('.game[data-i="0"] [data-act="cum"][data-f="3"]').click(); await sleep(300);
+    top(q('.game[data-i="0"]'));
+  }
+  // 설명서 사진에는 체험 표시를 빼고 보통 화면처럼
+  const bar = q('.demo-bar'); if (bar) { const y = bar.offsetHeight; bar.remove(); }
+  if (s !== 'server' && q('#topSub')) { q('#topSub').textContent = '이 휴대폰에만 저장'; q('#topAcct').innerHTML = '<i class="ti ti-device-mobile" aria-hidden="true"></i>'; }
+  if (s === 'list' || s === 'gear' || s === 'photos' || s === 'edit' || s === 'who' || s === 'view') w.scrollTo(0, 0);
+};
+</script></body></html>

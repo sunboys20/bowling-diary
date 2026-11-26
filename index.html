@@ -1537,7 +1537,7 @@ async function sbStatus() {
 }
 async function renderServerCard() {
   const box = $('#srvCard'); if (!box) return;
-  const head = '<b>서버 저장 <span class="tag">시험 중</span></b>';
+  const head = '<b>서버 저장 (로그인)</b>';
   box.innerHTML = head + '<p class="hint">서버에 연결하는 중…</p>';
   let st;
   try { st = await sbStatus(); }
@@ -1547,7 +1547,7 @@ async function renderServerCard() {
   const busy = (btn, on) => { btn.disabled = on; btn.dataset.t = btn.dataset.t || btn.textContent; btn.textContent = on ? '잠시만요…' : btn.dataset.t; };
 
   if (!st.user && !sbPendingEmail) {
-    box.innerHTML = head + `<p class="hint">이메일로 받은 <b>6자리 번호</b>로 로그인해요. 비밀번호는 없어요.</p>
+    box.innerHTML = head + `<p class="hint">이메일로 받은 <b>숫자 번호</b>로 로그인해요. 비밀번호는 없어요.</p>
       <label class="f" for="sbEmail">이메일</label>
       <input type="email" id="sbEmail" autocomplete="email" inputmode="email" placeholder="you@example.com">
       <div class="actions" style="margin-top:10px"><button type="button" class="btn primary small" id="sbSend">번호 받기</button></div>`;
@@ -1566,7 +1566,7 @@ async function renderServerCard() {
   if (!st.user) {
     box.innerHTML = head + `<p class="hint"><b>${esc(sbPendingEmail)}</b> 로 보낸 메일의 번호를 넣어 주세요. 메일이 안 보이면 스팸함도 봐 주세요.</p>
       <label class="f" for="sbCode">받은 번호</label>
-      <input id="sbCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="6자리 숫자" style="font-size:22px;letter-spacing:6px;text-align:center">
+      <input id="sbCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="메일로 받은 숫자" style="font-size:22px;letter-spacing:6px;text-align:center">
       <div class="actions" style="margin-top:10px"><button type="button" class="btn primary small" id="sbVerify">로그인</button><button type="button" class="btn small" id="sbBack">다른 이메일 / 다시 받기</button></div>`;
     $('#sbVerify').onclick = async () => {
       const token = $('#sbCode').value.replace(/\D/g, '');
@@ -1830,10 +1830,10 @@ async function renderSettings() {
   const aiKey = !!(await getMeta('aiKey')), aiModel = (await getMeta('aiModel')) || 'claude-opus-5-5';
   let est = '';
   try { if (navigator.storage && navigator.storage.estimate) { const e = await navigator.storage.estimate(); est = `사용 중 ${(e.usage / 1048576).toFixed(1)} MB`; } } catch (e) { /* ignore */ }
-  const beta = !!(await getMeta('serverBeta')); betaOn = beta;
   const hb = await homeConf();
   const canShare = !!(navigator.canShare && navigator.canShare({ files: [new File(['x'], 't.json', { type: 'application/json' })] }));
   app.innerHTML = `<h2>설정</h2>
+    ${DEMO ? '' : '<div class="card" id="srvCard"></div>'}
     <div class="card"><b>메인에 보일 점수판</b>
       <p class="hint" style="margin:4px 0 10px">여러 개 고를 수 있어요. 2개 이상이면 메인에서 위 단추를 눌러 바꿔 봐요. 이 휴대폰의 모든 사람에게 같이 적용돼요.</p>
       <div id="hbOpts">${HB_OPTS.map(([k, t, d]) => `<label class="optrow${hb.keys.includes(k) ? ' on' : ''}"><input type="checkbox" value="${k}"${hb.keys.includes(k) ? ' checked' : ''}><span style="flex:1;min-width:0"><span class="t">${t}</span><span class="d">${d}</span></span></label>`).join('')}</div>
@@ -1845,7 +1845,7 @@ async function renderSettings() {
       <div class="actions"><button type="button" class="btn primary small" id="saveProfs">이름 저장</button><button type="button" class="btn small" id="addProf">+ 사용자 추가</button></div>
     </div>
     <div class="card"><b>백업</b>
-      <p class="hint">기록은 서버 없이 <b>이 휴대폰 안에만</b> 저장돼요. 휴대폰을 바꾸거나 인터넷 기록을 지우면 사라질 수 있으니, 가끔 백업 파일을 만들어 카톡 '나에게 보내기'나 구글 드라이브에 보관하세요. 나중에 서버로 옮길 때도 이 파일을 써요.</p>
+      <p class="hint">${SYNC.on ? '지금은 <b>서버에도</b> 저장 중이라 휴대폰을 바꿔도 기록이 남아요. 백업 파일은 한 번 더 안전하게 두고 싶을 때 만들어요.' : '지금은 기록이 <b>이 휴대폰 안에만</b> 있어요. 위 [서버 저장]으로 로그인하거나, 가끔 백업 파일을 만들어 카톡 ‘나에게 보내기’나 구글 드라이브에 보관하세요.'}</p>
       <div class="actions">
         <button type="button" class="btn primary small" id="expDl">백업 파일 저장</button>
         ${canShare ? '<button type="button" class="btn small" id="expShare">백업 파일 보내기</button>' : ''}
@@ -1865,10 +1865,9 @@ async function renderSettings() {
     ${DEMO ? `<div class="card"><b>체험 모드</b><p class="hint">예시 기록이 든 체험용 공간이에요. 여기서 바꾼 것은 내 진짜 기록·서버와 섞이지 않아요.</p>
       <div class="actions"><button type="button" class="btn small" id="demoReset">처음 상태로 되돌리기</button><a class="btn primary small" href="${realURL()}">체험 끝내기</a></div></div>`
       : `<a class="btn" href="${demoURL()}" style="width:100%;margin-bottom:8px"><i class="ti ti-player-play" aria-hidden="true"></i> 예시 기록으로 체험해 보기</a>`}
-    ${beta && !DEMO ? '<div class="card" id="srvCard"></div>' : ''}
     <a class="btn" href="help.html" style="width:100%;margin-bottom:8px"><i class="ti ti-book" aria-hidden="true"></i> 사용 설명서 (처음 설정 순서)</a>
-    <p class="hint" id="verTap">볼링 연습일지 v${APP_VER}</p>`;
-  if (beta && !DEMO) renderServerCard();
+    <p class="hint">볼링 연습일지 v${APP_VER}</p>`;
+  if (!DEMO) renderServerCard();
   if ($('#demoReset')) $('#demoReset').onclick = resetDemo;
   const saveHB = async () => {
     const keys = [...app.querySelectorAll('#hbOpts input:checked')].map(x => x.value);
@@ -1879,12 +1878,6 @@ async function renderSettings() {
   };
   app.querySelectorAll('#hbOpts input').forEach(x => x.onchange = saveHB);
   app.querySelectorAll('#hbPeriod [data-hp]').forEach(b => b.onclick = () => { app.querySelectorAll('#hbPeriod [data-hp]').forEach(x => x.classList.toggle('on', x === b)); saveHB(); });
-  let taps = 0, tapT = 0; // 버전 글자를 5번 누르면 '서버 저장(시험 중)' 칸이 보이거나 숨는다
-  $('#verTap').onclick = async () => {
-    const now = Date.now(); taps = now - tapT < 1500 ? taps + 1 : 1; tapT = now;
-    if (taps < 5) return;
-    await setMeta('serverBeta', !beta); toast(beta ? '서버 저장 칸을 숨겼어요' : '서버 저장(시험 중) 칸을 켰어요'); renderSettings();
-  };
   $('#aiSave').onclick = async () => {
     const k = $('#aiKey').value.trim();
     if (k) await setMeta('aiKey', k);
@@ -2051,7 +2044,7 @@ const demoURL = () => location.pathname + '?demo#list';
 const realURL = () => location.pathname + '#list';
 
 // 머리글: 지금 볼러 + 어디에 저장되는지(로그인한 이메일). 화면이 바뀔 때·맞추기 상태가 바뀔 때 다시 그린다
-let betaOn = false;
+const betaOn = true; // 서버 저장 칸은 모두에게 보인다 (2026-11-26 숨김 풂)
 function sbEmail() { try { const a = JSON.parse(localStorage.getItem('bowling-diary-auth') || 'null'); return (a && a.user && a.user.email) || ''; } catch (e) { return ''; } }
 function topBar() {
   const name = $('#topName'), sub = $('#topSub'), btn = $('#topAcct'); if (!name) return;
@@ -2082,7 +2075,6 @@ window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); 
     bar.innerHTML = '<span><b>체험 모드</b> · 예시 기록이에요. 마음껏 눌러 보세요.</span><a href="' + realURL() + '">체험 끝내기</a>';
     document.querySelector('.top').after(bar);
   }
-  betaOn = !!(await getMeta('serverBeta'));
   SYNC.on = !DEMO && !!(await getMeta('syncOn')); SYNC.lastOk = (await getMeta('syncLastOk')) || 0;
   if (SYNC.on) { await loadOutbox(); SYNC.pending = Object.keys(outbox).length; }
   await loadProfiles();

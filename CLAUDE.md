@@ -23,7 +23,7 @@
 |---|---|
 | `index.html` | 앱 전체 (화면·점수 계산 `BW`·IndexedDB 저장·인쇄·AI 사진 읽기). 버전 `APP_VER` |
 | `manifest.webmanifest`, `icons/` | 홈 화면 이름·아이콘 |
-| `help.html`, `help/*.jpg` | 사용 설명서. 사진은 375px 화면을 찍은 것 — 화면이 크게 바뀌면 다시 찍는다 (사진 속 이름·기록은 예시) |
+| `help.html`, `help/*.png` | 사용 설명서. 사진은 체험 모드 화면을 375px 로 찍은 것 — 화면이 바뀌면 다시 찍는다: 로컬 서버를 켜고 `tools/_shot.html#이름`(who·names·server·gear·edit·pad·fix·list·main·view·photos·backup)을 크롬 `--headless=new --window-size=375,812 --virtual-time-budget=12000 --screenshot=...` 로 |
 | `sw.js` | 오프라인 열기 (https 에서만 등록). 캐시 이름 `bowling-diary-v2` — 고치면 숫자를 올린다. 글꼴(Pretendard)·아이콘(Tabler) CDN 도 저장 |
 | `docs/server2.md`, `tools/setup_server2.ps1` | server2 예비 주소(8892) |
 | `docs/supabase.md` | 서버 방식(Supabase) 설계 초안 — 아직 앱에 반영 안 됨 |
