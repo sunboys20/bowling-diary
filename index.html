@@ -15,64 +15,67 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
 :root{
-  --bg:#f3f5f9;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#e4e8f0;
-  --accent:#2563eb;--accent-2:#eff6ff;--danger:#dc2626;--warn:#b45309;
-  --x:#dc2626;--sp:#2563eb;--split:#7c3aed;
-  --sb-h:#0b1b33;--sb-line:#cbd5e1;--sb-bg:#fff;--sb-ink:#0f172a;
-  --top:#0b1b33;--top-2:#14284a;--fix:#fef3c7;--fix-ink:#92400e;
-  --chip-x:#fee2e2;--chip-x-ink:#991b1b;--chip-s:#ede9fe;--chip-s-ink:#5b21b6;
-  --lane:#d6b98c;--lane-2:#b08d5a;--lane-bg:#1e3a5f;
+  --bg:#f2f7fd;--card:#fff;--ink:#10233f;--muted:#48607f;--line:#d3e2f4;
+  --accent:#2f7de1;--accent-2:#dcebfc;--danger:#dc2626;--warn:#b45309;--good:#15803d;
+  --x:#1d4ed8;--x-bg:#dbeafe;--sp:#155e75;--sp-bg:#cffafe;--split:#7c3aed;--split-bg:#ede9fe;
+  --sb-h:#e3eefb;--sb-h-ink:#35577f;--sb-line:#c4dbf6;--sb-line2:#9dbde3;--sb-bg:#fff;--sb-alt:#f3f8fe;--sb-ink:#10233f;
+  --top:#f2f7fd;--top-ink:#10233f;--fix:#fef3c7;--fix-ink:#92400e;
+  --chip-x:#dbeafe;--chip-x-ink:#1e40af;--chip-s:#ede9fe;--chip-s-ink:#5b21b6;--chip-o:#eef2f7;--chip-o-ink:#475569;
+  --k-match:#fde68a;--k-match-ink:#78350f;--k-solo:#dbeafe;--k-solo-ink:#1e40af;--k-team:#cffafe;--k-team-ink:#155e75;--k-etc:#eef2f7;--k-etc-ink:#334155;
+  --hero:#dcebfc;--hero-line:#c4dbf6;--on-accent:#fff;--shadow:0 6px 20px rgba(29,95,191,.12);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0b1220;--card:#131c2e;--ink:#e6ebf2;--muted:#94a3b8;--line:#24304a;
-    --accent:#60a5fa;--accent-2:#16274a;--danger:#f87171;--warn:#fbbf24;
-    --x:#f87171;--sp:#60a5fa;--split:#a78bfa;
-    --sb-h:#1b3360;--sb-line:#2c3a55;--sb-bg:#0f1727;--sb-ink:#e6ebf2;
-    --top:#07101f;--top-2:#12203a;--fix:#3a2e0b;--fix-ink:#fcd34d;
-    --chip-x:#3b1414;--chip-x-ink:#fca5a5;--chip-s:#2a1f4d;--chip-s-ink:#c4b5fd;
-    --lane:#8a7350;--lane-2:#6b5636;--lane-bg:#10223b;
+    --bg:#0b1424;--card:#121e33;--ink:#e6eef9;--muted:#9fb3cc;--line:#24344f;
+    --accent:#60a5fa;--accent-2:#17304f;--danger:#f87171;--warn:#fbbf24;--good:#4ade80;
+    --x:#93c5fd;--x-bg:#1c3460;--sp:#67e8f9;--sp-bg:#123a44;--split:#c4b5fd;--split-bg:#2a1f4d;
+    --sb-h:#1a2c47;--sb-h-ink:#cfe0f5;--sb-line:#2c4163;--sb-line2:#3d5a85;--sb-bg:#121e33;--sb-alt:#162540;--sb-ink:#e6eef9;
+    --top:#0b1424;--top-ink:#e6eef9;--fix:#3a2e0b;--fix-ink:#fcd34d;
+    --chip-x:#1c3460;--chip-x-ink:#bfdbfe;--chip-s:#2a1f4d;--chip-s-ink:#c4b5fd;--chip-o:#1e293b;--chip-o-ink:#cbd5e1;
+    --k-match:#4a3a0c;--k-match-ink:#fde68a;--k-solo:#1c3460;--k-solo-ink:#bfdbfe;--k-team:#123a44;--k-team-ink:#a5f3fc;--k-etc:#1e293b;--k-etc-ink:#cbd5e1;
+    --hero:#15294a;--hero-line:#24344f;--on-accent:#0b1424;--shadow:0 6px 20px rgba(0,0,0,.35);
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0b1220;--card:#131c2e;--ink:#e6ebf2;--muted:#94a3b8;--line:#24304a;
-  --accent:#60a5fa;--accent-2:#16274a;--danger:#f87171;--warn:#fbbf24;
-  --x:#f87171;--sp:#60a5fa;--split:#a78bfa;
-  --sb-h:#1b3360;--sb-line:#2c3a55;--sb-bg:#0f1727;--sb-ink:#e6ebf2;
-  --top:#07101f;--top-2:#12203a;--fix:#3a2e0b;--fix-ink:#fcd34d;
-  --chip-x:#3b1414;--chip-x-ink:#fca5a5;--chip-s:#2a1f4d;--chip-s-ink:#c4b5fd;
-  --lane:#8a7350;--lane-2:#6b5636;--lane-bg:#10223b;
+  --bg:#0b1424;--card:#121e33;--ink:#e6eef9;--muted:#9fb3cc;--line:#24344f;
+  --accent:#60a5fa;--accent-2:#17304f;--danger:#f87171;--warn:#fbbf24;--good:#4ade80;
+  --x:#93c5fd;--x-bg:#1c3460;--sp:#67e8f9;--sp-bg:#123a44;--split:#c4b5fd;--split-bg:#2a1f4d;
+  --sb-h:#1a2c47;--sb-h-ink:#cfe0f5;--sb-line:#2c4163;--sb-line2:#3d5a85;--sb-bg:#121e33;--sb-alt:#162540;--sb-ink:#e6eef9;
+  --top:#0b1424;--top-ink:#e6eef9;--fix:#3a2e0b;--fix-ink:#fcd34d;
+  --chip-x:#1c3460;--chip-x-ink:#bfdbfe;--chip-s:#2a1f4d;--chip-s-ink:#c4b5fd;--chip-o:#1e293b;--chip-o-ink:#cbd5e1;
+  --k-match:#4a3a0c;--k-match-ink:#fde68a;--k-solo:#1c3460;--k-solo-ink:#bfdbfe;--k-team:#123a44;--k-team-ink:#a5f3fc;--k-etc:#1e293b;--k-etc-ink:#cbd5e1;
+  --hero:#15294a;--hero-line:#24344f;--on-accent:#0b1424;--shadow:0 6px 20px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Pretendard Variable",Pretendard,system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;letter-spacing:-.01em}
 a{color:inherit}
 .ti{line-height:1;vertical-align:-.12em}
-.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top));background:var(--top);color:#fff;overflow:hidden}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top));background:var(--top);color:var(--top-ink);overflow:hidden}
 .top .title{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;flex:1;white-space:nowrap;position:relative;z-index:1}
 .top .title svg{width:24px;height:24px;flex:none}
-.top .pins{position:absolute;right:120px;top:2px;height:46px;opacity:.16;pointer-events:none}
-.who{position:relative;z-index:1;display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
-.help-btn{padding:6px 9px;text-decoration:none;font-size:17px}
-main{max-width:760px;margin:0 auto;padding:14px 16px 104px}
+.top .title .sub{display:block;font-size:12px;font-weight:600;color:var(--muted);line-height:1.2}
+.who{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:44px;border:1px solid var(--line);background:var(--card);color:var(--accent);border-radius:999px;padding:6px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.help-btn{width:44px;padding:0;text-decoration:none;font-size:20px}
+main{max-width:760px;margin:0 auto;padding:8px 16px 120px}
 h2{font-size:21px;font-weight:800;margin:6px 0 12px}
 h3.month{font-size:13px;font-weight:700;color:var(--muted);margin:18px 2px 8px;letter-spacing:.02em}
-.tabs{position:fixed;z-index:20;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
-.tabs a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 9px;color:var(--muted);text-decoration:none;font-weight:700;font-size:12px}
+.tabs{position:fixed;z-index:20;bottom:calc(12px + env(safe-area-inset-bottom));left:12px;right:12px;max-width:560px;margin:0 auto;display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:6px;box-shadow:var(--shadow)}
+.tabs a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;border-radius:16px;color:var(--muted);text-decoration:none;font-weight:700;font-size:12px}
 .tabs a .ti{font-size:23px}
-.tabs a.on{color:var(--accent)}
+.tabs a.on{background:var(--accent);color:var(--on-accent)}
 body.editing .tabs{display:none}
-.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;text-decoration:none}
+.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;text-decoration:none}
 .muted{color:var(--muted)}
 .hint{font-size:13px;color:var(--muted);margin:6px 2px}
 .empty{text-align:center;color:var(--muted);padding:40px 10px}
 label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px;font-weight:600}
-input,select,textarea{font:inherit;width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+input,select,textarea{font:inherit;width:100%;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
 textarea{resize:vertical}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
 .row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:11px 16px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:11px 16px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .btn.danger{color:var(--danger)}
 .btn.big{width:100%;padding:15px;font-size:17px;margin-bottom:6px}
 .btn.small{padding:7px 12px;font-size:14px}
@@ -118,7 +121,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 /* scoreboard */
 .sb{width:100%;border-collapse:collapse;table-layout:fixed;font-variant-numeric:tabular-nums;color:var(--sb-ink)}
 .sb col{width:8.1%}.sb col.c10{width:12.6%}.sb col.ct{width:14.5%}
-.sb th{background:var(--sb-h);color:#fff;font-size:11px;font-weight:700;padding:1px 0;border:1px solid var(--sb-line);text-align:center}
+.sb th{background:var(--sb-h);color:var(--sb-h-ink);font-size:11px;font-weight:700;padding:1px 0;border:1px solid var(--sb-line);text-align:center}
 .sb.nt col{width:8.7%}.sb.nt col.c10{width:21.7%}
 .sb td{border:1px solid var(--sb-line);padding:0;background:var(--sb-bg);vertical-align:top}
 .sb .balls{display:flex;justify-content:flex-end;height:22px}
@@ -140,7 +143,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .ai-box .note{color:var(--muted);margin-top:4px}
 /* sheet (paper) */
 .sheet-wrap{margin-top:6px}
-.sheet{--sb-h:#0b1b33;--sb-line:#6b7280;--sb-bg:#fff;--sb-ink:#111;--x:#dc2626;--sp:#2563eb;--split:#7c3aed;--accent-2:#fff;--fix:#fef3c7;--fix-ink:#92400e;
+.sheet{--sb-h:#0b1b33;--sb-h-ink:#fff;--sb-line:#6b7280;--sb-bg:#fff;--sb-ink:#111;--x:#dc2626;--sp:#2563eb;--split:#7c3aed;--accent-2:#fff;--fix:#fef3c7;--fix-ink:#92400e;
   background:#fff;color:#111;max-width:800px;margin:0 auto 16px;padding:22px 20px;border-radius:6px;box-shadow:0 1px 6px rgba(0,0,0,.18);font-size:14px}
 .sh-title{text-align:center;font-size:22px;font-weight:900;letter-spacing:2px;margin-bottom:10px}
 .sh-info{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:14px}
@@ -182,7 +185,7 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 .bars .bar{height:12px;background:var(--accent);border-radius:6px}
 .seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .seg button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
-.seg button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .seg label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-weight:700;cursor:pointer}
 .seg label input{width:auto}
 .tag{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:999px;padding:1px 8px;color:var(--muted);margin-left:6px}
@@ -210,17 +213,6 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 .fixbox .fx-msg{font-size:13px;color:var(--danger);margin-top:6px}
 .tag.fx{background:var(--fix);color:var(--fix-ink);border-color:transparent}
 /* bowling art & list */
-.hero{position:relative;overflow:hidden;background:var(--top);color:#fff;border-radius:16px;padding:14px;margin-bottom:12px}
-.hero .pins{position:absolute;right:-6px;top:4px;height:56px;opacity:.13;pointer-events:none}
-.hero .h-name{font-size:13px;color:#94a3b8;font-weight:600}
-.hero .h-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;position:relative}
-.hero .h-kpi{background:rgba(255,255,255,.08);border-radius:10px;padding:8px 10px}
-.hero .h-kpi .l{font-size:12px;color:#94a3b8}
-.hero .h-kpi .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
-.lane-cta{position:relative;display:block;width:100%;height:96px;border:0;padding:0;border-radius:16px;overflow:hidden;background:var(--lane-bg);color:#fff;cursor:pointer;font:inherit;text-align:left;margin-bottom:6px}
-.lane-cta svg{position:absolute;inset:0;width:100%;height:100%}
-.lane-cta .l-t{position:absolute;left:14px;top:12px;font-weight:800;font-size:16px}
-.lane-cta .l-b{position:absolute;left:14px;bottom:12px;display:inline-flex;align-items:center;gap:5px;background:var(--accent);color:#fff;border-radius:10px;padding:6px 12px;font-weight:700;font-size:14px}
 .day{display:flex;gap:12px;align-items:center}
 .day .dd{width:44px;text-align:center;flex:none}
 .day .dd .m{font-size:11px;color:var(--muted);font-weight:600}
@@ -240,6 +232,91 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 .ball-card svg{width:42px;height:42px;flex:none}
 .trend svg{width:100%;height:110px;display:block}
 .trend .tl{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+/* v0.7: light blue — scoreboard 5 frames x 2 rows */
+.sb2-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1.5px solid var(--sb-line2);border-radius:10px;overflow:hidden;margin-bottom:8px;color:var(--sb-ink);font-variant-numeric:tabular-nums}
+.sb2 .fr{background:var(--sb-bg);border-right:1.5px solid var(--sb-line2);min-width:0}
+.sb2 .fr:last-child{border-right:0}
+.sb2 .fr.alt{background:var(--sb-alt)}
+.sb2 .fn{background:var(--sb-h);color:var(--sb-h-ink);font-size:12px;font-weight:700;text-align:center;padding:2px 0;border-bottom:1px solid var(--sb-line)}
+.sb2 .balls{display:flex;justify-content:flex-end}
+.sb2 .b{position:relative;width:24px;height:24px;line-height:24px;text-align:center;font-weight:800;font-size:15px;border-left:1px solid var(--sb-line);border-bottom:1px solid var(--sb-line)}
+.sb2 .f10 .b{width:22px}
+.sb2 .b.x{color:var(--x);background:var(--x-bg)}.sb2 .b.sp{color:var(--sp);background:var(--sp-bg)}
+.sb2 .b.split{color:var(--split)}
+.sb2 .b.split::after{content:"";position:absolute;left:50%;top:50%;width:19px;height:19px;transform:translate(-50%,-50%);border:2px solid var(--split);border-radius:50%}
+.sb2 .b.cur{background:#fef9c3;box-shadow:inset 0 0 0 2px var(--accent)}
+.sb2 .cum{text-align:center;font-weight:500;font-size:18px;color:var(--muted);padding:4px 0 6px;min-height:35px}
+.sb2 .cum.fx{background:var(--fix);color:var(--fix-ink)}.sb2 .cum.fx::before{content:"✎";font-size:.7em;margin-right:1px}
+.sb2 .fr.bad,.sb2 .fr.bad .b{background:#fde2e1;color:#9b1c1c}
+.board.editable .sb2 .cum{cursor:pointer}.board.editable .sb2 .cum.sel{box-shadow:inset 0 0 0 2px var(--accent)}
+.gcard-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px 10px}
+.gcard-head .gl{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
+.gno{font-size:13px;font-weight:700;color:var(--on-accent);background:var(--accent);border-radius:8px;padding:3px 8px;white-space:nowrap}
+.gbig{font-size:28px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--chip-o);color:var(--chip-o-ink)}
+.pill.x{background:var(--chip-x);color:var(--chip-x-ink)}.pill.sp{background:var(--sp-bg);color:var(--sp)}.pill.s{background:var(--chip-s);color:var(--chip-s-ink)}
+.ktag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:7px;white-space:nowrap;background:var(--k-etc);color:var(--k-etc-ink)}
+.ktag.k-대회{background:var(--k-match);color:var(--k-match-ink)}.ktag.k-개인연습{background:var(--k-solo);color:var(--k-solo-ink)}.ktag.k-단체연습{background:var(--k-team);color:var(--k-team-ink)}
+.home-hero{display:flex;align-items:center;gap:16px;background:var(--hero);border:1px solid var(--hero-line);border-radius:22px;padding:16px;margin-bottom:12px}
+.ring{width:108px;height:108px;border-radius:50%;background:var(--card);border:8px solid var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none}
+.ring .v{font-size:28px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.ring .l{font-size:12px;color:var(--muted);margin-top:2px}
+.hero-rows{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
+.hero-rows div{display:flex;justify-content:space-between;align-items:baseline;background:var(--card);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--muted)}
+.hero-rows b{font-size:18px;color:var(--ink);font-variant-numeric:tabular-nums}
+.hero-rows b.up{color:var(--good)}.hero-rows b.down{color:var(--danger)}
+.go2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.go2 .btn{min-height:56px;font-size:16px;border-radius:16px}
+.go2 .btn.line{color:var(--accent);border-color:var(--hero-line)}
+.hb-chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 8px}
+.hb-chips button{min-height:36px;padding:0 14px;border-radius:18px;font:inherit;font-size:14px;font-weight:700;background:var(--card);color:var(--sb-h-ink);border:1px solid var(--line);cursor:pointer}
+.hb-chips button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.hb-chips .set{margin-left:auto;width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--muted);text-decoration:none;font-size:20px}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;margin:20px 4px 10px}
+.sec-head b{font-size:17px;font-weight:900}
+.sec-head .links{display:flex;gap:14px}.sec-head a{font-size:14px;font-weight:700;color:var(--accent);text-decoration:none}
+.dbox{width:48px;height:48px;border-radius:14px;background:var(--hero);color:var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex:none}
+.dbox b{font-size:19px;line-height:1;font-variant-numeric:tabular-nums}
+.day .dr{text-align:right;flex:none}
+.day .dr .a{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
+.day .dr .m{font-size:12px;color:var(--muted)}
+.kinds{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.kinds button{min-height:52px;border-radius:12px;font:inherit;font-size:15px;font-weight:700;padding:0 2px;cursor:pointer;background:var(--card);color:var(--sb-h-ink);border:1px solid var(--line)}
+.kinds button.on.k-대회{background:var(--k-match);color:var(--k-match-ink);border:2px solid #d97706}
+.kinds button.on.k-개인연습{background:var(--k-solo);color:var(--k-solo-ink);border:2px solid var(--accent)}
+.kinds button.on.k-단체연습{background:var(--k-team);color:var(--k-team-ink);border:2px solid #0e8fb8}
+.kinds button.on.k-기타{background:var(--k-etc);color:var(--k-etc-ink);border:2px solid #64748b}
+.dkpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:12px}
+.dkpis div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 0;text-align:center}
+.dkpis div:first-child{background:var(--hero);border-color:var(--hero-line)}
+.dkpis .l{font-size:12px;color:var(--sb-h-ink)}.dkpis .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted);margin:4px 4px 12px}
+.legend .lx{color:var(--x);font-weight:800}.legend .ls{color:var(--sp);font-weight:800}
+.legend .lsp{color:var(--split);font-weight:800;border:1.5px solid var(--split);border-radius:50%;padding:0 4px}
+.segtab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));background:var(--hero);border-radius:14px;padding:4px;margin-bottom:14px}
+.segtab button{min-height:44px;border:0;border-radius:11px;font:inherit;font-size:15px;font-weight:700;background:transparent;color:var(--sb-h-ink);cursor:pointer}
+.segtab button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 4px rgba(16,35,63,.12)}
+.gear-top{display:flex;gap:12px;align-items:center}
+.gear-top .gi{flex:1;min-width:0}.gear-top .gi b{font-size:16px}.gear-top .gi .muted{font-size:13px}
+.gstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px}
+.gstats div{background:var(--sb-alt);border-radius:10px;padding:6px 10px}
+.gstats .l{font-size:12px;color:var(--muted)}.gstats .v{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.pin-ic{width:48px;height:48px;border-radius:14px;background:var(--hero);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:24px;flex:none}
+.gal-month{font-size:15px;font-weight:900;margin:18px 4px 8px}
+.gal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.gal a{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--hero);display:block;text-decoration:none;color:inherit}
+.gal img{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover;display:block}
+.gal .ktag,.gal .cap{z-index:2}
+.gal .ktag{position:absolute;left:6px;top:6px}
+.gal .cap{position:absolute;left:6px;right:6px;bottom:6px;background:rgba(255,255,255,.92);color:#10233f;border-radius:8px;padding:3px 6px;display:flex;justify-content:space-between;align-items:baseline}
+.gal .cap span{font-size:11px;color:#35577f}.gal .cap b{font-size:15px}
+.gal .noimg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:28px}
+.optrow{display:flex;align-items:center;gap:12px;min-height:52px;padding:6px 12px;border-radius:12px;border:1px solid var(--line);margin-bottom:6px;cursor:pointer}
+.optrow.on{background:var(--accent-2);border-color:var(--sb-line2)}
+.optrow input{width:22px;height:22px;margin:0;flex:none;accent-color:var(--accent)}
+.optrow .t{display:block;font-size:15px;font-weight:700}.optrow .d{display:block;font-size:12px;color:var(--muted)}
+.printonly{display:none}
 /* narrow screens */
 @media screen and (max-width:600px){
   .sheet{padding:14px 10px;font-size:13px}
@@ -257,7 +334,8 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 @page{size:A4 portrait;margin:11mm}
 @media print{
   body{background:#fff;color:#000}
-  .noprint,.top,.tabs,.savebar,#toast{display:none!important}
+  .noprint,.top,.tabs,.savebar,#toast,.screenonly{display:none!important}
+  .printonly{display:block!important}
   main{padding:0;max-width:none}
   .sheet{box-shadow:none;border-radius:0;padding:0;margin:0;max-width:none;font-size:10pt}
   .sh-title{font-size:17pt;margin-bottom:3mm}
@@ -286,15 +364,14 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
   <symbol id="i-pins5" viewBox="0 0 70 40"><use href="#i-pin" x="0" y="8" width="13" height="32"/><use href="#i-pin" x="14" y="4" width="13" height="32"/><use href="#i-pin" x="28" y="0" width="13" height="32"/><use href="#i-pin" x="42" y="4" width="13" height="32"/><use href="#i-pin" x="56" y="8" width="13" height="32"/></symbol>
 </defs></svg>
 <header class="top noprint">
-  <svg class="pins" viewBox="0 0 70 40" aria-hidden="true"><use href="#i-pins5"/></svg>
-  <div class="title"><svg style="color:#3b82f6" aria-hidden="true"><use href="#i-ball"/></svg>볼링 연습일지</div>
+  <div class="title"><svg style="color:var(--accent)" aria-hidden="true"><use href="#i-ball"/></svg><span>볼링 연습일지<span class="sub" id="topSub"></span></span></div>
   <a class="who help-btn" href="help.html" aria-label="사용 설명서"><i class="ti ti-help" aria-hidden="true"></i></a>
   <button type="button" class="who" id="whoBtn">사용자 선택</button>
 </header>
 <main id="app"></main>
 <nav class="tabs noprint" id="tabs">
   <a href="#list" data-tab="list"><i class="ti ti-list-details" aria-hidden="true"></i>기록</a>
-  <a href="#balls" data-tab="balls"><i class="ti ti-circle-dot" aria-hidden="true"></i>내 볼</a>
+  <a href="#balls" data-tab="balls"><i class="ti ti-circle-dot" aria-hidden="true"></i>볼·장소</a>
   <a href="#stats" data-tab="stats"><i class="ti ti-chart-line" aria-hidden="true"></i>통계</a>
   <a href="#settings" data-tab="settings"><i class="ti ti-settings" aria-hidden="true"></i>설정</a>
 </nav>
@@ -303,7 +380,7 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 <div id="toast" role="status"></div>
 <script>
 'use strict';
-const APP_VER = '0.6.1';
+const APP_VER = '0.7';
 const MAXG = 10;
 const app = document.getElementById('app');
 const $ = (s, el = document) => el.querySelector(s);
@@ -320,13 +397,6 @@ const f1 = v => v == null ? '-' : (Math.round(v * 10) / 10).toFixed(1);
 const ballLabel = b => b ? `${b.name}${b.weight ? ' ' + b.weight + 'lb' : ''} · ${b.hand || ''}` : '';
 
 /* bowling art */
-const LANE_SVG = `<svg viewBox="0 0 320 96" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-  <polygon points="150,96 270,96 236,0 184,0" fill="var(--lane)"/><polygon points="150,96 270,96 236,0 184,0" fill="none" stroke="var(--lane-2)"/>
-  <line x1="210" y1="0" x2="210" y2="96" stroke="var(--lane-2)" stroke-dasharray="3 5" opacity=".6"/>
-  <path d="M190 80 Q200 50 208 22" stroke="#93c5fd" stroke-width="1.6" fill="none" stroke-dasharray="2 4"/>
-  <use href="#i-ball" x="178" y="70" width="22" height="22" style="color:#2563eb"/>
-  <use href="#i-pin" x="200" y="2" width="6" height="15"/><use href="#i-pin" x="207" y="2" width="6" height="15"/><use href="#i-pin" x="214" y="2" width="6" height="15"/>
-  <use href="#i-pin" x="203.5" y="9" width="6" height="15"/><use href="#i-pin" x="210.5" y="9" width="6" height="15"/><use href="#i-pin" x="207" y="16" width="6" height="15"/></svg>`;
 const PINS_SVG = `<svg viewBox="0 0 120 70" aria-hidden="true"><use href="#i-pins5" x="10" y="0" width="100" height="58"/><use href="#i-ball" x="2" y="44" width="24" height="24" style="color:#2563eb"/></svg>`;
 const BALL_COLORS = ['#2563eb', '#dc2626', '#7c3aed', '#059669', '#d97706', '#db2777', '#0891b2'];
 const ballSVG = (i, size = 42) => `<svg width="${size}" height="${size}" style="color:${BALL_COLORS[i % BALL_COLORS.length]}" aria-hidden="true"><use href="#i-ball"/></svg>`;
@@ -496,7 +566,7 @@ function showPhoto(url) {
 
 /* ---------- state & routing ---------- */
 let profiles = [], CUR = null, ED = null, EDBALLS = [], padOpen = -1, dirty = false, lastHash = '';
-let statPeriod = 'all', printPhotos = false, pickTarget = null;
+let statPeriod = 'all', printPhotos = false, pickTarget = null, photoStart = false, startPhoto = null;
 
 async function loadProfiles() { profiles = (await DB.all('profiles')).sort((a, b) => (a.order || 0) - (b.order || 0)); }
 const myDays = async () => (await DB.all('days')).filter(d => d.pid === CUR.id);
@@ -513,10 +583,11 @@ function onRoute() {
 async function render() {
   lastHash = location.hash;
   const [r = 'list', id] = location.hash.replace(/^#/, '').split('/');
-  const tab = { edit: 'list', view: 'list', ball: 'balls' }[r] || r;
+  const tab = { edit: 'list', view: 'list', photos: 'list', ball: 'balls', place: 'balls' }[r] || r;
   document.querySelectorAll('#tabs a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
-  document.body.classList.toggle('editing', r === 'edit' || r === 'ball');
+  document.body.classList.toggle('editing', r === 'edit' || r === 'ball' || r === 'place');
   $('#whoBtn').textContent = CUR ? CUR.name + ' ▾' : '사용자 선택';
+  $('#topSub').textContent = new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' });
   window.scrollTo(0, 0);
   if (!CUR && r !== 'settings') return renderWho();
   switch (r) {
@@ -525,6 +596,8 @@ async function render() {
     case 'view': return renderView(id);
     case 'balls': return renderBalls();
     case 'ball': return renderBallForm(id);
+    case 'place': return renderPlaceForm(id);
+    case 'photos': return renderPhotos();
     case 'stats': return renderStats();
     case 'settings': return renderSettings();
     default: return renderList();
@@ -542,41 +615,157 @@ function renderWho() {
   });
 }
 
-/* ---------- list ---------- */
+/* ---------- v0.7 shared pieces: kinds, 5x2 scoreboard, game card, places ---------- */
+const KINDS = ['대회', '개인연습', '단체연습', '기타'];
+const ktag = k => k ? `<span class="ktag k-${esc(k)}">${esc(k)}</span>` : '';
+const spareCount = rolls => BW.marks(rolls || []).flat().filter(m => m.t === '/').length;
+// screen scoreboard: frames 1-5 and 6-10 in two rows, running total under each frame (kept quiet)
+function gridHTML(rolls, o = {}) {
+  const M = BW.marks(rolls), c = BW.cumFixed(rolls, o.fix), nx = o.cursor ? BW.next(rolls) : null;
+  let h = '<div class="sb2">';
+  for (let r = 0; r < 2; r++) {
+    h += '<div class="sb2-row">';
+    for (let f = r * 5; f < r * 5 + 5; f++) {
+      let cells = '';
+      for (let k = 0; k < (f < 9 ? 2 : 3); k++) {
+        const m = M[f] && M[f][k];
+        let cls = 'b';
+        if (m) { if (m.t === 'X') cls += ' x'; else if (m.t === '/') cls += ' sp'; if (m.s) cls += ' split'; }
+        if (nx && !nx.done && nx.f === f && nx.k === k) cls += ' cur';
+        cells += `<span class="${cls}">${m ? esc(m.t) : ''}</span>`;
+      }
+      const fc = ['fr', f % 2 ? 'alt' : '', f === 9 ? 'f10' : '', o.bad && o.bad.includes(f) ? 'bad' : ''].filter(Boolean).join(' ');
+      const cc = ['cum', o.fix && o.fix[f] != null ? 'fx' : '', o.sel === f ? 'sel' : ''].filter(Boolean).join(' ');
+      h += `<div class="${fc}"><div class="fn">${f + 1}</div><div class="balls">${cells}</div><div class="${cc}" data-act="cum" data-f="${f}">${c[f] ?? ''}</div></div>`;
+    }
+    h += '</div>';
+  }
+  return h + '</div>';
+}
+function pillsHTML(g) {
+  const quick = g.mode === 'quick';
+  return `<div class="pills"><span class="pill x">스트라이크 ${g.strike ?? 0}</span>${quick ? '' : `<span class="pill sp">스페어 ${spareCount(g.rolls)}</span>`}<span class="pill s">스플릿 ${g.split ?? 0}</span><span class="pill">오픈 ${g.open ?? 0}</span></div>`;
+}
+// one game: label chip, note, big score, board, counts. href makes the whole card a link
+function gameCardHTML(g, o = {}) {
+  const quick = g.mode === 'quick', partial = !quick && (g.rolls || []).length && g.score == null;
+  const tag = o.href ? 'a' : 'div';
+  return `<${tag} class="card gcard"${o.href ? ` href="${o.href}" style="color:inherit"` : ''}>
+    <div class="gcard-head"><div class="gl"><span class="gno">${esc(o.label)}</span>${o.sub ? `<span class="muted" style="font-size:13px">${o.sub}</span>` : ''}</div>
+      <div class="gbig">${g.score ?? (partial ? '…' : '-')}</div></div>
+    ${quick ? '<p class="hint" style="margin-top:0">점수만 기록한 게임이에요.</p>' : gridHTML(g.rolls || [], { fix: g.cumFix })}
+    ${pillsHTML(g)}${o.extra || ''}</${tag}>`;
+}
+// places: the ones saved on this person + every name used in a diary
+const placesOf = p => (p && Array.isArray(p.places)) ? p.places : [];
+function placeNames(days) {
+  const names = placesOf(CUR).map(x => x.name);
+  for (const d of days.slice().sort((a, b) => b.date.localeCompare(a.date))) if (d.place && !names.includes(d.place)) names.push(d.place);
+  return names;
+}
+async function savePlaces(list) {
+  CUR.places = list; const p = profiles.find(x => x.id === CUR.id); if (p) p.places = list;
+  await DB.put('profiles', { ...CUR });
+}
+
+/* ---------- list (home) ---------- */
+let homeSel = '';
+const HB_OPTS = [['recent', '최근 게임', '마지막으로 친 게임'], ['best', '최고점', '가장 잘 친 게임'], ['worst', '최저점', '가장 아쉬운 게임'],
+  ['today', '오늘 친 게임 전부', '오늘 기록이 있을 때만'], ['mostX', '스트라이크 가장 많은 게임', '같으면 최근 것'], ['clean', '오픈 없는 게임 (클린)', '가장 최근 것']];
+const HB_PERIODS = [['month', '이번 달'], ['3m', '최근 3달'], ['all', '전체']];
+async function homeConf() { const c = (await getMeta('homeBoards')) || {}; return { keys: Array.isArray(c.keys) ? c.keys : ['recent'], period: c.period || 'month' }; }
 function dayStats(d) {
   const sc = (d.games || []).map(g => g.score).filter(v => v != null);
   return { n: sc.length, sum: sum(sc), avg: avg(sc), max: sc.length ? Math.max(...sc) : null, min: sc.length ? Math.min(...sc) : null };
 }
+// which game(s) each main-board choice points at
+function homeBoards(days, conf) {
+  const G = days.flatMap(d => (d.games || []).map((g, i) => ({ g, d, i }))).filter(x => x.g.score != null)
+    .sort((a, b) => b.d.date.localeCompare(a.d.date) || (b.d.updated || 0) - (a.d.updated || 0) || b.i - a.i);
+  const now = new Date(), ym = today().slice(0, 7);
+  const from = conf.period === 'month' ? ym + '-01' : conf.period === '3m' ? ymd(new Date(now.getFullYear(), now.getMonth() - 3, now.getDate())) : '';
+  const P = G.filter(x => !from || x.d.date >= from);
+  const pl = conf.period === 'month' ? `${+ym.slice(5)}월` : conf.period === '3m' ? '3달' : '전체';
+  const pick = (arr, better) => arr.reduce((a, x) => (!a || better(x, a)) ? x : a, null);
+  const out = [];
+  for (const k of HB_OPTS.map(o => o[0]).filter(k => conf.keys.includes(k))) {
+    let list = [], label = '';
+    if (k === 'recent') { list = G.slice(0, 1); label = '최근 게임'; }
+    if (k === 'best') { list = [pick(P, (x, a) => x.g.score > a.g.score)]; label = pl + ' 최고'; }
+    if (k === 'worst') { list = [pick(P, (x, a) => x.g.score < a.g.score)]; label = pl + ' 최저'; }
+    if (k === 'today') { list = G.filter(x => x.d.date === today()).sort((a, b) => a.i - b.i); label = '오늘'; }
+    if (k === 'mostX') { list = [pick(P.filter(x => x.g.strike != null), (x, a) => x.g.strike > a.g.strike)]; label = '스트라이크 최다'; }
+    if (k === 'clean') { list = P.filter(x => x.g.open === 0).slice(0, 1); label = '클린'; }
+    list = list.filter(Boolean);
+    if (list.length) out.push({ k, label, list });
+  }
+  return out;
+}
 async function renderList() {
   const days = (await myDays()).sort((a, b) => b.date.localeCompare(a.date) || (b.updated || 0) - (a.updated || 0));
-  const ym = today().slice(0, 7);
-  const monthSc = days.filter(d => d.date.startsWith(ym)).flatMap(d => (d.games || []).map(g => g.score).filter(v => v != null));
-  let h = `<div class="hero"><svg class="pins" viewBox="0 0 70 40" aria-hidden="true"><use href="#i-pins5"/></svg>
-    <div class="h-name">${esc(CUR.name)} · ${+ym.slice(5)}월 기록</div>
-    <div class="h-kpis"><div class="h-kpi"><div class="l">이번 달 평균</div><div class="v">${f1(avg(monthSc))}</div></div>
-      <div class="h-kpi"><div class="l">최고</div><div class="v">${monthSc.length ? Math.max(...monthSc) : '-'}</div></div>
-      <div class="h-kpi"><div class="l">게임</div><div class="v">${monthSc.length}</div></div></div></div>
-    <button type="button" class="lane-cta" id="newDay" aria-label="오늘 연습일지 쓰기">${LANE_SVG}
-      <span class="l-t">${days.some(d => d.date === today()) ? '오늘 한 번 더?' : '오늘도 한 게임?'}</span>
-      <span class="l-b"><i class="ti ti-plus" aria-hidden="true"></i> 오늘 연습일지 쓰기</span></button>`;
+  const ym = today().slice(0, 7), lm = (() => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 1); return ymd(d).slice(0, 7); })();
+  const scOf = pre => days.filter(d => d.date.startsWith(pre)).flatMap(d => (d.games || []).map(g => g.score).filter(v => v != null));
+  const monthSc = scOf(ym), lastSc = scOf(lm);
+  const diff = monthSc.length && lastSc.length ? avg(monthSc) - avg(lastSc) : null;
+  let h = `<div class="home-hero"><div class="ring"><div class="v">${f1(avg(monthSc))}</div><div class="l">${+ym.slice(5)}월 평균</div></div>
+    <div class="hero-rows"><div><span>최고</span><b>${monthSc.length ? Math.max(...monthSc) : '-'}</b></div>
+      <div><span>게임</span><b>${monthSc.length}</b></div>
+      <div><span>지난달보다</span><b class="${diff == null ? '' : diff >= 0 ? 'up' : 'down'}">${diff == null ? '-' : (diff >= 0 ? '+' : '') + f1(diff)}</b></div></div></div>
+    <div class="go2"><button type="button" class="btn primary" id="newDay"><i class="ti ti-plus" aria-hidden="true"></i> 오늘 일지</button>
+      <button type="button" class="btn line" id="photoDay"><i class="ti ti-camera" aria-hidden="true"></i> 사진으로</button></div>`;
   const lastBackup = await getMeta('lastBackup');
   if (!SYNC.on && days.length >= 3 && (!lastBackup || Date.now() - lastBackup > 30 * 864e5))
     h += `<div class="banner"><i class="ti ti-cloud-upload" aria-hidden="true"></i> 기록은 이 휴대폰에만 저장돼요. 백업한 지 오래됐어요 → <a href="#settings">백업하기</a></div>`;
-  if (!days.length) h += `<div class="art-empty">${PINS_SVG}아직 기록이 없어요.<br>위 레인을 눌러 첫 일지를 써 보세요.</div>`;
+  const boards = homeBoards(days, await homeConf());
+  if (boards.length) {
+    const cur = boards.find(b => b.k === homeSel) || boards[0];
+    h += `<div class="hb-chips">${boards.length > 1 ? boards.map(b => `<button type="button" data-hb="${b.k}" class="${b === cur ? 'on' : ''}" aria-pressed="${b === cur}">${esc(b.label)}</button>`).join('') : ''}
+      <a class="set" href="#settings" aria-label="메인 점수판 고르기 (설정)"><i class="ti ti-adjustments-horizontal" aria-hidden="true"></i></a></div>`;
+    h += cur.list.map(x => {
+      const [, mm, dd] = x.d.date.split('-');
+      return gameCardHTML(x.g, { label: cur.list.length > 1 ? `${x.i + 1}게임` : cur.label, sub: `${+mm}.${+dd} · ${x.i + 1}게임째${x.d.kind ? ' · ' + esc(x.d.kind) : ''}`, href: '#view/' + x.d.id });
+    }).join('');
+  }
+  h += `<div class="sec-head"><b>기록</b><span class="links"><a href="#photos">사진 모아보기</a></span></div>`;
+  if (!days.length) h += `<div class="art-empty">${PINS_SVG}아직 기록이 없어요.<br>[오늘 일지]를 눌러 첫 일지를 써 보세요.</div>`;
   let month = '';
   for (const d of days) {
     const m = d.date.slice(0, 7);
     if (m !== month) { month = m; h += `<h3 class="month">${m.slice(0, 4)}년 ${+m.slice(5)}월</h3>`; }
     const s = dayStats(d), [, mm, dd] = d.date.split('-');
-    const gs = d.games || [], xs = sum(gs.map(g => g.strike || 0)), sps = sum(gs.map(g => g.split || 0));
     h += `<a class="card day" href="#view/${d.id}">
-      <div class="dd"><div class="m">${+mm}월</div><div class="d">${+dd}</div><div class="w">${WD[new Date(d.date + 'T00:00').getDay()]}</div></div>
-      <div class="di"><div class="t">${s.n}게임 · 평균 ${f1(s.avg)}</div>
-        <div class="s"><i class="ti ti-map-pin" aria-hidden="true"></i> ${esc(d.place) || '볼링장 미입력'}${d.lane ? ' · 레인 ' + esc(d.lane) : ''}</div></div>
-      <div class="chips">${s.max != null ? `<span class="chip best">최고 ${s.max}</span>` : ''}${xs ? `<span class="chip x">X ${xs}</span>` : ''}${sps ? `<span class="chip s">S ${sps}</span>` : ''}</div></a>`;
+      <div class="dbox"><b>${+dd}</b>${+mm}월</div>
+      <div class="di"><div class="t">${esc(d.place) || '볼링장 미입력'} ${ktag(d.kind)}</div>
+        <div class="s">${WD[new Date(d.date + 'T00:00').getDay()]}요일 · ${s.n}게임${d.lane ? ' · 레인 ' + esc(d.lane) : ''}${d.match ? ' · ' + esc(d.match) : ''}</div></div>
+      <div class="dr"><div class="a">${f1(s.avg)}</div><div class="m">${s.max != null ? '최고 ' + s.max : ''}</div></div></a>`;
   }
   app.innerHTML = h;
   $('#newDay').onclick = () => go('#edit/new');
+  $('#photoDay').onclick = () => { photoStart = true; $('#filePick').value = ''; $('#filePick').click(); };
+  app.querySelectorAll('[data-hb]').forEach(b => b.onclick = () => { homeSel = b.dataset.hb; renderList(); });
+}
+
+/* ---------- photos (all uploaded game photos) ---------- */
+let galKind = '전체';
+async function renderPhotos() {
+  const days = (await myDays()).sort((a, b) => b.date.localeCompare(a.date));
+  const all = days.flatMap(d => (d.games || []).map((g, i) => ({ g, d, i })).filter(x => x.g.photoId));
+  const shown = all.filter(x => galKind === '전체' || x.d.kind === galKind);
+  let h = `<h2 style="margin-bottom:2px">사진 모아보기</h2><p class="hint" style="margin-top:0">사진 ${shown.length}장 · 새 사진부터. 누르면 그날 일지로 가요.</p>
+    <div class="seg">${['전체', ...KINDS].map(k => `<button type="button" data-gk="${k}" class="${galKind === k ? 'on' : ''}">${k}</button>`).join('')}</div>`;
+  if (!shown.length) h += `<div class="art-empty">${PINS_SVG}${all.length ? '이 종류의 사진이 없어요.' : '아직 넣은 사진이 없어요.<br>일지의 게임마다 점수판 사진을 넣을 수 있어요.'}</div>`;
+  let month = '';
+  for (const x of shown) {
+    const m = x.d.date.slice(0, 7);
+    if (m !== month) { if (month) h += '</div>'; month = m; h += `<div class="gal-month">${m.slice(0, 4)}년 ${+m.slice(5)}월</div><div class="gal">`; }
+    const [, mm, dd] = x.d.date.split('-');
+    h += `<a href="#view/${x.d.id}" aria-label="${+mm}월 ${+dd}일 ${x.i + 1}게임 ${x.g.score ?? ''}점 사진"><span class="noimg"><i class="ti ti-photo" aria-hidden="true"></i></span>
+      <img data-pid="${x.g.photoId}" alt="" hidden>${ktag(x.d.kind)}<span class="cap"><span>${+mm}.${+dd} · ${x.i + 1}G</span><b>${x.g.score ?? '-'}</b></span></a>`;
+  }
+  if (month) h += '</div>';
+  app.innerHTML = h;
+  app.querySelectorAll('[data-gk]').forEach(b => b.onclick = () => { galKind = b.dataset.gk; renderPhotos(); });
+  app.querySelectorAll('img[data-pid]').forEach(async im => { const u = await photoURL(im.dataset.pid); if (u) { im.src = u; im.hidden = false; } });
 }
 
 /* ---------- day editor ---------- */
@@ -670,11 +859,11 @@ function cardHTML(i) {
   }
   if (!frames && g.score != null) scoreTxt = g.score;
   let h = `<div class="card game${open ? ' open' : ''}" data-i="${i}">
-    <div class="game-head"><b>${i + 1}게임</b><span class="gscore">${scoreTxt}</span><span class="sp"></span>
+    <div class="game-head"><span class="gno">${i + 1}게임</span><span class="gscore">${scoreTxt}</span><span class="sp"></span>
       <button type="button" class="link" data-act="mode">${frames ? '점수만 적기' : '점수판으로 적기'}</button>
       ${ED.games.length > 1 ? '<button type="button" class="link danger" data-act="del">빼기</button>' : ''}</div>`;
   if (frames) {
-    h += `<div class="board editable" data-act="openpad">${boardHTML(g.rolls, open, false, g._ai && g._ai.bad, g.cumFix, g._fixF)}</div>
+    h += `<div class="board editable" data-act="openpad">${gridHTML(g.rolls, { cursor: open, bad: g._ai && g._ai.bad, fix: g.cumFix, sel: g._fixF })}</div>
       ${g._fixF != null ? fixBoxHTML(g) : ''}
       <div class="counts"><span class="c-x">스트라이크 <b>${g.strike ?? 0}</b></span><span class="c-split">스플릿 <b>${g.split ?? 0}</b></span><span class="c-open">오픈 <b>${g.open ?? 0}</b></span>${hasFix(g) ? '<span class="tag fx">✎ 점수 고침</span>' : ''}</div>
       ${g._fixF == null && (g.rolls.length || hasFix(g)) ? '<p class="hint" style="margin-top:0">누적 점수(아랫줄)를 누르면 직접 고칠 수 있어요.</p>' : ''}`;
@@ -721,7 +910,8 @@ async function renderEdit(id) {
   const days = await myDays();
   if (id === 'new') {
     const last = days.sort((a, b) => b.date.localeCompare(a.date))[0];
-    ED = { id: newId(), pid: CUR.id, date: today(), place: last ? last.place : '', lane: '', ballId: last ? last.ballId : '', memo: '', games: [blankGame()], created: Date.now(), _new: true };
+    ED = { id: newId(), pid: CUR.id, date: today(), kind: (last && last.kind) || '개인연습', match: '', place: last ? last.place : '', lane: '', ballId: last ? last.ballId : '', memo: '', games: [blankGame()], created: Date.now(), _new: true };
+    if (startPhoto) { ED.games[0].photoId = startPhoto; startPhoto = null; ED._autoAI = true; dirty = true; }
     if (ED.ballId && !EDBALLS.find(b => b.id === ED.ballId && b.active !== false)) ED.ballId = '';
     if (!ED.ballId) { const a = EDBALLS.find(b => b.active !== false); if (a) ED.ballId = a.id; }
     padOpen = 0;
@@ -733,14 +923,18 @@ async function renderEdit(id) {
     if (!ED.games.length) ED.games.push(blankGame());
     padOpen = ED.games.findIndex(g => g.mode === 'frames' && !BW.done(g.rolls));
   }
-  const places = [...new Set(days.map(d => d.place).filter(Boolean))];
+  const places = placeNames(days);
   app.innerHTML = `<h2>${ED._new ? '새 연습일지' : '일지 고치기'}</h2>
+    <div class="card"><label class="f" style="margin-top:0">무슨 볼링이었나요?</label>
+      <div class="kinds" id="kinds">${KINDS.map(k => `<button type="button" data-kind="${k}" class="k-${k}${ED.kind === k ? ' on' : ''}" aria-pressed="${ED.kind === k}">${k}</button>`).join('')}</div>
+      <div id="matchBox"${ED.kind === '대회' ? '' : ' hidden'}><label class="f" for="e-match">대회 이름</label><input id="e-match" maxlength="40" placeholder="예: 시장배 볼링대회"></div>
+    </div>
     <div class="card">
       <div class="row">
         <div><label class="f" for="e-date">날짜</label><input type="date" id="e-date"></div>
         <div><label class="f" for="e-lane">레인</label><input id="e-lane" placeholder="예: 11-12"></div>
       </div>
-      <label class="f" for="e-place">볼링장</label><input id="e-place" list="placeList" placeholder="볼링장 이름">
+      <label class="f" for="e-place">볼링장 <span style="font-weight:500">· 눌러서 고르거나 새로 쓰기</span></label><input id="e-place" list="placeList" placeholder="볼링장 이름">
       <datalist id="placeList">${places.map(p => `<option value="${esc(p)}">`).join('')}</datalist>
       <label class="f" for="e-ball">오늘 볼</label><select id="e-ball">${ballOptions(EDBALLS, ED.ballId, '선택 안 함')}</select>
       ${EDBALLS.length ? '' : '<p class="hint">[내 볼]에 볼을 등록하면 여기서 고를 수 있어요.</p>'}
@@ -750,7 +944,13 @@ async function renderEdit(id) {
     <button type="button" class="btn big" id="addGame">+ 게임 추가</button>
     ${ED._new ? '' : '<button type="button" class="btn danger" id="delDay" style="width:100%;margin-top:14px">이 일지 지우기</button>'}
     <div class="savebar"><button type="button" class="btn" id="cancel">취소</button><button type="button" class="btn primary" id="save">저장</button></div>`;
-  for (const k of ['date', 'place', 'lane', 'memo']) {
+  $('#kinds').onclick = e => {
+    const b = e.target.closest('[data-kind]'); if (!b) return;
+    ED.kind = b.dataset.kind; dirty = true;
+    $('#kinds').querySelectorAll('[data-kind]').forEach(x => { const on = x.dataset.kind === ED.kind; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
+    $('#matchBox').hidden = ED.kind !== '대회';
+  };
+  for (const k of ['date', 'place', 'lane', 'memo', 'match']) {
     const el = $('#e-' + k); el.value = ED[k] || '';
     el.addEventListener('input', () => { ED[k] = el.value; dirty = true; });
   }
@@ -774,6 +974,11 @@ async function renderEdit(id) {
   $('#cancel').onclick = () => go(ED._new ? '#list' : '#view/' + ED.id);
   $('#save').onclick = saveDay;
   if ($('#delDay')) $('#delDay').onclick = deleteDay;
+  if (ED._autoAI) {
+    delete ED._autoAI;
+    if (await getMeta('aiKey')) document.querySelector('.game[data-i="0"] [data-act="ai"]')?.click();
+    else toast('사진을 넣었어요. [설정]에 AI 키를 넣으면 점수판을 자동으로 읽어요');
+  }
 }
 function onGameInput(e) {
   const el = e.target, k = el.dataset.k; if (!k) return;
@@ -884,7 +1089,10 @@ async function saveDay() {
   rec.games = rec.games.filter(g => !isEmptyGame(g));
   rec.games.forEach(g => { delete g._ai; delete g._fixF; if (g.cumFix && !Object.keys(g.cumFix).length) delete g.cumFix; });
   rec.updated = Date.now();
+  if (rec.kind !== '대회') delete rec.match; else rec.match = (rec.match || '').trim();
+  rec.place = (rec.place || '').trim();
   try { await DB.put('days', rec); } catch (e) { return alert('저장하지 못했어요: ' + e.message); }
+  if (rec.place && !placesOf(CUR).some(x => x.name === rec.place)) await savePlaces([...placesOf(CUR), { name: rec.place, memo: '' }]);
   dirty = false; toast('저장했어요'); cleanupPhotos();
   go('#view/' + rec.id);
 }
@@ -893,7 +1101,14 @@ async function deleteDay() {
   await DB.del('days', ED.id); dirty = false; await cleanupPhotos(); toast('지웠어요'); go('#list');
 }
 $('#filePick').addEventListener('change', async e => {
-  const f = e.target.files[0]; if (!f || pickTarget == null || !ED) return;
+  const f = e.target.files[0];
+  if (f && photoStart) {
+    photoStart = false; toast('사진 넣는 중…');
+    try { const blob = await shrinkPhoto(f), id = newId(); await DB.put('photos', { id, blob }); startPhoto = id; go('#edit/new'); }
+    catch (err) { alert('사진을 넣지 못했어요: ' + err.message); }
+    return;
+  }
+  if (!f || pickTarget == null || !ED) return;
   toast('사진 넣는 중…');
   try {
     const blob = await shrinkPhoto(f), id = newId();
@@ -1054,20 +1269,40 @@ async function renderView(id) {
       ${cells(g, partial)}</div>`;
   }
   const photoGames = games.map((g, i) => ({ g, i })).filter(x => x.g.photoId);
-  app.innerHTML = `
-    <div class="actions noprint">
-      <button type="button" class="btn primary" id="printBtn"><i class="ti ti-printer" aria-hidden="true"></i> 인쇄 · PDF 저장</button>
-      <a class="btn" href="#edit/${d.id}">고치기</a>
-      <a class="btn" href="#list">목록</a>
+  const ballTxt = d.ballId ? (bm[d.ballId] ? ballLabel(bm[d.ballId]) : '(지운 볼)') : '';
+  // screen: game cards with the big scoreboard
+  const cards = games.map((g, i) => {
+    const extra = [];
+    if (g.ballId && g.ballId !== d.ballId) extra.push('볼: ' + esc(bm[g.ballId] ? ballLabel(bm[g.ballId]) : '(지운 볼)'));
+    if (hasFix(g)) extra.push('✎ 누적 점수 손으로 고침');
+    let more = '';
+    if (extra.length || g.memo) more += `<p class="hint" style="margin:8px 2px 0">${[...extra, esc(g.memo)].filter(Boolean).join(' · ')}</p>`;
+    if (g.photoId) more += `<div class="photo" style="margin-top:8px"><img class="thumb" data-pid="${g.photoId}" alt="${i + 1}게임 사진"></div>`;
+    const best = sc.length > 1 && g.score === Math.max(...sc) ? '최고' : '';
+    return gameCardHTML(g, { label: `${i + 1}게임`, sub: best, extra: more });
+  }).join('');
+  app.innerHTML = `<div class="screenonly">
+      <div class="gear-top" style="margin:4px 2px 12px">
+        <div class="gi"><div style="font-size:19px;font-weight:900">${fmtDate(d.date)} ${ktag(d.kind)}</div>
+          <div class="muted">${[d.match ? esc(d.match) : '', esc(d.place) || '볼링장 미입력', d.lane ? '레인 ' + esc(d.lane) : '', esc(ballTxt)].filter(Boolean).join(' · ')}</div></div>
+        <a class="btn small" href="#edit/${d.id}">고치기</a></div>
+      <div class="dkpis"><div><div class="l">평균</div><div class="v">${sc.length ? f1(avg(sc)) : '-'}</div></div>
+        <div><div class="l">최고</div><div class="v">${sc.length ? Math.max(...sc) : '-'}</div></div>
+        <div><div class="l">합계</div><div class="v">${sc.length ? sum(sc) : '-'}</div></div>
+        <div><div class="l">게임</div><div class="v">${games.length}</div></div></div>
+      ${cards || '<div class="art-empty">게임 기록이 없어요.</div>'}
+      <div class="legend"><span><b class="lx">X</b> 스트라이크</span><span><b class="ls">/</b> 스페어</span><span><b class="lsp">8</b> 스플릿</span><span><b>-</b> 못 쓰러뜨림</span></div>
+      ${d.memo ? `<div class="card"><b>오늘 메모</b><p style="margin:6px 0 0;white-space:pre-wrap;word-break:break-all">${esc(d.memo)}</p></div>` : ''}
+      <div class="actions"><button type="button" class="btn primary" id="printBtn"><i class="ti ti-printer" aria-hidden="true"></i> 인쇄 · PDF 저장</button><a class="btn" href="#list">목록</a></div>
+      ${photoGames.length ? `<label class="chk"><input type="checkbox" id="withPhotos"${printPhotos ? ' checked' : ''}> 인쇄할 때 사진도 같이 (2쪽부터)</label>` : ''}
+      <p class="hint">A4 기록지로 인쇄돼요. PDF로 저장하려면 인쇄 창에서 'PDF로 저장'을 고르세요.</p>
     </div>
-    ${photoGames.length ? `<label class="chk noprint"><input type="checkbox" id="withPhotos"${printPhotos ? ' checked' : ''}> 사진도 같이 출력 (2쪽부터)</label>` : ''}
-    <p class="hint noprint">PDF로 저장하려면 인쇄 창에서 프린터(대상)를 'PDF로 저장'으로 고르세요.</p>
-    <div class="sheet-wrap"><div class="sheet">
+    <div class="sheet-wrap printonly"><div class="sheet">
       <div class="sh-title">볼링 연습일지</div>
       <table class="sh-info">
         <tr><th>일자</th><td>${fmtDate(d.date)}</td><th>이름</th><td>${esc(CUR.name)}</td></tr>
         <tr><th>볼링장</th><td>${esc(d.place) || '-'}</td><th>레인</th><td>${esc(d.lane) || '-'}</td></tr>
-        <tr><th>볼</th><td colspan="3">${d.ballId ? esc(bm[d.ballId] ? ballLabel(bm[d.ballId]) + (bm[d.ballId].memo ? ' (' + bm[d.ballId].memo + ')' : '') : '(지운 볼)') : '-'}</td></tr>
+        <tr><th>볼</th><td>${d.ballId ? esc(bm[d.ballId] ? ballLabel(bm[d.ballId]) + (bm[d.ballId].memo ? ' (' + bm[d.ballId].memo + ')' : '') : '(지운 볼)') : '-'}</td><th>종류</th><td>${esc(d.kind) || '-'}${d.match ? ' · ' + esc(d.match) : ''}</td></tr>
       </table>
       <div class="sg head"><div>게임</div><div class="sg-board">점수판</div><div>점수</div><div>스트라이크</div><div>스플릿</div><div>오픈</div></div>
       ${rows}
@@ -1091,16 +1326,71 @@ async function renderView(id) {
   if (wp) wp.onchange = () => { printPhotos = wp.checked; $('#photoPage').hidden = !printPhotos; };
 }
 
-/* ---------- balls ---------- */
+/* ---------- balls & places ---------- */
+let gearTab = 'ball';
 async function renderBalls() {
-  const balls = (await myBalls()).sort((a, b) => (a.active === false) - (b.active === false) || (a.created || 0) - (b.created || 0));
-  app.innerHTML = `<button type="button" class="btn big primary" id="newBall"><i class="ti ti-plus" aria-hidden="true"></i> 볼 등록</button>` +
-    (balls.length ? balls.map((b, n) => `<a class="card ball ball-card${b.active === false ? ' off' : ''}" href="#ball/${b.id}">${ballSVG(n)}
-      <div style="flex:1;min-width:0"><div><b>${esc(b.name)}</b>${b.active === false ? '<span class="tag">쉬는 중</span>' : ''}</div>
-      <div class="muted">${b.weight ? b.weight + ' lb · ' : ''}${esc(b.hand)}${b.memo ? ' · ' + esc(b.memo) : ''}</div></div><i class="ti ti-chevron-right muted" aria-hidden="true"></i></a>`).join('')
-      : `<div class="art-empty">${PINS_SVG}등록한 볼이 없어요.<br>볼을 등록하면 일지와 통계에서 볼별로 볼 수 있어요.</div>`);
-  $('#newBall').onclick = () => go('#ball/new');
+  const days = await myDays();
+  const G = days.flatMap(d => (d.games || []).filter(g => g.score != null).map(g => ({ ...g, ball: g.ballId || d.ballId || '', place: d.place || '', lane: d.lane || '', date: d.date })));
+  const st = arr => { const s = arr.map(g => g.score); return { avg: s.length ? f1(avg(s)) : '-', max: s.length ? Math.max(...s) : '-', n: s.length }; };
+  let h = `<div style="display:flex;align-items:center;justify-content:space-between;margin:4px 2px 10px"><h2 style="margin:0">볼·장소</h2>
+      <button type="button" class="btn primary small" id="gearAdd" style="min-height:44px"><i class="ti ti-plus" aria-hidden="true"></i> ${gearTab === 'ball' ? '볼 추가' : '장소 추가'}</button></div>
+    <div class="segtab"><button type="button" data-gt="ball" class="${gearTab === 'ball' ? 'on' : ''}">내 볼</button><button type="button" data-gt="place" class="${gearTab === 'place' ? 'on' : ''}">볼링장</button></div>`;
+  if (gearTab === 'ball') {
+    const balls = (await myBalls()).sort((a, b) => (a.active === false) - (b.active === false) || (a.created || 0) - (b.created || 0));
+    h += balls.length ? balls.map((b, n) => { const s = st(G.filter(g => g.ball === b.id));
+      return `<a class="card ball" href="#ball/${b.id}" style="color:inherit"><div class="gear-top">${ballSVG(n, 48)}
+        <div class="gi"><b>${esc(b.name)}</b><div class="muted">${b.weight ? b.weight + '파운드 · ' : ''}${esc(b.hand)}${b.memo ? ' · ' + esc(b.memo) : ''}</div></div>
+        <span class="ktag${b.active === false ? '' : ' k-개인연습'}">${b.active === false ? '쉬는 중' : '사용 중'}</span></div>
+        <div class="gstats"><div><div class="l">평균</div><div class="v">${s.avg}</div></div><div><div class="l">최고</div><div class="v">${s.max}</div></div><div><div class="l">게임</div><div class="v">${s.n}</div></div></div></a>`; }).join('')
+      : `<div class="art-empty">${PINS_SVG}등록한 볼이 없어요.<br>볼을 등록하면 일지와 통계에서 볼별로 볼 수 있어요.</div>`;
+  } else {
+    const names = placeNames(days), saved = placesOf(CUR);
+    h += names.length ? names.map(name => {
+      const pg = G.filter(g => g.place === name), s = st(pg), info = saved.find(x => x.name === name) || {};
+      const nDays = days.filter(d => d.place === name).length;
+      const lanes = new Map(); for (const g of pg) if (g.lane) { if (!lanes.has(g.lane)) lanes.set(g.lane, []); lanes.get(g.lane).push(g.score); }
+      const goodLane = [...lanes].filter(([, v]) => v.length >= 3).sort((a, b) => avg(b[1]) - avg(a[1]))[0];
+      return `<a class="card" href="#place/${encodeURIComponent(name)}" style="color:inherit"><div class="gear-top"><span class="pin-ic"><i class="ti ti-map-pin" aria-hidden="true"></i></span>
+        <div class="gi"><b>${esc(name)}</b><div class="muted">${esc(info.memo) || (saved.find(x => x.name === name) ? '' : '일지에서 가져온 이름')}</div></div><i class="ti ti-chevron-right muted" aria-hidden="true"></i></div>
+        <div class="gstats"><div><div class="l">평균</div><div class="v">${s.avg}</div></div><div><div class="l">간 날</div><div class="v">${nDays}</div></div><div><div class="l">잘 맞는 레인</div><div class="v">${goodLane ? esc(goodLane[0]) : '-'}</div></div></div></a>`; }).join('')
+      + '<p class="hint">일지에 쓴 볼링장 이름도 여기 모여요. 이름을 고치면 지난 일지에도 같이 바뀌어요. 잘 맞는 레인은 3게임 이상 친 레인 중 평균이 가장 높은 곳이에요.</p>'
+      : `<div class="art-empty">${PINS_SVG}등록한 볼링장이 없어요.<br>자주 가는 곳을 넣어 두면 일지 쓸 때 고르기만 하면 돼요.</div>`;
+  }
+  app.innerHTML = h;
+  app.querySelectorAll('[data-gt]').forEach(b => b.onclick = () => { gearTab = b.dataset.gt; renderBalls(); });
+  $('#gearAdd').onclick = () => go(gearTab === 'ball' ? '#ball/new' : '#place/new');
 }
+async function renderPlaceForm(key) {
+  const isNew = key === 'new', oldName = isNew ? '' : decodeURIComponent(key || '');
+  const saved = placesOf(CUR), info = saved.find(x => x.name === oldName) || { name: oldName, memo: '' };
+  const days = await myDays(), used = days.filter(d => d.place === oldName).length;
+  app.innerHTML = `<h2>${isNew ? '볼링장 추가' : '볼링장 고치기'}</h2>
+    <div class="card">
+      <label class="f" for="p-name">볼링장 이름</label><input id="p-name" maxlength="40" placeholder="예: 스타볼링장">
+      <label class="f" for="p-memo">메모</label><input id="p-memo" maxlength="60" placeholder="예: 레인 24개, 오일 짧음, 수요일 모임">
+      ${used ? `<p class="hint">이 이름으로 쓴 일지가 ${used}개 있어요. 이름을 고치면 그 일지들도 같이 바뀌어요.</p>` : ''}
+    </div>
+    ${isNew ? '' : '<button type="button" class="btn danger" id="delPlace" style="width:100%">목록에서 빼기</button>'}
+    <div class="savebar"><button type="button" class="btn" id="cancel">취소</button><button type="button" class="btn primary" id="save">저장</button></div>`;
+  $('#p-name').value = info.name; $('#p-memo').value = info.memo || '';
+  app.addEventListener('input', () => { dirty = true; }, { once: true });
+  $('#cancel').onclick = () => { dirty = false; go('#balls'); };
+  $('#save').onclick = async () => {
+    const name = $('#p-name').value.trim(), memo = $('#p-memo').value.trim();
+    if (!name) return alert('볼링장 이름을 넣어 주세요.');
+    if (name !== oldName && placeNames(days).includes(name) && !confirm(`'${name}'은(는) 이미 있어요. 합칠까요?`)) return;
+    const list = saved.filter(x => x.name !== oldName && x.name !== name);
+    list.push({ name, memo });
+    await savePlaces(list);
+    if (!isNew && name !== oldName) for (const d of days.filter(d => d.place === oldName)) await DB.put('days', { ...d, place: name, updated: Date.now() });
+    dirty = false; toast('저장했어요'); gearTab = 'place'; go('#balls');
+  };
+  if ($('#delPlace')) $('#delPlace').onclick = async () => {
+    if (!confirm(`'${oldName}'을(를) 볼링장 목록에서 뺄까요?${used ? '\n지난 일지에 쓴 이름은 그대로 남아요 (그래서 목록에 다시 보일 수 있어요).' : ''}`)) return;
+    await savePlaces(saved.filter(x => x.name !== oldName)); dirty = false; toast('뺐어요'); gearTab = 'place'; go('#balls');
+  };
+}
+
 async function renderBallForm(id) {
   let b;
   if (id === 'new') b = { id: newId(), pid: CUR.id, name: '', weight: 14, hand: '원핸드', memo: '', active: true, created: Date.now(), _new: true };
@@ -1342,14 +1632,14 @@ DB.clear = async function (s) {
   return RAW.clear(s);
 };
 const TO_SRV = {
-  profiles: p => ({ id: p.id, name: p.name || '이름 없음', ord: p.order || 0, deleted: false }),
+  profiles: p => ({ id: p.id, name: p.name || '이름 없음', ord: p.order || 0, places: placesOf(p), deleted: false }),
   balls: b => ({ id: b.id, pid: b.pid, name: b.name, weight: b.weight == null || b.weight === '' ? null : +b.weight, hand: b.hand, memo: b.memo, active: b.active !== false, created: b.created || null, deleted: false }),
-  days: d => ({ id: d.id, pid: d.pid, date: d.date, place: d.place, lane: d.lane, ball_id: d.ballId, memo: d.memo, games: d.games || [], created: d.created || null, deleted: false })
+  days: d => ({ id: d.id, pid: d.pid, date: d.date, kind: d.kind || null, match: d.match || null, place: d.place, lane: d.lane, ball_id: d.ballId, memo: d.memo, games: d.games || [], created: d.created || null, deleted: false })
 };
 const FROM_SRV = {
-  profiles: r => ({ id: r.id, name: r.name, order: r.ord }),
+  profiles: r => ({ id: r.id, name: r.name, order: r.ord, places: Array.isArray(r.places) ? r.places : [] }),
   balls: r => ({ id: r.id, pid: r.pid, name: r.name, weight: r.weight == null ? null : +r.weight, hand: r.hand, memo: r.memo, active: r.active, created: r.created }),
-  days: r => ({ id: r.id, pid: r.pid, date: r.date, place: r.place, lane: r.lane, ballId: r.ball_id, memo: r.memo, games: r.games, created: r.created, updated: Date.parse(r.updated_at) })
+  days: r => ({ id: r.id, pid: r.pid, date: r.date, kind: r.kind || undefined, match: r.match || undefined, place: r.place, lane: r.lane, ballId: r.ball_id, memo: r.memo, games: r.games, created: r.created, updated: Date.parse(r.updated_at) })
 };
 const photoPath = (uid, id) => `${uid}/${id}.jpg`;
 async function syncNow() {
@@ -1523,8 +1813,15 @@ async function renderSettings() {
   let est = '';
   try { if (navigator.storage && navigator.storage.estimate) { const e = await navigator.storage.estimate(); est = `사용 중 ${(e.usage / 1048576).toFixed(1)} MB`; } } catch (e) { /* ignore */ }
   const beta = !!(await getMeta('serverBeta'));
+  const hb = await homeConf();
   const canShare = !!(navigator.canShare && navigator.canShare({ files: [new File(['x'], 't.json', { type: 'application/json' })] }));
   app.innerHTML = `<h2>설정</h2>
+    <div class="card"><b>메인에 보일 점수판</b>
+      <p class="hint" style="margin:4px 0 10px">여러 개 고를 수 있어요. 2개 이상이면 메인에서 위 단추를 눌러 바꿔 봐요.</p>
+      <div id="hbOpts">${HB_OPTS.map(([k, t, d]) => `<label class="optrow${hb.keys.includes(k) ? ' on' : ''}"><input type="checkbox" value="${k}"${hb.keys.includes(k) ? ' checked' : ''}><span style="flex:1;min-width:0"><span class="t">${t}</span><span class="d">${d}</span></span></label>`).join('')}</div>
+      <label class="f">최고·최저 등을 고를 기간</label>
+      <div class="seg" id="hbPeriod" style="margin-bottom:0">${HB_PERIODS.map(([k, l]) => `<button type="button" data-hp="${k}" class="${hb.period === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+    </div>
     <div class="card"><b>사용자 이름</b>
       <div id="profs" style="margin-top:8px">${profiles.map(p => `<div class="prof-row"><input data-id="${p.id}" value="${esc(p.name)}" maxlength="20">${profiles.length > 1 ? `<button type="button" class="link danger" data-del="${p.id}">지우기</button>` : ''}</div>`).join('')}</div>
       <div class="actions"><button type="button" class="btn primary small" id="saveProfs">이름 저장</button><button type="button" class="btn small" id="addProf">+ 사용자 추가</button></div>
@@ -1551,6 +1848,15 @@ async function renderSettings() {
     <a class="btn" href="help.html" style="width:100%;margin-bottom:8px"><i class="ti ti-book" aria-hidden="true"></i> 사용 설명서 (처음 설정 순서)</a>
     <p class="hint" id="verTap">볼링 연습일지 v${APP_VER}</p>`;
   if (beta) renderServerCard();
+  const saveHB = async () => {
+    const keys = [...app.querySelectorAll('#hbOpts input:checked')].map(x => x.value);
+    const period = (app.querySelector('#hbPeriod .on') || {}).dataset?.hp || 'month';
+    await setMeta('homeBoards', { keys, period });
+    app.querySelectorAll('#hbOpts .optrow').forEach(l => l.classList.toggle('on', l.querySelector('input').checked));
+    toast(keys.length ? `메인 점수판 ${keys.length}개` : '메인에 점수판을 안 보여요');
+  };
+  app.querySelectorAll('#hbOpts input').forEach(x => x.onchange = saveHB);
+  app.querySelectorAll('#hbPeriod [data-hp]').forEach(b => b.onclick = () => { app.querySelectorAll('#hbPeriod [data-hp]').forEach(x => x.classList.toggle('on', x === b)); saveHB(); });
   let taps = 0, tapT = 0; // 버전 글자를 5번 누르면 '서버 저장(시험 중)' 칸이 보이거나 숨는다
   $('#verTap').onclick = async () => {
     const now = Date.now(); taps = now - tapT < 1500 ? taps + 1 : 1; tapT = now;

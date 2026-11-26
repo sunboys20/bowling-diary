@@ -34,7 +34,9 @@
 
 ## 디자인
 - 글꼴 Pretendard, 아이콘 Tabler webfont (jsdelivr, 버전 고정). 색은 `:root` 변수 — 어두운 모드 두 곳(`@media`, `[data-theme=dark]`)도 같이 고친다.
-- 볼링 그림(핀·공·레인)은 index.html 맨 위 `<symbol>` + `LANE_SVG`·`PINS_SVG`·`ballSVG`.
+- v0.7 디자인: 연한 파랑(시안 C). 화면 점수판은 `gridHTML`(5프레임×2줄, 누적 점수는 약하게), A4 인쇄 기록지는 예전 `boardHTML`(한 줄 10칸).
+- 볼링 그림(핀·공)은 index.html 맨 위 `<symbol>` + `PINS_SVG`·`ballSVG`.
+- 일지 `kind`(대회/개인연습/단체연습/기타)·`match`(대회 이름), 사람 `places`([{name, memo}]), 메인 점수판 선택은 meta `homeBoards`(이 기기만).
 - 중간 점수 고치기: 게임에 `cumFix: {프레임번호(0~9): 누적점수}`. 계산은 `BW.cumFixed`·`BW.scoreOf`.
 
 ## 시험

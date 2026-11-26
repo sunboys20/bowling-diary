@@ -97,6 +97,7 @@ create policy "own rows" on days for all
 | 1 | 표·RLS·사진 버킷 SQL 만들기 (`docs/supabase.sql`), 다른 계정으로 남의 기록이 안 보이는지 시험 | Claude |
 | 2 | 로그인 화면 + 초대 코드 (v0.5, 설정에서 버전 글자 5번 눌러야 보임). "저장 방식" 고르기는 3단계로 미룸 | Claude |
 | 3 | 동기화 (올릴 목록, 받기, 사진) + 휴대폰 기록 옮기기 + 저장 방식 고르기 — v0.6. 서버 표에 `created` 칸 추가(supabase.sql 다시 실행) | Claude |
+| 3.5 | v0.7: `days.kind`·`days.match`(일지 종류·대회 이름), `profiles.places`(볼링장 목록) 칸 추가 — supabase.sql 다시 실행 | Claude |
 | 4 | 두 기기로 시험: 오프라인 저장 → 다시 연결, 지우기 전파, 사진 | 같이 |
 | 5 | (선택) 모임 기능: 서로 평균·순위 보기 | 나중에 |
 
