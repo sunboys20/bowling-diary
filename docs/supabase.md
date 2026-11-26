@@ -112,8 +112,11 @@ create policy "own rows" on days for all
 - 동기화 순서 주의: `balls`·`days` 는 `profiles` 를 참조하므로 profiles 를 먼저 올린다.
 
 ### 2단계 전에 Supabase 화면에서 할 설정
-- Authentication → Emails → "Magic Link" 메일 내용에 `{{ .Token }}` (6자리 번호)를 넣는다 (기본은 링크만 있음).
-- 무료 요금제의 기본 메일은 시간당 보낼 수 있는 수가 적다 → 20~30명이면 나중에 SMTP(예: Resend) 연결을 검토.
+- **메일 서버: Gmail SMTP 로 정함 (2026-11-26).** Supabase 는 SMTP 를 직접 연결해야 메일 내용을 고칠 수 있고, 기본 메일은 시간당 몇 통뿐이라 30명에 부족.
+  - Gmail(2단계 인증 + 앱 비밀번호) → Authentication → Emails → SMTP Settings: 호스트 `smtp.gmail.com`, 포트 `465`. 앱 비밀번호는 Supabase 화면에만 넣는다 (보관함·대화 금지).
+  - Rate Limits 의 메일 수 한도를 시간당 100 정도로 올린다.
+- 그다음 메일 내용("Magic link or OTP", "Confirm signup")에 `{{ .Token }}` (6자리 번호)를 넣는다.
+- 메일 속 **링크** 로그인은 쓰지 않는다: 홈 화면 앱과 브라우저는 저장 공간이 달라(특히 아이폰) 엉뚱한 곳에 로그인된다.
 
 ## 9. 정한 것 (사용자 결정 2026-11-26, 회사 서브컴)
 1. 로그인 방법 → **이메일로 받은 6자리 번호** (비밀번호 없음)
