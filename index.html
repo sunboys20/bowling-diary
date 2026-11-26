@@ -317,6 +317,8 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 .optrow input{width:22px;height:22px;margin:0;flex:none;accent-color:var(--accent)}
 .optrow .t{display:block;font-size:15px;font-weight:700}.optrow .d{display:block;font-size:12px;color:var(--muted)}
 .printonly{display:none}
+.demo-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;max-width:760px;margin:0 auto;padding:8px 16px;background:var(--k-match);color:var(--k-match-ink);font-size:13px}
+.demo-bar a{font-weight:800;color:inherit;white-space:nowrap;min-height:32px;display:inline-flex;align-items:center}
 /* narrow screens */
 @media screen and (max-width:600px){
   .sheet{padding:14px 10px;font-size:13px}
@@ -382,6 +384,7 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 'use strict';
 const APP_VER = '0.7';
 const MAXG = 10;
+const DEMO = new URLSearchParams(location.search).has('demo'); // 체험 모드: 따로 저장 공간, 서버 안 씀
 const app = document.getElementById('app');
 const $ = (s, el = document) => el.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -499,7 +502,7 @@ const DB = {
   db: null,
   open() {
     return new Promise((res, rej) => {
-      const rq = indexedDB.open('bowling-diary', 1);
+      const rq = indexedDB.open(DEMO ? 'bowling-diary-demo' : 'bowling-diary', 1);
       rq.onupgradeneeded = () => {
         const db = rq.result;
         for (const s of ['profiles', 'balls', 'days', 'photos']) db.createObjectStore(s, { keyPath: 'id' });
@@ -609,7 +612,8 @@ function renderWho() {
   app.innerHTML = `<h2>누가 쓰나요?</h2>
     <div class="who-grid">${profiles.map(p => `<button type="button" class="who-btn${CUR && CUR.id === p.id ? ' on' : ''}" data-id="${p.id}">${esc(p.name)}</button>`).join('')}</div>
     <p class="hint">이름은 [설정]에서 바꿀 수 있어요.</p>
-    <a class="btn" href="help.html" style="width:100%;margin-top:10px"><i class="ti ti-book" aria-hidden="true"></i> 처음이세요? 사용 설명서 보기</a>`;
+    <a class="btn" href="help.html" style="width:100%;margin-top:10px"><i class="ti ti-book" aria-hidden="true"></i> 처음이세요? 사용 설명서 보기</a>
+    ${DEMO ? '' : `<a class="btn" href="${demoURL()}" style="width:100%;margin-top:8px"><i class="ti ti-player-play" aria-hidden="true"></i> 예시 기록으로 체험해 보기</a>`}`;
   app.querySelectorAll('.who-btn').forEach(b => b.onclick = async () => {
     CUR = profiles.find(p => p.id === b.dataset.id); await setMeta('cur', CUR.id); go('#list');
   });
@@ -714,7 +718,7 @@ async function renderList() {
     <div class="go2"><button type="button" class="btn primary" id="newDay"><i class="ti ti-plus" aria-hidden="true"></i> 오늘 일지</button>
       <button type="button" class="btn line" id="photoDay"><i class="ti ti-camera" aria-hidden="true"></i> 사진으로</button></div>`;
   const lastBackup = await getMeta('lastBackup');
-  if (!SYNC.on && days.length >= 3 && (!lastBackup || Date.now() - lastBackup > 30 * 864e5))
+  if (!SYNC.on && !DEMO && days.length >= 3 && (!lastBackup || Date.now() - lastBackup > 30 * 864e5))
     h += `<div class="banner"><i class="ti ti-cloud-upload" aria-hidden="true"></i> 기록은 이 휴대폰에만 저장돼요. 백업한 지 오래됐어요 → <a href="#settings">백업하기</a></div>`;
   const boards = homeBoards(days, await homeConf());
   if (boards.length) {
@@ -1844,10 +1848,14 @@ async function renderSettings() {
       <select id="aiModel">${AI_MODELS.map(([v, l]) => `<option value="${v}"${aiModel === v ? ' selected' : ''}>${l}</option>`).join('')}</select>
       <div class="actions" style="margin-top:10px"><button type="button" class="btn primary small" id="aiSave">AI 설정 저장</button>${aiKey ? '<button type="button" class="btn small danger" id="aiDel">키 지우기</button>' : ''}</div>
     </div>
-    ${beta ? '<div class="card" id="srvCard"></div>' : ''}
+    ${DEMO ? `<div class="card"><b>체험 모드</b><p class="hint">예시 기록이 든 체험용 공간이에요. 여기서 바꾼 것은 내 진짜 기록·서버와 섞이지 않아요.</p>
+      <div class="actions"><button type="button" class="btn small" id="demoReset">처음 상태로 되돌리기</button><a class="btn primary small" href="${realURL()}">체험 끝내기</a></div></div>`
+      : `<a class="btn" href="${demoURL()}" style="width:100%;margin-bottom:8px"><i class="ti ti-player-play" aria-hidden="true"></i> 예시 기록으로 체험해 보기</a>`}
+    ${beta && !DEMO ? '<div class="card" id="srvCard"></div>' : ''}
     <a class="btn" href="help.html" style="width:100%;margin-bottom:8px"><i class="ti ti-book" aria-hidden="true"></i> 사용 설명서 (처음 설정 순서)</a>
     <p class="hint" id="verTap">볼링 연습일지 v${APP_VER}</p>`;
-  if (beta) renderServerCard();
+  if (beta && !DEMO) renderServerCard();
+  if ($('#demoReset')) $('#demoReset').onclick = resetDemo;
   const saveHB = async () => {
     const keys = [...app.querySelectorAll('#hbOpts input:checked')].map(x => x.value);
     const period = (app.querySelector('#hbPeriod .on') || {}).dataset?.hp || 'month';
@@ -1939,6 +1947,95 @@ $('#backupPick').addEventListener('change', async e => {
   toast('불러왔어요'); go('#who');
 });
 
+
+/* ---------- 체험 모드 (?demo): 예시 기록이 든 따로 저장 공간 — 진짜 기록·서버와 섞이지 않는다 ---------- */
+function demoRng(seed) { return () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }; }
+function demoGame(rnd, skill) {
+  const rolls = []; let split = false;
+  while (!BW.done(rolls)) {
+    const nx = BW.next(rolls);
+    if (nx.fresh) {
+      if (rnd() < skill) { rolls.push({ p: 10 }); split = false; continue; }
+      const p = 6 + Math.floor(rnd() * 4); split = p <= 8 && rnd() < 0.07;
+      rolls.push(split ? { p, s: true } : { p });
+    } else {
+      const spare = rnd() < (split ? 0.15 : 0.55 + skill * 0.5);
+      rolls.push({ p: spare ? nx.standing : Math.max(0, nx.standing - 1 - Math.floor(rnd() * 2)) });
+      split = false;
+    }
+  }
+  const g = { ...blankGame(), rolls }; applySummary(g); return g;
+}
+// a simple picture of a monitor scoreboard, so the photo screens have something to show
+function demoPhoto(g, title) {
+  const c = document.createElement('canvas'); c.width = 800; c.height = 600;
+  const x = c.getContext('2d');
+  x.fillStyle = '#0b1b33'; x.fillRect(0, 0, 800, 600);
+  x.fillStyle = '#93c5fd'; x.font = 'bold 34px sans-serif'; x.fillText(title, 40, 70);
+  const M = BW.marks(g.rolls), cum = BW.cum(g.rolls), w = 72;
+  for (let f = 0; f < 10; f++) {
+    const X = 40 + f * w, Y = 140;
+    x.strokeStyle = '#cbd5e1'; x.lineWidth = 2; x.strokeRect(X, Y, w, 150);
+    x.fillStyle = '#e2e8f0'; x.font = 'bold 20px sans-serif'; x.fillText(String(f + 1), X + 6, Y + 26);
+    x.font = 'bold 26px sans-serif';
+    (M[f] || []).forEach((m, k) => { x.fillStyle = m.t === 'X' ? '#f87171' : m.t === '/' ? '#60a5fa' : '#f8fafc'; x.fillText(m.t, X + 8 + k * 22, Y + 70); });
+    x.fillStyle = '#f8fafc'; x.font = 'bold 30px sans-serif'; x.fillText(cum[f] != null ? String(cum[f]) : '', X + 10, Y + 130);
+  }
+  x.fillStyle = '#fde68a'; x.font = 'bold 64px sans-serif'; x.fillText('TOTAL ' + (g.score ?? ''), 40, 450);
+  x.fillStyle = '#64748b'; x.font = '22px sans-serif'; x.fillText('체험용 예시 사진', 40, 540);
+  return new Promise(res => c.toBlob(res, 'image/jpeg', 0.8));
+}
+async function seedDemo() {
+  const rnd = demoRng(20261126), now = Date.now();
+  const P1 = { id: 'demo-p1', name: '체험 볼러', order: 1, places: [
+    { name: '스타볼링장', memo: '레인 24개 · 수요일 모임' }, { name: '한빛볼링', memo: '오일이 짧은 편' }, { name: '시청볼링센터', memo: '대회 장소' }] };
+  const P2 = { id: 'demo-p2', name: '친구 볼러', order: 2, places: [{ name: '스타볼링장', memo: '' }] };
+  for (const p of [P1, P2]) await DB.put('profiles', p);
+  const balls = [
+    { id: 'demo-b1', pid: P1.id, name: '블랙위도우', weight: 15, hand: '원핸드', memo: '기본 볼', active: true, created: now - 3e9 },
+    { id: 'demo-b2', pid: P1.id, name: '퍼플 스페어볼', weight: 14, hand: '원핸드', memo: '스페어용', active: true, created: now - 2e9 },
+    { id: 'demo-b3', pid: P1.id, name: '레드 하이브리드', weight: 15, hand: '투핸드', memo: '', active: false, created: now - 4e9 },
+    { id: 'demo-b4', pid: P2.id, name: '하우스볼', weight: 12, hand: '원핸드', memo: '', active: true, created: now - 3e9 }];
+  for (const b of balls) await DB.put('balls', b);
+  const plan = [ // [며칠 전, 종류, 볼링장, 레인, 볼, 게임 수, 실력, 대회 이름, 메모]
+    [1, '개인연습', '스타볼링장', '12', 'demo-b1', 3, .36, '', '스페어 연습 위주. 10번 핀 처리 좋아짐'],
+    [3, '단체연습', '스타볼링장', '11-12', 'demo-b1', 4, .3, '', '수요일 모임'],
+    [6, '개인연습', '한빛볼링', '7', 'demo-b2', 3, .25, '', '오일 짧아서 안쪽으로'],
+    [9, '대회', '시청볼링센터', '15-16', 'demo-b1', 4, .38, '시장배 볼링대회', '본선 진출!'],
+    [13, '단체연습', '스타볼링장', '12', 'demo-b1', 3, .3, '', ''],
+    [17, '기타', '한빛볼링', '3', 'demo-b3', 2, .2, '', '회사 친선 게임'],
+    [21, '개인연습', '스타볼링장', '12', 'demo-b1', 4, .32, '', '7번 핀 스페어 연습'],
+    [27, '단체연습', '스타볼링장', '9-10', 'demo-b1', 3, .28, '', ''],
+    [34, '대회', '시청볼링센터', '5-6', 'demo-b3', 4, .27, '구청장배 볼링대회', '첫 대회, 긴장했음'],
+    [41, '개인연습', '한빛볼링', '7', 'demo-b2', 3, .24, '', ''],
+    [48, '개인연습', '스타볼링장', '12', 'demo-b3', 3, .22, '', '']];
+  let photos = 0;
+  for (const [ago, kind, place, lane, ball, n, skill, match, memo] of plan) {
+    const d = new Date(); d.setDate(d.getDate() - ago);
+    const games = [];
+    for (let i = 0; i < n; i++) games.push(demoGame(rnd, skill));
+    if (photos < 6 && (ago < 15 || kind === '대회')) {
+      const g = games[0], id = 'demo-ph' + photos++;
+      await DB.put('photos', { id, blob: await demoPhoto(g, `${ymd(d)} ${place} · 1게임`) }); g.photoId = id;
+    }
+    games[n - 1].memo = n > 2 ? '마지막 게임 집중력 떨어짐' : '';
+    await DB.put('days', { id: 'demo-d' + ago, pid: P1.id, date: ymd(d), kind, match: match || undefined, place, lane, ballId: ball, memo, games, created: now - ago * 864e5, updated: now - ago * 864e5 });
+  }
+  for (const ago of [3, 13]) {
+    const d = new Date(); d.setDate(d.getDate() - ago);
+    await DB.put('days', { id: 'demo-f' + ago, pid: P2.id, date: ymd(d), kind: '단체연습', place: '스타볼링장', lane: '11-12', ballId: 'demo-b4', memo: '', games: [demoGame(rnd, .12), demoGame(rnd, .15)], created: now, updated: now });
+  }
+  await setMeta('homeBoards', { keys: ['recent', 'best', 'worst', 'today'], period: 'month' });
+  await setMeta('cur', P1.id);
+}
+async function resetDemo() {
+  if (!confirm('체험 기록을 처음 상태로 되돌릴까요? 체험 중에 바꾼 것은 지워져요.')) return;
+  for (const s of ['profiles', 'balls', 'days', 'photos', 'meta']) await RAW.clear(s);
+  urlCache.clear(); await seedDemo(); location.hash = '#list'; location.reload();
+}
+const demoURL = () => location.pathname + '?demo#list';
+const realURL = () => location.pathname + '#list';
+
 /* ---------- start ---------- */
 $('#whoBtn').onclick = () => go('#who');
 window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
@@ -1946,7 +2043,13 @@ window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); 
   try { await DB.open(); }
   catch (e) { app.innerHTML = '<div class="card">이 브라우저에서는 저장 공간을 열 수 없어요. 크롬·사파리 일반 창(시크릿 창 아님)에서 열어 주세요.</div>'; return; }
   try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) { /* ignore */ }
-  SYNC.on = !!(await getMeta('syncOn')); SYNC.lastOk = (await getMeta('syncLastOk')) || 0;
+  if (DEMO) {
+    if (!(await DB.all('profiles')).length) await seedDemo();
+    const bar = document.createElement('div'); bar.className = 'demo-bar noprint';
+    bar.innerHTML = '<span><b>체험 모드</b> · 예시 기록이에요. 마음껏 눌러 보세요.</span><a href="' + realURL() + '">체험 끝내기</a>';
+    document.querySelector('.top').after(bar);
+  }
+  SYNC.on = !DEMO && !!(await getMeta('syncOn')); SYNC.lastOk = (await getMeta('syncLastOk')) || 0;
   if (SYNC.on) { await loadOutbox(); SYNC.pending = Object.keys(outbox).length; }
   await loadProfiles();
   if (!profiles.length && !SYNC.on) { for (let i = 1; i <= 6; i++) await DB.put('profiles', { id: newId(), name: '사용자' + i, order: i }); await loadProfiles(); }

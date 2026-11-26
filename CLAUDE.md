@@ -29,6 +29,7 @@
 | `docs/supabase.md` | 서버 방식(Supabase) 설계 초안 — 아직 앱에 반영 안 됨 |
 
 - 주소: https://sunboys20.github.io/bowling-diary/ — main 에 push 하면 1분쯤 뒤 반영.
+- 체험 모드: 주소 뒤 `?demo` — 따로 저장 공간 `bowling-diary-demo` 에 예시 기록(`seedDemo`)을 만든다. 서버·진짜 기록과 안 섞임.
 - 기록은 각 휴대폰 브라우저(IndexedDB)에만 있다. 주소가 바뀌면 기록이 안 보인다(주소별 저장).
 - AI 자동 입력: 브라우저에서 Claude API 직접 호출. SDK `@anthropic-ai/sdk@1.6.0` (jsdelivr ESM), 기본 모델 `claude-opus-5-5`, 키는 사용자가 [설정]에 넣는다.
 
