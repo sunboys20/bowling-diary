@@ -1,6 +1,6 @@
 # 서버 방식 설계 (Supabase) — 초안
 
-> 상태: **만드는 중 — 1단계 끝, 2단계(로그인) 앱 v0.5 시험 중**. 동기화(3단계)는 아직.
+> 상태: **만드는 중 — 1·2단계 끝 (v0.5 로그인·초대 코드 가입 실제 성공)**. 다음은 3단계 동기화.
 > 목표 인원: 20~30명. 비용: Supabase 무료 요금제 안에서.
 
 ## 0. 프로젝트 (2026-11-26 사용자가 만듦, 지역 서울)
@@ -116,6 +116,8 @@ create policy "own rows" on days for all
   - Gmail(2단계 인증 + 앱 비밀번호) → Authentication → Emails → SMTP Settings: 호스트 `smtp.gmail.com`, 포트 `465`. 앱 비밀번호는 Supabase 화면에만 넣는다 (보관함·대화 금지).
   - Rate Limits 의 메일 수 한도를 시간당 100 정도로 올린다.
 - 그다음 메일 내용("Magic link or OTP", "Confirm signup")에 `{{ .Token }}` (6자리 번호)를 넣는다.
+- 메일 내용은 **두 곳 모두** 바꾼다: "Confirm sign up"(처음 가입하는 사람) · "Magic link or OTP"(두 번째부터). 저장 후 1~2분 지나야 적용.
+- 번호 길이: Sign In / Providers → Email → Email OTP Length (이 프로젝트 기본 8 → 6 으로). 앱은 6~10자리 받음.
 - 메일 속 **링크** 로그인은 쓰지 않는다: 홈 화면 앱과 브라우저는 저장 공간이 달라(특히 아이폰) 엉뚱한 곳에 로그인된다.
 
 ## 9. 정한 것 (사용자 결정 2026-11-26, 회사 서브컴)
