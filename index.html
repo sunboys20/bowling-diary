@@ -52,9 +52,15 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Pretendard V
 a{color:inherit}
 .ti{line-height:1;vertical-align:-.12em}
 .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top));background:var(--top);color:var(--top-ink);overflow:hidden}
-.top .title{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;flex:1;white-space:nowrap;position:relative;z-index:1}
-.top .title svg{width:24px;height:24px;flex:none}
-.top .title .sub{display:block;font-size:12px;font-weight:600;color:var(--muted);line-height:1.2}
+.me{flex:1;min-width:0;display:flex;align-items:center;gap:8px;min-height:48px;border:0;background:none;color:inherit;font:inherit;text-align:left;padding:0;cursor:pointer}
+.me svg{width:28px;height:28px;flex:none;color:var(--accent)}
+.me-t{min-width:0;display:flex;flex-direction:column}
+.me-t b{font-size:18px;font-weight:900;letter-spacing:-.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.me-s{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.me-s.on{color:var(--accent)}.me-s.bad{color:var(--danger)}
+.me .ti-chevron-down{color:var(--muted);flex:none}
+.st-btn{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none}
+.st-btn.on{color:var(--accent);border-color:var(--sb-line2)}.st-btn.bad{color:var(--danger)}
 .who{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:44px;border:1px solid var(--line);background:var(--card);color:var(--accent);border-radius:999px;padding:6px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
 .help-btn{width:44px;padding:0;text-decoration:none;font-size:20px}
 main{max-width:760px;margin:0 auto;padding:8px 16px 120px}
@@ -370,9 +376,10 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
   <symbol id="i-pins5" viewBox="0 0 70 40"><use href="#i-pin" x="0" y="8" width="13" height="32"/><use href="#i-pin" x="14" y="4" width="13" height="32"/><use href="#i-pin" x="28" y="0" width="13" height="32"/><use href="#i-pin" x="42" y="4" width="13" height="32"/><use href="#i-pin" x="56" y="8" width="13" height="32"/></symbol>
 </defs></svg>
 <header class="top noprint">
-  <div class="title"><svg style="color:var(--accent)" aria-hidden="true"><use href="#i-ball"/></svg><span>볼링 연습일지<span class="sub" id="topSub"></span></span></div>
+  <button type="button" class="me" id="whoBtn" aria-label="볼러 바꾸기"><svg aria-hidden="true"><use href="#i-ball"/></svg>
+    <span class="me-t"><b id="topName">볼러 고르기</b><span class="me-s" id="topSub"></span></span><i class="ti ti-chevron-down" aria-hidden="true"></i></button>
+  <a class="st-btn" id="topAcct" href="#settings" aria-label="저장 방식·로그인 (설정)"><i class="ti ti-device-mobile" aria-hidden="true"></i></a>
   <a class="who help-btn" href="help.html" aria-label="사용 설명서"><i class="ti ti-help" aria-hidden="true"></i></a>
-  <button type="button" class="who" id="whoBtn">사용자 선택</button>
 </header>
 <main id="app"></main>
 <nav class="tabs noprint" id="tabs">
@@ -593,8 +600,7 @@ async function render() {
   const tab = { edit: 'list', view: 'list', photos: 'list', ball: 'balls', place: 'balls' }[r] || r;
   document.querySelectorAll('#tabs a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
   document.body.classList.toggle('editing', r === 'edit' || r === 'ball' || r === 'place');
-  $('#whoBtn').textContent = CUR ? CUR.name + ' ▾' : '사용자 선택';
-  $('#topSub').textContent = new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' });
+  topBar();
   window.scrollTo(0, 0);
   if (!CUR && r !== 'settings') return renderWho();
   switch (r) {
@@ -626,7 +632,7 @@ function renderWho() {
 /* ---------- v0.7 shared pieces: kinds, 5x2 scoreboard, game card, places ---------- */
 const KINDS = ['대회', '개인연습', '단체연습', '기타'];
 // 지금 누구의 기록을 보고 있는지 — 제목 옆 작은 이름표
-const whoTag = () => CUR ? `<a class="who-tag" href="#who" aria-label="${esc(CUR.name)} 님의 기록 · 사람 바꾸기">${esc(CUR.name)} 님</a>` : '';
+const whoTag = () => ''; // 누구의 기록인지는 머리글(맨 위)에 늘 보인다
 const ktag = k => k ? `<span class="ktag k-${esc(k)}">${esc(k)}</span>` : '';
 const spareCount = rolls => BW.marks(rolls || []).flat().filter(m => m.t === '/').length;
 // screen scoreboard: frames 1-5 and 6-10 in two rows, running total under each frame (kept quiet)
@@ -717,9 +723,7 @@ async function renderList() {
   const scOf = pre => days.filter(d => d.date.startsWith(pre)).flatMap(d => (d.games || []).map(g => g.score).filter(v => v != null));
   const monthSc = scOf(ym), lastSc = scOf(lm);
   const diff = monthSc.length && lastSc.length ? avg(monthSc) - avg(lastSc) : null;
-  let h = `<div class="hello"><div><div class="muted">${profiles.length > 1 ? '지금 보는 기록' : '내 기록'}</div><b>${esc(CUR.name)} 님</b></div>
-      ${profiles.length > 1 ? '<a class="btn small" href="#who"><i class="ti ti-switch-horizontal" aria-hidden="true"></i> 사람 바꾸기</a>' : ''}</div>
-    <div class="home-hero"><div class="ring"><div class="v">${f1(avg(monthSc))}</div><div class="l">${+ym.slice(5)}월 평균</div></div>
+  let h = `<div class="home-hero"><div class="ring"><div class="v">${f1(avg(monthSc))}</div><div class="l">${+ym.slice(5)}월 평균</div></div>
     <div class="hero-rows"><div><span>최고</span><b>${monthSc.length ? Math.max(...monthSc) : '-'}</b></div>
       <div><span>게임</span><b>${monthSc.length}</b></div>
       <div><span>지난달보다</span><b class="${diff == null ? '' : diff >= 0 ? 'up' : 'down'}">${diff == null ? '-' : (diff >= 0 ? '+' : '') + f1(diff)}</b></div></div></div>
@@ -1295,7 +1299,7 @@ async function renderView(id) {
   }).join('');
   app.innerHTML = `<div class="screenonly">
       <div class="gear-top" style="margin:4px 2px 12px">
-        <div class="gi"><div style="margin-bottom:4px">${whoTag()}</div><div style="font-size:19px;font-weight:900">${fmtDate(d.date)} ${ktag(d.kind)}</div>
+        <div class="gi"><div style="font-size:19px;font-weight:900">${fmtDate(d.date)} ${ktag(d.kind)}</div>
           <div class="muted">${[d.match ? esc(d.match) : '', esc(d.place) || '볼링장 미입력', d.lane ? '레인 ' + esc(d.lane) : '', esc(ballTxt)].filter(Boolean).join(' · ')}</div></div>
         <a class="btn small" href="#edit/${d.id}">고치기</a></div>
       <div class="dkpis"><div><div class="l">평균</div><div class="v">${sc.length ? f1(avg(sc)) : '-'}</div></div>
@@ -1539,6 +1543,7 @@ async function renderServerCard() {
   try { st = await sbStatus(); }
   catch (e) { if ($('#srvCard')) box.innerHTML = head + `<p class="hint">${esc(sbErr(e))}</p><div class="actions"><button type="button" class="btn small" id="sbRetry">다시 연결</button></div>`; if ($('#sbRetry')) $('#sbRetry').onclick = renderServerCard; return; }
   if (!$('#srvCard')) return;
+  topBar();
   const busy = (btn, on) => { btn.disabled = on; btn.dataset.t = btn.dataset.t || btn.textContent; btn.textContent = on ? '잠시만요…' : btn.dataset.t; };
 
   if (!st.user && !sbPendingEmail) {
@@ -1762,6 +1767,7 @@ async function afterPull() {
   if (!dirty && !['edit', 'ball', 'settings'].includes(r)) render();
 }
 function syncBadge() {
+  topBar();
   const el = $('#syncStat'); if (!el) return;
   if (SYNC.running) { el.textContent = '서버와 맞추는 중…'; return; }
   const t = SYNC.lastOk ? new Date(SYNC.lastOk).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '아직 없음';
@@ -1824,7 +1830,7 @@ async function renderSettings() {
   const aiKey = !!(await getMeta('aiKey')), aiModel = (await getMeta('aiModel')) || 'claude-opus-5-5';
   let est = '';
   try { if (navigator.storage && navigator.storage.estimate) { const e = await navigator.storage.estimate(); est = `사용 중 ${(e.usage / 1048576).toFixed(1)} MB`; } } catch (e) { /* ignore */ }
-  const beta = !!(await getMeta('serverBeta'));
+  const beta = !!(await getMeta('serverBeta')); betaOn = beta;
   const hb = await homeConf();
   const canShare = !!(navigator.canShare && navigator.canShare({ files: [new File(['x'], 't.json', { type: 'application/json' })] }));
   app.innerHTML = `<h2>설정</h2>
@@ -2044,6 +2050,25 @@ async function resetDemo() {
 const demoURL = () => location.pathname + '?demo#list';
 const realURL = () => location.pathname + '#list';
 
+// 머리글: 지금 볼러 + 어디에 저장되는지(로그인한 이메일). 화면이 바뀔 때·맞추기 상태가 바뀔 때 다시 그린다
+let betaOn = false;
+function sbEmail() { try { const a = JSON.parse(localStorage.getItem('bowling-diary-auth') || 'null'); return (a && a.user && a.user.email) || ''; } catch (e) { return ''; } }
+function topBar() {
+  const name = $('#topName'), sub = $('#topSub'), btn = $('#topAcct'); if (!name) return;
+  name.textContent = CUR ? CUR.name + ' 님' : '볼러 고르기';
+  const email = DEMO ? '' : sbEmail();
+  let txt, cls = '', icon = 'ti-device-mobile';
+  if (DEMO) { txt = '체험 모드 · 예시 기록'; icon = 'ti-player-play'; }
+  else if (SYNC.on && email) {
+    icon = 'ti-cloud-check'; cls = 'on'; txt = email + ' · 서버에도 저장';
+    if (SYNC.error) { cls = 'bad'; icon = 'ti-cloud-x'; txt = email + ' · 서버 맞추기 문제'; }
+    else if (SYNC.pending) { icon = 'ti-cloud-upload'; txt = email + ` · 올릴 것 ${SYNC.pending}개`; }
+  } else if (email) { txt = email + ' · 이 휴대폰에만 저장'; icon = 'ti-user-check'; }
+  else txt = betaOn ? '로그인 안 함 · 이 휴대폰에만 저장' : '이 휴대폰에만 저장';
+  sub.textContent = txt; sub.className = 'me-s' + (cls ? ' ' + cls : '');
+  btn.className = 'st-btn' + (cls ? ' ' + cls : ''); btn.innerHTML = `<i class="ti ${icon}" aria-hidden="true"></i>`;
+  btn.setAttribute('aria-label', txt + ' (설정)');
+}
 /* ---------- start ---------- */
 $('#whoBtn').onclick = () => go('#who');
 window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
@@ -2057,6 +2082,7 @@ window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); 
     bar.innerHTML = '<span><b>체험 모드</b> · 예시 기록이에요. 마음껏 눌러 보세요.</span><a href="' + realURL() + '">체험 끝내기</a>';
     document.querySelector('.top').after(bar);
   }
+  betaOn = !!(await getMeta('serverBeta'));
   SYNC.on = !DEMO && !!(await getMeta('syncOn')); SYNC.lastOk = (await getMeta('syncLastOk')) || 0;
   if (SYNC.on) { await loadOutbox(); SYNC.pending = Object.keys(outbox).length; }
   await loadProfiles();
