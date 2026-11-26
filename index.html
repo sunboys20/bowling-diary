@@ -303,7 +303,7 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 <div id="toast" role="status"></div>
 <script>
 'use strict';
-const APP_VER = '0.5';
+const APP_VER = '0.6';
 const MAXG = 10;
 const app = document.getElementById('app');
 const $ = (s, el = document) => el.querySelector(s);
@@ -470,7 +470,7 @@ async function cleanupPhotos() {
     for (const p of await DB.all('photos')) if (!used.has(p.id)) await DB.del('photos', p.id);
   } catch (e) { /* ignore */ }
 }
-function shrinkPhoto(file, max = 1600) {
+function shrinkPhoto(file, max = 1200) {
   return new Promise((res, rej) => {
     const u = URL.createObjectURL(file), img = new Image();
     img.onload = () => {
@@ -478,7 +478,7 @@ function shrinkPhoto(file, max = 1600) {
       const c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
       c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
       URL.revokeObjectURL(u);
-      c.toBlob(b => b ? res(b) : rej(new Error('사진 변환 실패')), 'image/jpeg', 0.82);
+      c.toBlob(b => b ? res(b) : rej(new Error('사진 변환 실패')), 'image/jpeg', 0.75);
     };
     img.onerror = () => { URL.revokeObjectURL(u); rej(new Error('이 사진을 열 수 없어요')); };
     img.src = u;
@@ -560,7 +560,7 @@ async function renderList() {
       <span class="l-t">${days.some(d => d.date === today()) ? '오늘 한 번 더?' : '오늘도 한 게임?'}</span>
       <span class="l-b"><i class="ti ti-plus" aria-hidden="true"></i> 오늘 연습일지 쓰기</span></button>`;
   const lastBackup = await getMeta('lastBackup');
-  if (days.length >= 3 && (!lastBackup || Date.now() - lastBackup > 30 * 864e5))
+  if (!SYNC.on && days.length >= 3 && (!lastBackup || Date.now() - lastBackup > 30 * 864e5))
     h += `<div class="banner"><i class="ti ti-cloud-upload" aria-hidden="true"></i> 기록은 이 휴대폰에만 저장돼요. 백업한 지 오래됐어요 → <a href="#settings">백업하기</a></div>`;
   if (!days.length) h += `<div class="art-empty">${PINS_SVG}아직 기록이 없어요.<br>위 레인을 눌러 첫 일지를 써 보세요.</div>`;
   let month = '';
@@ -1224,7 +1224,7 @@ async function sbStatus() {
   const m = await sb.from('members').select('user_id').maybeSingle();
   if (m.error) throw m.error;
   let rows = null;
-  if (m.data) { const r = await sb.from('days').select('id', { count: 'exact', head: true }); if (!r.error) rows = r.count; }
+  if (m.data) { const r = await sb.from('days').select('id', { count: 'exact', head: true }).eq('deleted', false); if (!r.error) rows = r.count; }
   return { user: session.user, member: !!m.data, rows };
 }
 async function renderServerCard() {
@@ -1292,14 +1292,205 @@ async function renderServerCard() {
     };
   } else {
     box.innerHTML = head + who + `<p class="hint">✓ 모임 회원 · 서버에 있는 내 일지 ${st.rows ?? '?'}개</p>
-      <p class="hint">휴대폰 기록을 서버로 올리기·자동으로 맞추기는 <b>다음 업데이트</b>에서 켜져요. 지금은 기록이 계속 이 휴대폰에만 저장돼요.</p>
-      <div class="actions">${out}</div>`;
+      <label class="f">저장 방식</label>
+      <div class="seg" id="syncMode"><label><input type="radio" name="syncMode" value="off"${SYNC.on ? '' : ' checked'}> 이 휴대폰에만</label><label><input type="radio" name="syncMode" value="on"${SYNC.on ? ' checked' : ''}> 서버에도</label></div>
+      <p class="hint">${SYNC.on ? '저장하면 이 휴대폰에 먼저 저장하고, 인터넷이 되면 서버와 자동으로 맞춰요. 다른 휴대폰에서 같은 이메일로 로그인하면 같은 기록이 보여요.' : '지금은 기록이 이 휴대폰에만 있어요. [서버에도]를 고르면 서버에 올라가서 휴대폰을 바꿔도 남아요.'}</p>
+      ${SYNC.on ? '<p class="hint" id="syncStat"></p>' : ''}
+      <div class="actions">${SYNC.on ? '<button type="button" class="btn primary small" id="syncGo">지금 맞추기</button>' : ''}${out}</div>`;
+    syncBadge();
+    app.querySelectorAll('input[name="syncMode"]').forEach(r => r.onchange = async () => {
+      try {
+        if (r.value === 'on') { if (!(await enableSync())) toast('그대로 뒀어요'); }
+        else if (!(await disableSync())) toast('그대로 뒀어요');
+      } catch (e) { alert(sbErr(e)); }
+      renderServerCard();
+    });
+    if ($('#syncGo')) $('#syncGo').onclick = () => syncNow();
   }
   $('#sbOut').onclick = async () => {
     if (!confirm('로그아웃할까요? (이 휴대폰의 기록은 그대로 남아요)')) return;
+    if (SYNC.on && !(await disableSync())) return;
     try { await (await sbClient()).auth.signOut(); } catch (e) { /* 인터넷이 없어도 이 휴대폰에서는 로그아웃 */ }
     toast('로그아웃했어요'); renderServerCard();
   };
+}
+
+/* ---------- sync (3단계): 휴대폰(IndexedDB)에 먼저 저장 → 인터넷 되면 서버와 맞추기 (docs/supabase.md 5번) ----------
+   - DB.put/del 을 감싸서, 서버에도 저장 중이면 바뀐 것을 '올릴 목록'(meta.syncOutbox)에 적는다.
+   - 맞추기 = 올리기(사진 → 표) → 받기(updated_at 이후) → 빠진 사진 받기. 올리지 않은 것은 받을 때 덮어쓰지 않는다. */
+const SYNC_STORES = ['profiles', 'balls', 'days'];
+const SYNC = { on: false, running: false, again: false, timer: 0, lastOk: 0, error: '', pending: 0 };
+const RAW = { put: DB.put.bind(DB), del: DB.del.bind(DB), clear: DB.clear.bind(DB) };
+let outbox = null, outboxChain = Promise.resolve();
+async function loadOutbox() { if (!outbox) outbox = (await getMeta('syncOutbox')) || {}; return outbox; }
+function outboxDo(fn) { outboxChain = outboxChain.then(async () => { await loadOutbox(); await fn(); await setMeta('syncOutbox', outbox); SYNC.pending = Object.keys(outbox).length; }).catch(() => {}); return outboxChain; }
+function markSync(s, id, op) {
+  if (!SYNC.on || id == null) return;
+  outboxDo(() => { outbox[s + ':' + id] = { s, id, op, v: Date.now() + Math.random() }; });
+  clearTimeout(SYNC.timer); SYNC.timer = setTimeout(() => syncNow(), 1500);
+}
+DB.put = async function (s, v) { const r = await RAW.put(s, v); if (SYNC_STORES.includes(s)) markSync(s, v.id, 'put'); return r; };
+DB.del = async function (s, k) { const r = await RAW.del(s, k); if (SYNC_STORES.includes(s) || s === 'photos') markSync(s, k, 'del'); return r; };
+DB.clear = async function (s) {
+  if (SYNC.on && (SYNC_STORES.includes(s) || s === 'photos')) for (const r of await DB.all(s)) markSync(s, r.id, 'del');
+  return RAW.clear(s);
+};
+const TO_SRV = {
+  profiles: p => ({ id: p.id, name: p.name || '이름 없음', ord: p.order || 0, deleted: false }),
+  balls: b => ({ id: b.id, pid: b.pid, name: b.name, weight: b.weight == null || b.weight === '' ? null : +b.weight, hand: b.hand, memo: b.memo, active: b.active !== false, created: b.created || null, deleted: false }),
+  days: d => ({ id: d.id, pid: d.pid, date: d.date, place: d.place, lane: d.lane, ball_id: d.ballId, memo: d.memo, games: d.games || [], created: d.created || null, deleted: false })
+};
+const FROM_SRV = {
+  profiles: r => ({ id: r.id, name: r.name, order: r.ord }),
+  balls: r => ({ id: r.id, pid: r.pid, name: r.name, weight: r.weight == null ? null : +r.weight, hand: r.hand, memo: r.memo, active: r.active, created: r.created }),
+  days: r => ({ id: r.id, pid: r.pid, date: r.date, place: r.place, lane: r.lane, ballId: r.ball_id, memo: r.memo, games: r.games, created: r.created, updated: Date.parse(r.updated_at) })
+};
+const photoPath = (uid, id) => `${uid}/${id}.jpg`;
+async function syncNow() {
+  if (!SYNC.on) return;
+  if (SYNC.running) { SYNC.again = true; return; }
+  SYNC.running = true; SYNC.error = ''; syncBadge();
+  let changed = 0;
+  try {
+    if (!navigator.onLine) throw new Error('network');
+    const sb = await sbClient();
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) throw Object.assign(new Error('nologin'), { nologin: true });
+    const uid = session.user.id;
+    await outboxChain; await loadOutbox();
+    await syncPush(sb, uid);
+    changed = await syncPull(sb);
+    await syncPhotosDown(sb, uid);
+    SYNC.lastOk = Date.now(); await setMeta('syncLastOk', SYNC.lastOk);
+  } catch (e) { SYNC.error = e.nologin ? '로그인이 풀렸어요. 다시 로그인해 주세요.' : sbErr(e); }
+  SYNC.running = false; SYNC.pending = Object.keys(outbox || {}).length;
+  syncBadge();
+  if (changed) await afterPull();
+  if (SYNC.again) { SYNC.again = false; syncNow(); }
+}
+async function syncPush(sb, uid) {
+  const entries = Object.values(outbox); if (!entries.length) return;
+  const done = [];
+  try {
+    for (const s of SYNC_STORES) {                       // 올리는 순서: 사람 → 볼 → 일지 (서로 이어져 있어서)
+      const puts = entries.filter(e => e.s === s && e.op === 'put'), rows = [];
+      for (const e of puts) { const r = await DB.get(s, e.id); if (r) rows.push(r); }
+      if (s === 'days') for (const d of rows) await syncPhotosUp(sb, uid, d);
+      for (let i = 0; i < rows.length; i += 200) {
+        const { error } = await sb.from(s).upsert(rows.slice(i, i + 200).map(TO_SRV[s])); if (error) throw error;
+      }
+      done.push(...puts);
+    }
+    for (const s of [...SYNC_STORES].reverse()) {        // 지우기는 서버에서 '지움' 표시만
+      const dels = entries.filter(e => e.s === s && e.op === 'del'), ids = dels.map(e => e.id);
+      for (let i = 0; i < ids.length; i += 200) {
+        const { error } = await sb.from(s).update({ deleted: true }).in('id', ids.slice(i, i + 200)); if (error) throw error;
+      }
+      done.push(...dels);
+    }
+    const ph = entries.filter(e => e.s === 'photos');
+    if (ph.length) {
+      const { error } = await sb.storage.from('photos').remove(ph.map(e => photoPath(uid, e.id))); if (error) throw error;
+      const up = (await getMeta('syncPhotosUp')) || {}; ph.forEach(e => delete up[e.id]); await setMeta('syncPhotosUp', up);
+      done.push(...ph);
+    }
+  } finally {
+    await outboxDo(() => { for (const e of done) { const k = e.s + ':' + e.id; if (outbox[k] && outbox[k].v === e.v) delete outbox[k]; } });
+  }
+}
+async function syncPhotosUp(sb, uid, d) {
+  const up = (await getMeta('syncPhotosUp')) || {}; let n = 0;
+  try {
+    for (const g of d.games || []) {
+      const id = g.photoId; if (!id || up[id]) continue;
+      const p = await DB.get('photos', id); if (!p) continue;
+      const { error } = await sb.storage.from('photos').upload(photoPath(uid, id), p.blob, { contentType: 'image/jpeg', upsert: true });
+      if (error) throw error;
+      up[id] = 1; n++;
+    }
+  } finally { if (n) await setMeta('syncPhotosUp', up); }
+}
+async function syncPull(sb) {
+  let changed = 0;
+  for (const s of SYNC_STORES) {
+    let since = (await getMeta('syncSince_' + s)) || '1970-01-01T00:00:00Z';
+    for (;;) {
+      const { data, error } = await sb.from(s).select('*').gte('updated_at', since).order('updated_at').limit(500);
+      if (error) throw error;
+      for (const r of data) {
+        if (outbox[s + ':' + r.id]) continue;            // 이 휴대폰에서 고친 것이 아직 안 올라감 → 휴대폰 것을 지킨다
+        const cur = await DB.get(s, r.id);
+        if (r.deleted) { if (cur) { await RAW.del(s, r.id); changed++; } continue; }
+        const nv = { ...(cur || {}), ...FROM_SRV[s](r) };
+        if (cur && JSON.stringify({ ...nv, updated: 0 }) === JSON.stringify({ ...cur, updated: 0 })) continue;
+        await RAW.put(s, nv); changed++;
+      }
+      if (data.length) since = data[data.length - 1].updated_at;
+      await setMeta('syncSince_' + s, since);
+      if (data.length < 500) break;
+    }
+  }
+  return changed;
+}
+async function syncPhotosDown(sb, uid) {
+  const need = new Set((await DB.all('days')).flatMap(d => (d.games || []).map(g => g.photoId).filter(Boolean)));
+  const have = new Set((await DB.all('photos')).map(p => p.id));
+  const up = (await getMeta('syncPhotosUp')) || {}; let n = 0;
+  for (const id of need) {
+    if (have.has(id)) continue;
+    const { data, error } = await sb.storage.from('photos').download(photoPath(uid, id));
+    if (error || !data) continue;                        // 아직 안 올라왔거나 지워진 사진 — 다음에 다시
+    await RAW.put('photos', { id, blob: data }); up[id] = 1; n++;
+  }
+  if (n) { await setMeta('syncPhotosUp', up); const r = location.hash.replace(/^#/, '').split('/')[0]; if (r === 'view' && !dirty) render(); }
+}
+async function afterPull() {
+  await cleanupPhotos(); await loadProfiles();
+  if (CUR) { CUR = profiles.find(p => p.id === CUR.id) || null; if (!CUR) await setMeta('cur', null); }
+  const r = location.hash.replace(/^#/, '').split('/')[0] || 'list';
+  if (!dirty && !['edit', 'ball', 'settings'].includes(r)) render();
+}
+function syncBadge() {
+  const el = $('#syncStat'); if (!el) return;
+  if (SYNC.running) { el.textContent = '서버와 맞추는 중…'; return; }
+  const t = SYNC.lastOk ? new Date(SYNC.lastOk).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '아직 없음';
+  el.innerHTML = (SYNC.error ? `<b style="color:var(--danger)">⚠ ${esc(SYNC.error)}</b><br>` : '') +
+    `마지막으로 맞춘 때: ${esc(t)}${SYNC.pending ? ` · 아직 못 올린 것 ${SYNC.pending}개` : ''}`;
+}
+async function enableSync() {
+  const sb = await sbClient();
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { alert('먼저 로그인해 주세요.'); return false; }
+  const { count, error } = await sb.from('profiles').select('id', { count: 'exact', head: true }).eq('deleted', false);
+  if (error) throw error;
+  const days = await DB.all('days'), balls = await DB.all('balls');
+  const localEmpty = !days.length && !balls.length;
+  let upload = true;
+  if (count && localEmpty) upload = false;                 // 새 휴대폰: 서버 기록만 받는다
+  else if (count) { if (!confirm(`서버에 이미 이 계정의 기록이 있어요.\n이 휴대폰 기록(일지 ${days.length}개, 볼 ${balls.length}개)도 서버에 합쳐서 올릴까요?\n\n다른 휴대폰에서 쓰던 사용자와 이름이 같은 사용자가 두 번 보일 수 있어요.`)) return false; }
+  else if (days.length && !confirm(`이 휴대폰 기록(일지 ${days.length}개, 볼 ${balls.length}개, 사진 포함)을 서버로 올릴까요?`)) return false;
+  for (const s of SYNC_STORES) await setMeta('syncSince_' + s, null);
+  await setMeta('syncPhotosUp', {});
+  await outboxDo(() => { outbox = {}; });
+  if (!upload) { for (const s of [...SYNC_STORES, 'photos']) await RAW.clear(s); urlCache.clear(); CUR = null; await setMeta('cur', null); profiles = []; }
+  SYNC.on = true; SYNC.error = ''; await setMeta('syncOn', true);
+  if (upload) for (const s of SYNC_STORES) for (const r of await DB.all(s)) markSync(s, r.id, 'put');
+  await outboxChain; clearTimeout(SYNC.timer);
+  toast(upload ? '서버로 올리는 중…' : '서버 기록을 받는 중…');
+  await syncNow();
+  if (!upload) { await afterPull(); if (!profiles.length) alert('서버 기록을 받지 못했어요. 인터넷을 확인하고 [지금 맞추기]를 눌러 주세요.'); }
+  toast(SYNC.error ? '다 맞추지 못했어요 — 설정에서 확인해 주세요' : '서버와 맞췄어요');
+  return true;
+}
+async function disableSync() {
+  await outboxChain; await loadOutbox();
+  const n = Object.keys(outbox).length;
+  if (n && !confirm(`아직 서버에 못 올린 것이 ${n}개 있어요. 그래도 서버 저장을 끌까요?\n(이 휴대폰 기록은 그대로 남아요)`)) return false;
+  SYNC.on = false; clearTimeout(SYNC.timer); await setMeta('syncOn', false);
+  await outboxDo(() => { outbox = {}; });
+  for (const s of SYNC_STORES) await setMeta('syncSince_' + s, null);
+  await setMeta('syncPhotosUp', {});
+  return true;
 }
 
 /* ---------- settings / backup ---------- */
@@ -1421,8 +1612,10 @@ window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); 
   try { await DB.open(); }
   catch (e) { app.innerHTML = '<div class="card">이 브라우저에서는 저장 공간을 열 수 없어요. 크롬·사파리 일반 창(시크릿 창 아님)에서 열어 주세요.</div>'; return; }
   try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) { /* ignore */ }
+  SYNC.on = !!(await getMeta('syncOn')); SYNC.lastOk = (await getMeta('syncLastOk')) || 0;
+  if (SYNC.on) { await loadOutbox(); SYNC.pending = Object.keys(outbox).length; }
   await loadProfiles();
-  if (!profiles.length) { for (let i = 1; i <= 6; i++) await DB.put('profiles', { id: newId(), name: '사용자' + i, order: i }); await loadProfiles(); }
+  if (!profiles.length && !SYNC.on) { for (let i = 1; i <= 6; i++) await DB.put('profiles', { id: newId(), name: '사용자' + i, order: i }); await loadProfiles(); }
   const cid = await getMeta('cur');
   CUR = profiles.find(p => p.id === cid) || null;
   cleanupPhotos();
@@ -1430,6 +1623,9 @@ window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); 
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
   window.addEventListener('hashchange', onRoute);
   render();
+  if (SYNC.on) setTimeout(syncNow, 300);
+  window.addEventListener('online', () => syncNow());
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') syncNow(); });
 })();
 </script>
 </body>

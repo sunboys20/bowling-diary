@@ -125,6 +125,10 @@ create table if not exists public.days (
   deleted    boolean not null default false
 );
 
+-- (3단계 추가) 앱의 만든 시각(ms) — 볼 목록 순서에 쓴다
+alter table public.balls add column if not exists created bigint;
+alter table public.days  add column if not exists created bigint;
+
 create index if not exists profiles_owner_upd on public.profiles (owner, updated_at);
 create index if not exists balls_owner_upd    on public.balls    (owner, updated_at);
 create index if not exists days_owner_upd     on public.days     (owner, updated_at);
