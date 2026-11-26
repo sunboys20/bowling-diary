@@ -1,7 +1,16 @@
 # 인수인계 노트 (볼링 연습일지)
 
 ## 2026-11-26  서버 방식(Supabase) 설계 초안
-- 상태: 진행중 (서버 저장 숨김 풂·설명서 새로 씀 — 남은 일: 사용자가 supabase.sql 다시 실행(v0.7 칸) · 모임에 초대 코드 알림 · OTP 길이 6 으로(선택))
+- 상태: 진행중 (v0.7.1 까지 올림 — 사용자 확인 "이상 없음". 서버 저장·가입 설명서·체험 모드·화면 밝기 설정 다 됨)
+- 작업 기기: 회사 컴 (집 컴에서 이어 가도 됨 — `git pull` 만 하면 됨)
+- 남은 일 / 다음 단계:
+  1. 모임 사람들에게 가입 설명서 주소 + 초대 코드 알리기 (사용자가 직접. 초대 코드는 보관함에 적지 않는다)
+     https://sunboys20.github.io/bowling-diary/signup.html
+  2. 진짜 휴대폰으로 처음 가입하는 사람 한 명 따라 해 보기 → 막히는 곳을 설명서에 반영
+  3. 실제 점수판 사진으로 AI 읽기(Haiku) 시험 → 틀리면 AI_PROMPT 다듬기 / Opus 와 비교
+  4. (선택) Supabase 이메일 번호 길이 8 → 6 (Authentication › Email OTP Length). 설명서는 '숫자 번호'라 그대로 둬도 됨
+  5. (선택) server2 8892 예비 주소 — **server2 에서만** (docs/server2.md)
+- 끝난 일: supabase.sql 다시 실행(v0.7 칸)·초대 코드 만들기 — 사용자가 함 (2026-11-26)
 - 2026-11-26 v0.7.1 화면 밝기 설정: 설정 [화면] 자동/밝게/어둡게 (localStorage 'bowling-diary-theme', 이 기기만). <head> 의 applyTheme 가 html data-theme·맨 위 줄 색(theme-color 2개, 밝음/어두움)을 바꿈. help·signup 도 같이 따름. 확인: 375px 휴대폰 다크에서 밝게·어둡게·자동, 다시 열어도 유지, 콘솔 오류 0
 - 2026-11-26 가입 설명서 signup.html (컴맹용, 10단계 + 잘 안 될 때) — 사진 help/signup-1~7.png 는 가짜 서버로 각 단계를 만들어 빨간 테두리로 누를 곳 표시. 앱 서버 저장 칸·help.html 에서 연결, sw.js 캐시 v3
   사진 찍기: 로컬 서버(npx serve -l 8153 .) 켜고 `node tools/shots.mjs http://localhost:8153 [이름…]` (tools/_shot.html 화면을 크롬 원격 조종으로 찍음)
@@ -89,7 +98,7 @@
   - 도움말 사진은 예시 자료(김볼링)로 찍음
 
 ## 2026-11-24  볼링 연습일지 v0.3 공개 · server2 예비 주소 준비
-- 상태: 진행중
+- 상태: 완료 (남은 일은 맨 위 항목으로 옮김)
 - 작업 기기: 집 컴
 - 대상 파일: index.html, manifest.webmanifest, sw.js, icons/, tools/setup_server2.ps1, docs/server2.md
 - 한 일:
