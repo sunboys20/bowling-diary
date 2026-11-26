@@ -1,7 +1,13 @@
 # 서버 방식 설계 (Supabase) — 초안
 
-> 상태: **설계 초안**. 아래 "정할 것"이 정해지면 만들기 시작한다. 코드는 아직 안 고쳤다.
+> 상태: **만드는 중 — 1단계(표·RLS SQL)**. 앱 코드는 아직 안 고쳤다.
 > 목표 인원: 20~30명. 비용: Supabase 무료 요금제 안에서.
+
+## 0. 프로젝트 (2026-11-26 사용자가 만듦, 지역 서울)
+- 주소: `https://gxwquxyymjfgtimzlglr.supabase.co`
+- 공개 키(publishable, 예전 이름 anon): `sb_publishable_hs6lOQupvkCSs0KMotr89g_hm_v8pV0` — 앱에 넣어도 되는 키
+- **secret / service_role 키와 DB 비밀번호는 여기·앱·대화 어디에도 적지 않는다.**
+- 표·규칙 SQL: [`supabase.sql`](supabase.sql) — SQL Editor 에 붙여 넣고 Run
 
 ## 1. 왜 바꾸나 (지금의 한계)
 | 지금 (v0.4) | 바꾸면 |
@@ -95,6 +101,19 @@ create policy "own rows" on days for all
 | 5 | (선택) 모임 기능: 서로 평균·순위 보기 | 나중에 |
 
 `sw.js` 는 Supabase 요청을 캐시하지 않게 해야 한다 (고치면 캐시 이름 v3).
+
+### 1단계에서 정한 것 (supabase.sql)
+- 초대 코드: `invite_codes`(앱에서 못 읽음) · `members`(코드를 넣은 사람) · 서버 함수 `join_with_code(code)` → `ok/already/bad/expired/full/too_many`. 1시간에 10번 틀리면 잠시 막음.
+- 기록 표 규칙: `owner = 내 uid` **그리고** `is_member()`. 로그인만 하고 코드를 안 넣으면 읽기·쓰기 모두 막힌다.
+- 로그인 안 한 사람(anon)은 표에 아무 권한 없음. 로그인한 사람도 진짜 삭제(DELETE) 권한은 없음 → `deleted = true`.
+- `updated_at` 은 서버가 트리거로 넣는다 (휴대폰 시계 무관).
+- 사진 버킷 `photos`: 비공개, 1장 최대 2MB, JPEG 만, `{uid}/…` 폴더만.
+- 초대 코드 자체는 공개 보관함에 적지 않는다 (supabase.sql 맨 아래 방법으로 SQL Editor 에서 만든다).
+- 동기화 순서 주의: `balls`·`days` 는 `profiles` 를 참조하므로 profiles 를 먼저 올린다.
+
+### 2단계 전에 Supabase 화면에서 할 설정
+- Authentication → Emails → "Magic Link" 메일 내용에 `{{ .Token }}` (6자리 번호)를 넣는다 (기본은 링크만 있음).
+- 무료 요금제의 기본 메일은 시간당 보낼 수 있는 수가 적다 → 20~30명이면 나중에 SMTP(예: Resend) 연결을 검토.
 
 ## 9. 정한 것 (사용자 결정 2026-11-26, 회사 서브컴)
 1. 로그인 방법 → **이메일로 받은 6자리 번호** (비밀번호 없음)
