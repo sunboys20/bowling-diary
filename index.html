@@ -303,7 +303,7 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 <div id="toast" role="status"></div>
 <script>
 'use strict';
-const APP_VER = '0.4';
+const APP_VER = '0.5';
 const MAXG = 10;
 const app = document.getElementById('app');
 const $ = (s, el = document) => el.querySelector(s);
@@ -1193,12 +1193,122 @@ async function renderStats() {
   app.querySelectorAll('[data-p]').forEach(b => b.onclick = () => { statPeriod = b.dataset.p; renderStats(); });
 }
 
+/* ---------- server (Supabase) — 2단계: 로그인·초대 코드. 동기화는 3단계 (docs/supabase.md) ---------- */
+const SB_URL = 'https://gxwquxyymjfgtimzlglr.supabase.co';
+const SB_KEY = 'sb_publishable_hs6lOQupvkCSs0KMotr89g_hm_v8pV0'; // 공개 키 — 앱에 넣어도 되는 키. secret(service_role) 키는 절대 넣지 않는다
+const SB_LIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/+esm';
+let sbLoad = null, sbPendingEmail = '';
+function sbClient() {
+  if (!sbLoad) sbLoad = import(SB_LIB)
+    .then(m => m.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'bowling-diary-auth' } }))
+    .catch(e => { sbLoad = null; throw e; });
+  return sbLoad;
+}
+const SB_JOIN_MSG = {
+  ok: '가입됐어요! 이제 서버를 쓸 수 있어요.', already: '이미 가입돼 있어요.',
+  bad: '초대 코드가 맞지 않아요. 다시 확인해 주세요.', expired: '기한이 지난 초대 코드예요.',
+  full: '이 초대 코드는 인원이 다 찼어요.', too_many: '여러 번 틀려서 잠시 막혔어요. 1시간 뒤에 다시 해 주세요.',
+  not_signed_in: '먼저 로그인해 주세요.'
+};
+function sbErr(e) {
+  const code = (e && (e.code || e.error_code)) || '', msg = String((e && e.message) || e || '');
+  if (!navigator.onLine || /fetch|network|load failed/i.test(msg)) return '인터넷 연결을 확인해 주세요.';
+  if (e && e.status === 429 || /rate.?limit/i.test(code + msg)) return '메일을 너무 자주 보냈어요. 1~2분 뒤에 다시 해 주세요.';
+  if (/otp_expired|invalid|expired/i.test(code + msg)) return '번호가 맞지 않거나 시간이 지났어요. 번호를 다시 받아 주세요.';
+  return '문제가 생겼어요: ' + msg;
+}
+async function sbStatus() {
+  const sb = await sbClient();
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return { user: null };
+  const m = await sb.from('members').select('user_id').maybeSingle();
+  if (m.error) throw m.error;
+  let rows = null;
+  if (m.data) { const r = await sb.from('days').select('id', { count: 'exact', head: true }); if (!r.error) rows = r.count; }
+  return { user: session.user, member: !!m.data, rows };
+}
+async function renderServerCard() {
+  const box = $('#srvCard'); if (!box) return;
+  const head = '<b>서버 저장 <span class="tag">시험 중</span></b>';
+  box.innerHTML = head + '<p class="hint">서버에 연결하는 중…</p>';
+  let st;
+  try { st = await sbStatus(); }
+  catch (e) { if ($('#srvCard')) box.innerHTML = head + `<p class="hint">${esc(sbErr(e))}</p><div class="actions"><button type="button" class="btn small" id="sbRetry">다시 연결</button></div>`; if ($('#sbRetry')) $('#sbRetry').onclick = renderServerCard; return; }
+  if (!$('#srvCard')) return;
+  const busy = (btn, on) => { btn.disabled = on; btn.dataset.t = btn.dataset.t || btn.textContent; btn.textContent = on ? '잠시만요…' : btn.dataset.t; };
+
+  if (!st.user && !sbPendingEmail) {
+    box.innerHTML = head + `<p class="hint">이메일로 받은 <b>6자리 번호</b>로 로그인해요. 비밀번호는 없어요.</p>
+      <label class="f" for="sbEmail">이메일</label>
+      <input type="email" id="sbEmail" autocomplete="email" inputmode="email" placeholder="you@example.com">
+      <div class="actions" style="margin-top:10px"><button type="button" class="btn primary small" id="sbSend">번호 받기</button></div>`;
+    $('#sbSend').onclick = async () => {
+      const email = $('#sbEmail').value.trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert('이메일 주소를 확인해 주세요.');
+      busy($('#sbSend'), true);
+      try {
+        const { error } = await (await sbClient()).auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+        if (error) throw error;
+        sbPendingEmail = email; toast('메일을 보냈어요'); renderServerCard();
+      } catch (e) { busy($('#sbSend'), false); alert(sbErr(e)); }
+    };
+    return;
+  }
+  if (!st.user) {
+    box.innerHTML = head + `<p class="hint"><b>${esc(sbPendingEmail)}</b> 로 보낸 메일의 번호를 넣어 주세요. 메일이 안 보이면 스팸함도 봐 주세요.</p>
+      <label class="f" for="sbCode">받은 번호</label>
+      <input id="sbCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="6자리 숫자" style="font-size:22px;letter-spacing:6px;text-align:center">
+      <div class="actions" style="margin-top:10px"><button type="button" class="btn primary small" id="sbVerify">로그인</button><button type="button" class="btn small" id="sbBack">다른 이메일 / 다시 받기</button></div>`;
+    $('#sbVerify').onclick = async () => {
+      const token = $('#sbCode').value.replace(/\D/g, '');
+      if (token.length < 6) return alert('메일로 받은 번호를 모두 넣어 주세요.');
+      busy($('#sbVerify'), true);
+      try {
+        const { error } = await (await sbClient()).auth.verifyOtp({ email: sbPendingEmail, token, type: 'email' });
+        if (error) throw error;
+        sbPendingEmail = ''; toast('로그인했어요'); renderServerCard();
+      } catch (e) { busy($('#sbVerify'), false); alert(sbErr(e)); }
+    };
+    $('#sbBack').onclick = () => { sbPendingEmail = ''; renderServerCard(); };
+    return;
+  }
+  const who = `<p class="hint">로그인: <b>${esc(st.user.email)}</b></p>`;
+  const out = '<button type="button" class="btn small" id="sbOut">로그아웃</button>';
+  if (!st.member) {
+    box.innerHTML = head + who + `<p class="hint">모임에서 받은 <b>초대 코드</b>를 넣어야 서버를 쓸 수 있어요.</p>
+      <label class="f" for="sbInvite">초대 코드</label>
+      <input id="sbInvite" autocomplete="off" autocapitalize="characters" maxlength="20" placeholder="예: AB12CD34" style="text-transform:uppercase">
+      <div class="actions" style="margin-top:10px"><button type="button" class="btn primary small" id="sbJoin">가입하기</button>${out}</div>`;
+    $('#sbJoin').onclick = async () => {
+      const code = $('#sbInvite').value.trim();
+      if (!code) return alert('초대 코드를 넣어 주세요.');
+      busy($('#sbJoin'), true);
+      try {
+        const { data, error } = await (await sbClient()).rpc('join_with_code', { p_code: code });
+        if (error) throw error;
+        if (data === 'ok' || data === 'already') { toast(SB_JOIN_MSG[data]); renderServerCard(); }
+        else { busy($('#sbJoin'), false); alert(SB_JOIN_MSG[data] || '가입하지 못했어요: ' + data); }
+      } catch (e) { busy($('#sbJoin'), false); alert(sbErr(e)); }
+    };
+  } else {
+    box.innerHTML = head + who + `<p class="hint">✓ 모임 회원 · 서버에 있는 내 일지 ${st.rows ?? '?'}개</p>
+      <p class="hint">휴대폰 기록을 서버로 올리기·자동으로 맞추기는 <b>다음 업데이트</b>에서 켜져요. 지금은 기록이 계속 이 휴대폰에만 저장돼요.</p>
+      <div class="actions">${out}</div>`;
+  }
+  $('#sbOut').onclick = async () => {
+    if (!confirm('로그아웃할까요? (이 휴대폰의 기록은 그대로 남아요)')) return;
+    try { await (await sbClient()).auth.signOut(); } catch (e) { /* 인터넷이 없어도 이 휴대폰에서는 로그아웃 */ }
+    toast('로그아웃했어요'); renderServerCard();
+  };
+}
+
 /* ---------- settings / backup ---------- */
 async function renderSettings() {
   const last = await getMeta('lastBackup');
   const aiKey = !!(await getMeta('aiKey')), aiModel = (await getMeta('aiModel')) || 'claude-opus-5-5';
   let est = '';
   try { if (navigator.storage && navigator.storage.estimate) { const e = await navigator.storage.estimate(); est = `사용 중 ${(e.usage / 1048576).toFixed(1)} MB`; } } catch (e) { /* ignore */ }
+  const beta = !!(await getMeta('serverBeta'));
   const canShare = !!(navigator.canShare && navigator.canShare({ files: [new File(['x'], 't.json', { type: 'application/json' })] }));
   app.innerHTML = `<h2>설정</h2>
     <div class="card"><b>사용자 이름</b>
@@ -1223,8 +1333,16 @@ async function renderSettings() {
       <select id="aiModel">${AI_MODELS.map(([v, l]) => `<option value="${v}"${aiModel === v ? ' selected' : ''}>${l}</option>`).join('')}</select>
       <div class="actions" style="margin-top:10px"><button type="button" class="btn primary small" id="aiSave">AI 설정 저장</button>${aiKey ? '<button type="button" class="btn small danger" id="aiDel">키 지우기</button>' : ''}</div>
     </div>
+    ${beta ? '<div class="card" id="srvCard"></div>' : ''}
     <a class="btn" href="help.html" style="width:100%;margin-bottom:8px"><i class="ti ti-book" aria-hidden="true"></i> 사용 설명서 (처음 설정 순서)</a>
-    <p class="hint">볼링 연습일지 v${APP_VER}</p>`;
+    <p class="hint" id="verTap">볼링 연습일지 v${APP_VER}</p>`;
+  if (beta) renderServerCard();
+  let taps = 0, tapT = 0; // 버전 글자를 5번 누르면 '서버 저장(시험 중)' 칸이 보이거나 숨는다
+  $('#verTap').onclick = async () => {
+    const now = Date.now(); taps = now - tapT < 1500 ? taps + 1 : 1; tapT = now;
+    if (taps < 5) return;
+    await setMeta('serverBeta', !beta); toast(beta ? '서버 저장 칸을 숨겼어요' : '서버 저장(시험 중) 칸을 켰어요'); renderSettings();
+  };
   $('#aiSave').onclick = async () => {
     const k = $('#aiKey').value.trim();
     if (k) await setMeta('aiKey', k);
