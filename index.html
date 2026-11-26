@@ -1135,7 +1135,8 @@ $('#filePick').addEventListener('change', async e => {
 
 /* ---------- AI reading of a scoreboard photo (Claude API, called from this phone) ---------- */
 const SDK_URL = 'https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@1.6.0/+esm';
-const AI_MODELS = [['claude-opus-5-5', 'Claude Opus 5.5 — 가장 정확 (기본)'], ['claude-haiku-5-5', 'Claude Haiku 5.5 — 훨씬 싸고 빠름']];
+const AI_MODELS = [['claude-haiku-5-5', 'Haiku 5.5 — 추천 · 싸고 빠름'], ['claude-opus-5-5', 'Opus 5.5 — 가장 정확 · 비쌈']];
+const AI_DEFAULT = 'claude-haiku-5-5';
 const MARK_ENUM = ['X', '/', '-', 'F', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 const NUM_OR_NULL = { anyOf: [{ type: 'integer' }, { type: 'null' }] };
 const SCORE_SCHEMA = {
@@ -1174,7 +1175,7 @@ function loadSDK() {
 }
 async function readScoreboard(blob) {
   const apiKey = await getMeta('aiKey');
-  const model = (await getMeta('aiModel')) || 'claude-opus-5-5';
+  const model = (await getMeta('aiModel')) || AI_DEFAULT;
   let Anthropic;
   try { Anthropic = await loadSDK(); } catch (e) { const err = new Error('SDK_LOAD'); err.cause = e; throw err; }
   const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
@@ -1547,7 +1548,7 @@ async function renderServerCard() {
   const busy = (btn, on) => { btn.disabled = on; btn.dataset.t = btn.dataset.t || btn.textContent; btn.textContent = on ? '잠시만요…' : btn.dataset.t; };
 
   if (!st.user && !sbPendingEmail) {
-    box.innerHTML = head + `<p class="hint">이메일로 받은 <b>숫자 번호</b>로 로그인해요. 비밀번호는 없어요.</p>
+    box.innerHTML = head + `<p class="hint">이메일로 받은 <b>숫자 번호</b>로 로그인해요. 비밀번호는 없어요. 처음이면 <a href="signup.html" style="color:var(--accent);font-weight:700">가입 설명서(사진)</a>를 보세요.</p>
       <label class="f" for="sbEmail">이메일</label>
       <input type="email" id="sbEmail" autocomplete="email" inputmode="email" placeholder="you@example.com">
       <div class="actions" style="margin-top:10px"><button type="button" class="btn primary small" id="sbSend">번호 받기</button></div>`;
@@ -1584,7 +1585,7 @@ async function renderServerCard() {
   const who = `<p class="hint">로그인: <b>${esc(st.user.email)}</b></p>`;
   const out = '<button type="button" class="btn small" id="sbOut">로그아웃</button>';
   if (!st.member) {
-    box.innerHTML = head + who + `<p class="hint">모임에서 받은 <b>초대 코드</b>를 넣어야 서버를 쓸 수 있어요.</p>
+    box.innerHTML = head + who + `<p class="hint">모임에서 받은 <b>초대 코드</b>를 넣어야 서버를 쓸 수 있어요. <a href="signup.html" style="color:var(--accent);font-weight:700">가입 설명서</a></p>
       <label class="f" for="sbInvite">초대 코드</label>
       <input id="sbInvite" autocomplete="off" autocapitalize="characters" maxlength="20" placeholder="예: AB12CD34" style="text-transform:uppercase">
       <div class="actions" style="margin-top:10px"><button type="button" class="btn primary small" id="sbJoin">가입하기</button>${out}</div>`;
@@ -1827,7 +1828,7 @@ async function wipeLocal(withKey, fresh = true) {
 /* ---------- settings / backup ---------- */
 async function renderSettings() {
   const last = await getMeta('lastBackup');
-  const aiKey = !!(await getMeta('aiKey')), aiModel = (await getMeta('aiModel')) || 'claude-opus-5-5';
+  const aiKey = !!(await getMeta('aiKey')), aiModel = (await getMeta('aiModel')) || AI_DEFAULT;
   let est = '';
   try { if (navigator.storage && navigator.storage.estimate) { const e = await navigator.storage.estimate(); est = `사용 중 ${(e.usage / 1048576).toFixed(1)} MB`; } } catch (e) { /* ignore */ }
   const hb = await homeConf();

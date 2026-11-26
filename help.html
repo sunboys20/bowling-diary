@@ -60,6 +60,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:10px 0 30px}
   <p>처음 열었을 때 이 순서대로 하면 5분이면 준비가 끝나요. 먼저 둘러보고 싶으면 예시 기록으로 체험해 보세요.</p>
   <div class="btns">
     <a class="back" href="./"><i class="ti ti-arrow-left" aria-hidden="true"></i> 앱으로 돌아가기</a>
+    <a class="back line" href="signup.html"><i class="ti ti-user-plus" aria-hidden="true"></i> 가입 설명서</a>
     <a class="back line" href="./?demo#list"><i class="ti ti-player-play" aria-hidden="true"></i> 예시 기록으로 체험하기</a>
   </div>
 </div></header>
@@ -117,6 +118,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:10px 0 30px}
   <section class="step" id="s3">
     <div>
       <h2><span class="num">3</span>서버 저장 (로그인)</h2>
+      <p><a href="signup.html" style="color:var(--accent);font-weight:800"><i class="ti ti-photo" aria-hidden="true"></i> 사진으로 한 단계씩 보는 가입 설명서</a></p>
       <p>로그인해 두면 기록이 서버에도 저장돼서 <b>휴대폰을 바꾸거나 잃어버려도 남아요.</b> 비밀번호는 없어요. 필요한 건 <b>이메일 주소</b>와 모임에서 받은 <b>초대 코드</b>예요.</p>
       <ol>
         <li><span class="key">설정</span> 맨 위 <b>서버 저장</b>에 이메일을 넣고 <span class="key">번호 받기</span></li>
@@ -238,7 +240,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:10px 0 30px}
       <h2><span class="num">12</span>백업과 사진 AI (선택)</h2>
       <ul>
         <li><b>백업</b> — <span class="key">설정</span> › <span class="key">백업 파일 저장</span>. 서버에 로그인하지 않았다면 한 달에 한 번쯤 만들어 카톡 '나에게 보내기'나 구글 드라이브에 두세요. 휴대폰을 바꾸면 <span class="key">백업 파일 불러오기</span>.</li>
-        <li><b>사진 AI 자동 입력</b> — Anthropic 콘솔에서 만든 API 키를 <span class="key">설정</span> › <span class="key">사진 자동 입력 (AI)</span>에 넣으면, 점수판 사진으로 점수판을 자동으로 채워요. 사진 한 장마다 사용료가 조금 나와요. 콘솔에서 <b>월 사용 한도</b>를 꼭 정해 두세요. 키가 없어도 다른 기능은 모두 돼요.</li>
+        <li><b>사진 AI 자동 입력</b> — Anthropic 콘솔에서 만든 API 키를 <span class="key">설정</span> › <span class="key">사진 자동 입력 (AI)</span>에 넣으면, 점수판 사진으로 점수판을 자동으로 채워요. 사진 한 장마다 사용료가 조금 나와요(기본 모델 <b>Haiku</b>는 싸고 빨라요. 잘 못 읽으면 설정에서 Opus로 바꿔요). 콘솔에서 <b>월 사용 한도</b>를 꼭 정해 두세요. 키가 없어도 다른 기능은 모두 돼요.</li>
       </ul>
       <div class="tip"><b>AI가 읽은 뒤</b> — 앱이 계산한 누적 점수와 사진의 누적 점수가 다르면 그 칸이 빨갛게 나와요. 사진과 비교해 고치세요.</div>
     </div>

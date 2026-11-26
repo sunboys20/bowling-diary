@@ -23,7 +23,7 @@
 |---|---|
 | `index.html` | 앱 전체 (화면·점수 계산 `BW`·IndexedDB 저장·인쇄·AI 사진 읽기). 버전 `APP_VER` |
 | `manifest.webmanifest`, `icons/` | 홈 화면 이름·아이콘 |
-| `help.html`, `help/*.png` | 사용 설명서. 사진은 체험 모드 화면을 375px 로 찍은 것 — 화면이 바뀌면 다시 찍는다: 로컬 서버를 켜고 `tools/_shot.html#이름`(who·names·server·gear·edit·pad·fix·list·main·view·photos·backup)을 크롬 `--headless=new --window-size=375,812 --virtual-time-budget=12000 --screenshot=...` 로 |
+| `help.html`, `help/*.png` | 사용 설명서. 사진은 체험 모드 화면을 375px 로 찍은 것 — 화면이 바뀌면 다시 찍는다: 로컬 서버를 켜고 `node tools/shots.mjs http://localhost:8153 [이름…]` (tools/_shot.html 화면을 크롬으로 찍음, 이름 없으면 전부). 가입 설명서 `signup.html` 사진은 `help/signup-*.png` |
 | `sw.js` | 오프라인 열기 (https 에서만 등록). 캐시 이름 `bowling-diary-v2` — 고치면 숫자를 올린다. 글꼴(Pretendard)·아이콘(Tabler) CDN 도 저장 |
 | `docs/server2.md`, `tools/setup_server2.ps1` | server2 예비 주소(8892) |
 | `docs/supabase.md` | 서버 방식(Supabase) 설계 초안 — 아직 앱에 반영 안 됨 |
@@ -31,7 +31,7 @@
 - 주소: https://sunboys20.github.io/bowling-diary/ — main 에 push 하면 1분쯤 뒤 반영.
 - 체험 모드: 주소 뒤 `?demo` — 따로 저장 공간 `bowling-diary-demo` 에 예시 기록(`seedDemo`)을 만든다. 서버·진짜 기록과 안 섞임.
 - 기록은 각 휴대폰 브라우저(IndexedDB)에만 있다. 주소가 바뀌면 기록이 안 보인다(주소별 저장).
-- AI 자동 입력: 브라우저에서 Claude API 직접 호출. SDK `@anthropic-ai/sdk@1.6.0` (jsdelivr ESM), 기본 모델 `claude-opus-5-5`, 키는 사용자가 [설정]에 넣는다.
+- AI 자동 입력: 브라우저에서 Claude API 직접 호출. SDK `@anthropic-ai/sdk@1.6.0` (jsdelivr ESM), 기본 모델 `claude-haiku-5-5`(`AI_DEFAULT`, 싸고 빠름 — 설정에서 Opus 5.5 로 바꿀 수 있음), 키는 사용자가 [설정]에 넣는다.
 
 ## 디자인
 - 글꼴 Pretendard, 아이콘 Tabler webfont (jsdelivr, 버전 고정). 색은 `:root` 변수 — 어두운 모드 두 곳(`@media`, `[data-theme=dark]`)도 같이 고친다.

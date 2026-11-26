@@ -8,10 +8,38 @@ const s = location.hash.slice(1);
 const f = document.getElementById('f');
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const START = { who: 'who', names: 'settings', server: 'settings', gear: 'balls', edit: 'edit/new', pad: 'edit/new', fix: 'edit/demo-d1', list: 'list', view: 'view/demo-d9', photos: 'photos', backup: 'settings', main: 'settings' };
-f.src = (s === 'server' ? '/' : '/?demo') + '#' + (START[s] || 'list');
+const SIGNUP = /^g\d$/.test(s); // 가입 설명서 사진 (signup.html): 가짜 서버로 로그인 단계 화면을 만든다
+f.src = (s === 'server' || SIGNUP ? '/' : '/?demo') + '#' + (SIGNUP ? 'list' : START[s] || 'list');
+async function signupShot(w, d, q) {
+  // 헤드리스 크롬에서 저장 공간 크기 묻기가 끝나지 않아 설정 화면이 안 그려짐 → 가짜 값
+  try { Object.defineProperty(w.navigator, 'storage', { configurable: true, value: { estimate: async () => ({ usage: 2.1e5 }), persist: async () => true } }); } catch (e) { /* ignore */ }
+  const EMAIL = 'hong@gmail.com';
+  const st = { user: '', member: false, rows: 0 };
+  const fake = { auth: { getSession: async () => ({ data: { session: st.user ? { user: { id: 'u1', email: st.user } } : null } }), signOut: async () => ({}) },
+    from: () => ({ select: () => ({ maybeSingle: async () => ({ data: st.member ? { user_id: 'u1' } : null, error: null }), eq: async () => ({ count: st.rows, error: null }) }) }),
+    rpc: async () => ({ data: 'ok', error: null }) };
+  w.sbClient = () => Promise.resolve(fake);
+  w.eval("profiles[0].name = '홍길동'; CUR = profiles[0];");
+  // 누를 곳에 빨간 테두리
+  const mark = (el, pad = 6) => { if (!el) return; const r = el.getBoundingClientRect(), o = d.createElement('div');
+    o.style.cssText = `position:absolute;left:${r.left - pad + w.scrollX}px;top:${r.top - pad + w.scrollY}px;width:${r.width + pad * 2}px;height:${r.height + pad * 2}px;border:4px solid #ef4444;border-radius:16px;box-shadow:0 0 0 5px rgba(239,68,68,.25);z-index:999;pointer-events:none`;
+    d.body.append(o); };
+  const settings = async () => { w.history.replaceState(null, '', '#settings'); await w.render(); await sleep(900); w.scrollTo(0, 0); };
+  if (s === 'g1') { w.history.replaceState(null, '', '#list'); await w.render(); await sleep(600); mark(q('#tabs a[data-tab="settings"]'), 2); return; }
+  if (s === 'g2') { await settings(); q('#sbEmail').value = EMAIL; mark(q('#sbSend')); return; }
+  if (s === 'g3') { w.eval(`sbPendingEmail = '${EMAIL}'`); await settings(); q('#sbCode').value = '48203917'; mark(q('#sbVerify')); return; }
+  st.user = EMAIL; w.localStorage.setItem('bowling-diary-auth', JSON.stringify({ user: { email: EMAIL } }));
+  if (s === 'g4') { await settings(); q('#sbInvite').value = 'A1B2C3D4'; mark(q('#sbJoin')); return; }
+  st.member = true;
+  if (s === 'g5') { await settings(); mark(q('#syncMode label:nth-child(2)')); return; }
+  st.rows = 12; w.eval('SYNC.on = true; SYNC.lastOk = Date.now(); SYNC.pending = 0; SYNC.error = "";');
+  if (s === 'g6') { await settings(); w.topBar(); mark(q('.top .me'), 2); mark(q('#syncStat'), 4); return; }
+  if (s === 'g7') { await settings(); w.topBar(); mark(q('#sbOut')); return; }
+}
 f.onload = async () => {
   const w = f.contentWindow, d = w.document, q = x => d.querySelector(x);
   await sleep(2500);
+  if (SIGNUP) return signupShot(w, d, q);
   const top = el => { if (el) w.scrollTo(0, el.getBoundingClientRect().top + w.scrollY - 70); };
   if (s === 'names') top(q('#profs').closest('.card'));
   if (s === 'main') top(q('#hbOpts').closest('.card'));
