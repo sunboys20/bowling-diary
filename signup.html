@@ -3,7 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f2f7fd">
+<meta name="theme-color" content="#f2f7fd" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1424" media="(prefers-color-scheme: dark)">
+<script>/* 화면 밝기: 설정에서 고른 값(이 기기만). 자동이면 휴대폰 설정을 따른다 */(function(){var t;try{t=localStorage.getItem('bowling-diary-theme')}catch(e){}
+window.applyTheme=function(v){var r=document.documentElement,fix=v==='light'||v==='dark';if(fix)r.setAttribute('data-theme',v);else r.removeAttribute('data-theme');
+var ms=document.querySelectorAll('meta[name=theme-color]');for(var i=0;i<ms.length;i++){var m=ms[i];if(m.dataset.c==null){m.dataset.c=m.content;m.dataset.m=m.getAttribute('media')||''}
+if(fix){m.content=v==='dark'?'#0b1424':'#f2f7fd';m.removeAttribute('media')}else{m.content=m.dataset.c;if(m.dataset.m)m.setAttribute('media',m.dataset.m)}}};applyTheme(t)})()</script>
 <title>볼링 연습일지 가입 설명서</title>
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">

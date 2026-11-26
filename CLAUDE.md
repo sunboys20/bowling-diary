@@ -34,7 +34,7 @@
 - AI 자동 입력: 브라우저에서 Claude API 직접 호출. SDK `@anthropic-ai/sdk@1.6.0` (jsdelivr ESM), 기본 모델 `claude-haiku-5-5`(`AI_DEFAULT`, 싸고 빠름 — 설정에서 Opus 5.5 로 바꿀 수 있음), 키는 사용자가 [설정]에 넣는다.
 
 ## 디자인
-- 글꼴 Pretendard, 아이콘 Tabler webfont (jsdelivr, 버전 고정). 색은 `:root` 변수 — 어두운 모드 두 곳(`@media`, `[data-theme=dark]`)도 같이 고친다.
+- 글꼴 Pretendard, 아이콘 Tabler webfont (jsdelivr, 버전 고정). 색은 `:root` 변수 — 어두운 모드 두 곳(`@media`, `[data-theme=dark]`)도 같이 고친다. 사용자가 설정 [화면]에서 자동/밝게/어둡게를 고르면 `<head>` 의 `applyTheme` 가 `data-theme` 를 붙인다(localStorage `bowling-diary-theme`, help·signup 도 같은 줄).
 - v0.7 디자인: 연한 파랑(시안 C). 화면 점수판은 `gridHTML`(5프레임×2줄, 누적 점수는 약하게), A4 인쇄 기록지는 예전 `boardHTML`(한 줄 10칸).
 - 볼링 그림(핀·공)은 index.html 맨 위 `<symbol>` + `PINS_SVG`·`ballSVG`.
 - 일지 `kind`(대회/개인연습/단체연습/기타)·`match`(대회 이름), 사람 `places`([{name, memo}]), 메인 점수판 선택은 meta `homeBoards`(이 기기만).

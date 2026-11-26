@@ -3,10 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0b1b33">
+<meta name="theme-color" content="#f2f7fd" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1424" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="볼링일지">
+<script>/* 화면 밝기: 설정에서 고른 값(이 기기만). 자동이면 휴대폰 설정을 따른다 */(function(){var t;try{t=localStorage.getItem('bowling-diary-theme')}catch(e){}
+window.applyTheme=function(v){var r=document.documentElement,fix=v==='light'||v==='dark';if(fix)r.setAttribute('data-theme',v);else r.removeAttribute('data-theme');
+var ms=document.querySelectorAll('meta[name=theme-color]');for(var i=0;i<ms.length;i++){var m=ms[i];if(m.dataset.c==null){m.dataset.c=m.content;m.dataset.m=m.getAttribute('media')||''}
+if(fix){m.content=v==='dark'?'#0b1424':'#f2f7fd';m.removeAttribute('media')}else{m.content=m.dataset.c;if(m.dataset.m)m.setAttribute('media',m.dataset.m)}}};applyTheme(t)})()</script>
 <title>볼링 연습일지</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
@@ -393,7 +398,7 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 <div id="toast" role="status"></div>
 <script>
 'use strict';
-const APP_VER = '0.7';
+const APP_VER = '0.7.1';
 const MAXG = 10;
 const DEMO = new URLSearchParams(location.search).has('demo'); // 체험 모드: 따로 저장 공간, 서버 안 씀
 const app = document.getElementById('app');
@@ -1832,6 +1837,7 @@ async function renderSettings() {
   let est = '';
   try { if (navigator.storage && navigator.storage.estimate) { const e = await navigator.storage.estimate(); est = `사용 중 ${(e.usage / 1048576).toFixed(1)} MB`; } } catch (e) { /* ignore */ }
   const hb = await homeConf();
+  let theme = 'auto'; try { theme = localStorage.getItem('bowling-diary-theme') || 'auto'; } catch (e) { /* ignore */ }
   const canShare = !!(navigator.canShare && navigator.canShare({ files: [new File(['x'], 't.json', { type: 'application/json' })] }));
   app.innerHTML = `<h2>설정</h2>
     ${DEMO ? '' : '<div class="card" id="srvCard"></div>'}
@@ -1840,6 +1846,10 @@ async function renderSettings() {
       <div id="hbOpts">${HB_OPTS.map(([k, t, d]) => `<label class="optrow${hb.keys.includes(k) ? ' on' : ''}"><input type="checkbox" value="${k}"${hb.keys.includes(k) ? ' checked' : ''}><span style="flex:1;min-width:0"><span class="t">${t}</span><span class="d">${d}</span></span></label>`).join('')}</div>
       <label class="f">최고·최저 등을 고를 기간</label>
       <div class="seg" id="hbPeriod" style="margin-bottom:0">${HB_PERIODS.map(([k, l]) => `<button type="button" data-hp="${k}" class="${hb.period === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+    </div>
+    <div class="card"><b>화면</b>
+      <p class="hint" style="margin:4px 0 10px">자동이면 휴대폰의 다크 모드 설정을 따라가요. 이 휴대폰에만 적용돼요.</p>
+      <div class="seg" id="themeSeg" style="margin-bottom:0">${[['auto', '자동', 'ti-device-mobile'], ['light', '밝게', 'ti-sun'], ['dark', '어둡게', 'ti-moon']].map(([k, l, ic]) => `<button type="button" data-th="${k}" class="${theme === k ? 'on' : ''}"><i class="ti ${ic}" aria-hidden="true"></i> ${l}</button>`).join('')}</div>
     </div>
     <div class="card"><b>사용자 이름</b>
       <div id="profs" style="margin-top:8px">${profiles.map(p => `<div class="prof-row"><input data-id="${p.id}" value="${esc(p.name)}" maxlength="20">${profiles.length > 1 ? `<button type="button" class="link danger" data-del="${p.id}">지우기</button>` : ''}</div>`).join('')}</div>
@@ -1879,6 +1889,13 @@ async function renderSettings() {
   };
   app.querySelectorAll('#hbOpts input').forEach(x => x.onchange = saveHB);
   app.querySelectorAll('#hbPeriod [data-hp]').forEach(b => b.onclick = () => { app.querySelectorAll('#hbPeriod [data-hp]').forEach(x => x.classList.toggle('on', x === b)); saveHB(); });
+  app.querySelectorAll('#themeSeg [data-th]').forEach(b => b.onclick = () => {
+    const v = b.dataset.th;
+    try { if (v === 'auto') localStorage.removeItem('bowling-diary-theme'); else localStorage.setItem('bowling-diary-theme', v); } catch (e) { /* ignore */ }
+    window.applyTheme(v);
+    app.querySelectorAll('#themeSeg [data-th]').forEach(x => x.classList.toggle('on', x === b));
+    toast(v === 'auto' ? '화면: 휴대폰 설정 따라가기' : v === 'light' ? '화면: 늘 밝게' : '화면: 늘 어둡게');
+  });
   $('#aiSave').onclick = async () => {
     const k = $('#aiKey').value.trim();
     if (k) await setMeta('aiKey', k);
