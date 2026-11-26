@@ -303,7 +303,7 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 <div id="toast" role="status"></div>
 <script>
 'use strict';
-const APP_VER = '0.6';
+const APP_VER = '0.6.1';
 const MAXG = 10;
 const app = document.getElementById('app');
 const $ = (s, el = document) => el.querySelector(s);
@@ -1210,11 +1210,13 @@ const SB_JOIN_MSG = {
   full: '이 초대 코드는 인원이 다 찼어요.', too_many: '여러 번 틀려서 잠시 막혔어요. 1시간 뒤에 다시 해 주세요.',
   not_signed_in: '먼저 로그인해 주세요.'
 };
+const SB_MIXED = '이 기기에 다른 계정의 기록이 섞여 있어요. [로그아웃]에서 기록을 지우고 다시 로그인해 주세요.';
 function sbErr(e) {
   const code = (e && (e.code || e.error_code)) || '', msg = String((e && e.message) || e || '');
   if (!navigator.onLine || /fetch|network|load failed/i.test(msg)) return '인터넷 연결을 확인해 주세요.';
   if (e && e.status === 429 || /rate.?limit/i.test(code + msg)) return '메일을 너무 자주 보냈어요. 1~2분 뒤에 다시 해 주세요.';
   if (/otp_expired|invalid|expired/i.test(code + msg)) return '번호가 맞지 않거나 시간이 지났어요. 번호를 다시 받아 주세요.';
+  if (/row-level security/i.test(msg)) return SB_MIXED;
   return '문제가 생겼어요: ' + msg;
 }
 async function sbStatus() {
@@ -1308,9 +1310,13 @@ async function renderServerCard() {
     if ($('#syncGo')) $('#syncGo').onclick = () => syncNow();
   }
   $('#sbOut').onclick = async () => {
-    if (!confirm('로그아웃할까요? (이 휴대폰의 기록은 그대로 남아요)')) return;
-    if (SYNC.on && !(await disableSync())) return;
+    const wasOn = SYNC.on;
+    if (!wasOn && !confirm('로그아웃할까요? (이 휴대폰의 기록은 그대로 남아요)')) return;
+    if (wasOn && !(await disableSync())) return;
+    // 서버에 올라간 기록이면 이 기기에서 지울 수 있게 (같이 쓰는 PC·휴대폰에서 다음 사람에게 안 보이게)
+    const wipe = wasOn && confirm('로그아웃할까요?\n\n이 기기에 남은 기록과 AI 키도 지울까요?\n서버에 올라간 기록은 그대로 있어서, 다시 로그인하면 받아 와요.\n\n[확인] 지우고 로그아웃 (같이 쓰는 기기라면 이쪽)\n[취소] 이 기기에 남기고 로그아웃');
     try { await (await sbClient()).auth.signOut(); } catch (e) { /* 인터넷이 없어도 이 휴대폰에서는 로그아웃 */ }
+    if (wipe) { await wipeLocal(true); toast('로그아웃하고 이 기기 기록을 지웠어요'); renderSettings(); return; }
     toast('로그아웃했어요'); renderServerCard();
   };
 }
@@ -1357,12 +1363,15 @@ async function syncNow() {
     const { data: { session } } = await sb.auth.getSession();
     if (!session) throw Object.assign(new Error('nologin'), { nologin: true });
     const uid = session.user.id;
+    const owner = await getMeta('syncUid');
+    if (!owner) await setMeta('syncUid', uid);
+    else if (owner !== uid) throw Object.assign(new Error('other'), { other: true });
     await outboxChain; await loadOutbox();
     await syncPush(sb, uid);
     changed = await syncPull(sb);
     await syncPhotosDown(sb, uid);
     SYNC.lastOk = Date.now(); await setMeta('syncLastOk', SYNC.lastOk);
-  } catch (e) { SYNC.error = e.nologin ? '로그인이 풀렸어요. 다시 로그인해 주세요.' : sbErr(e); }
+  } catch (e) { SYNC.error = e.nologin ? '로그인이 풀렸어요. 다시 로그인해 주세요.' : e.other ? SB_MIXED : sbErr(e); }
   SYNC.running = false; SYNC.pending = Object.keys(outbox || {}).length;
   syncBadge();
   if (changed) await afterPull();
@@ -1463,7 +1472,13 @@ async function enableSync() {
   if (!session) { alert('먼저 로그인해 주세요.'); return false; }
   const { count, error } = await sb.from('profiles').select('id', { count: 'exact', head: true }).eq('deleted', false);
   if (error) throw error;
-  const days = await DB.all('days'), balls = await DB.all('balls');
+  let days = await DB.all('days'), balls = await DB.all('balls');
+  // 이 기기 기록이 다른 계정으로 맞추던 것이면 섞지 않는다 (남의 기록이 내 계정에 올라가지 않게)
+  const prevUid = await getMeta('syncUid');
+  if (prevUid && prevUid !== session.user.id) {
+    if (!confirm('이 기기에 남아 있는 기록은 다른 계정의 것이에요.\n이 기기에서 지우고, 지금 계정의 기록으로 바꿀까요?\n(다른 계정의 기록은 서버에 그대로 있어요)')) return false;
+    await wipeLocal(false, !count); days = []; balls = [];
+  }
   const localEmpty = !days.length && !balls.length;
   let upload = true;
   if (count && localEmpty) upload = false;                 // 새 휴대폰: 서버 기록만 받는다
@@ -1473,7 +1488,7 @@ async function enableSync() {
   await setMeta('syncPhotosUp', {});
   await outboxDo(() => { outbox = {}; });
   if (!upload) { for (const s of [...SYNC_STORES, 'photos']) await RAW.clear(s); urlCache.clear(); CUR = null; await setMeta('cur', null); profiles = []; }
-  SYNC.on = true; SYNC.error = ''; await setMeta('syncOn', true);
+  SYNC.on = true; SYNC.error = ''; await setMeta('syncOn', true); await setMeta('syncUid', session.user.id);
   if (upload) for (const s of SYNC_STORES) for (const r of await DB.all(s)) markSync(s, r.id, 'put');
   await outboxChain; clearTimeout(SYNC.timer);
   toast(upload ? '서버로 올리는 중…' : '서버 기록을 받는 중…');
@@ -1491,6 +1506,14 @@ async function disableSync() {
   for (const s of SYNC_STORES) await setMeta('syncSince_' + s, null);
   await setMeta('syncPhotosUp', {});
   return true;
+}
+// 이 기기의 기록을 모두 지운다 (서버에는 그대로). withKey: AI 키도 지움. fresh: 빈 사용자1~6 다시 만들기
+async function wipeLocal(withKey, fresh = true) {
+  for (const s of [...SYNC_STORES, 'photos']) await RAW.clear(s);
+  urlCache.clear(); CUR = null; await setMeta('cur', null); await setMeta('syncUid', null);
+  if (withKey) await RAW.del('meta', 'aiKey');
+  if (fresh) for (let i = 1; i <= 6; i++) await RAW.put('profiles', { id: newId(), name: '사용자' + i, order: i });
+  await loadProfiles();
 }
 
 /* ---------- settings / backup ---------- */
@@ -1544,6 +1567,11 @@ async function renderSettings() {
     if (!confirm('이 휴대폰에 저장된 AI 키를 지울까요?')) return;
     await DB.del('meta', 'aiKey'); toast('키를 지웠어요'); renderSettings();
   };
+  // '사용자1' 같은 기본 이름은 누르면 빈칸이 된다 (안 쓰고 나가면 원래 이름으로)
+  app.querySelectorAll('#profs input').forEach(inp => {
+    inp.addEventListener('focus', () => { if (/^사용자\d+$/.test(inp.value.trim())) { inp.placeholder = inp.value; inp.value = ''; } });
+    inp.addEventListener('blur', () => { if (!inp.value.trim() && inp.placeholder) inp.value = inp.placeholder; });
+  });
   $('#saveProfs').onclick = async () => {
     for (const inp of app.querySelectorAll('#profs input')) {
       const p = profiles.find(x => x.id === inp.dataset.id); const name = inp.value.trim();
