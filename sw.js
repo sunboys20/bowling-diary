@@ -1,7 +1,7 @@
 // Offline support: always try the network first for this site's own files (so updates arrive right away),
 // fall back to the saved copy when the bowling alley has no signal.
 // Fonts and icons from the CDN are versioned, so they are served from the saved copy first.
-const CACHE = 'bowling-diary-v4';
+const CACHE = 'bowling-diary-v5';
 const ASSETS = ['./', './index.html', './help.html', './signup.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 const CDN_KEEP = [/^https:\/\/cdn\.jsdelivr\.net\/gh\/orioncactus\/pretendard@/, /^https:\/\/cdn\.jsdelivr\.net\/npm\/@tabler\/icons-webfont@/];
 

@@ -334,6 +334,26 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 .hello .btn{min-height:44px}
 .demo-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;max-width:760px;margin:0 auto;padding:8px 16px;background:var(--k-match);color:var(--k-match-ink);font-size:13px}
 .demo-bar a{font-weight:800;color:inherit;white-space:nowrap;min-height:32px;display:inline-flex;align-items:center}
+/* 앱으로 설치 (홈 화면 추가) 띠·안내 */
+.inst{display:flex;align-items:center;gap:10px;background:var(--accent-2);border-radius:14px;padding:10px 6px 10px 12px;margin:0 0 12px;font-size:14px;line-height:1.35}
+.inst>i{font-size:24px;color:var(--accent);flex:none}
+.inst .t{flex:1;min-width:0}.inst .t b{display:block;font-size:15px}.inst .t span{color:var(--muted);font-size:13px}
+.inst .btn{flex:none;white-space:nowrap}
+.inst .x{flex:none;background:none;border:0;color:var(--muted);font-size:18px;min-width:36px;min-height:40px;cursor:pointer}
+.card .inst{margin:8px 0 0}
+.isheet{position:fixed;inset:0;z-index:60;background:rgba(5,12,24,.62);display:flex;align-items:flex-end;justify-content:center;padding:0}
+.isheet.mid{align-items:center;padding:16px 16px 96px}
+.isheet .box{background:var(--card);color:var(--ink);width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:18px 16px calc(16px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto}
+.isheet.mid .box{border-radius:20px;padding-bottom:16px}
+.isheet h3{margin:0 0 4px;font-size:19px;display:flex;align-items:center;gap:8px}.isheet h3 i{color:var(--accent)}
+.isheet ol{margin:10px 0 12px;padding-left:22px;line-height:1.75;font-size:15px}
+.isheet .ikey{display:inline-flex;align-items:center;gap:3px;border:1px solid var(--line);background:var(--accent-2);color:var(--accent);border-radius:7px;padding:0 7px;font-weight:700;white-space:nowrap}
+.isheet .acts{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.isheet .acts .btn{width:100%}
+.isheet .arrow{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);color:#fff;font-size:46px;line-height:1;text-align:center;font-weight:800;pointer-events:none;animation:ibob .8s ease-in-out infinite alternate}
+.isheet .arrow small{display:block;font-size:13px;margin-bottom:2px}
+@keyframes ibob{to{transform:translate(-50%,8px)}}
+@media (prefers-reduced-motion:reduce){.isheet .arrow{animation:none}}
 /* narrow screens */
 @media screen and (max-width:600px){
   .sheet{padding:14px 10px;font-size:13px}
@@ -398,7 +418,7 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 <div id="toast" role="status"></div>
 <script>
 'use strict';
-const APP_VER = '0.7.2';
+const APP_VER = '0.8';
 const MAXG = 10;
 const DEMO = new URLSearchParams(location.search).has('demo'); // 체험 모드: 따로 저장 공간, 서버 안 씀
 const app = document.getElementById('app');
@@ -602,7 +622,8 @@ function onRoute() {
   }
   render();
 }
-async function render() {
+async function render() { await renderScreen(); refreshInst(); }
+async function renderScreen() {
   lastHash = location.hash;
   const [r = 'list', id] = location.hash.replace(/^#/, '').split('/');
   const tab = { edit: 'list', view: 'list', photos: 'list', ball: 'balls', place: 'balls' }[r] || r;
@@ -627,7 +648,7 @@ async function render() {
 
 /* ---------- who ---------- */
 function renderWho() {
-  app.innerHTML = `<h2>누가 쓰나요?</h2>
+  app.innerHTML = `<div class="inst-slot" data-where="who"></div><h2>누가 쓰나요?</h2>
     <div class="who-grid">${profiles.map(p => `<button type="button" class="who-btn${CUR && CUR.id === p.id ? ' on' : ''}" data-id="${p.id}">${esc(p.name)}</button>`).join('')}</div>
     <p class="hint">이름은 [설정]에서 바꿀 수 있어요.</p>
     <a class="btn" href="help.html" style="width:100%;margin-top:10px"><i class="ti ti-book" aria-hidden="true"></i> 처음이세요? 사용 설명서 보기</a>
@@ -731,7 +752,7 @@ async function renderList() {
   const scOf = pre => days.filter(d => d.date.startsWith(pre)).flatMap(d => (d.games || []).map(g => g.score).filter(v => v != null));
   const monthSc = scOf(ym), lastSc = scOf(lm);
   const diff = monthSc.length && lastSc.length ? avg(monthSc) - avg(lastSc) : null;
-  let h = `<div class="home-hero"><div class="ring"><div class="v">${f1(avg(monthSc))}</div><div class="l">${+ym.slice(5)}월 평균</div></div>
+  let h = `<div class="inst-slot" data-where="list"></div><div class="home-hero"><div class="ring"><div class="v">${f1(avg(monthSc))}</div><div class="l">${+ym.slice(5)}월 평균</div></div>
     <div class="hero-rows"><div><span>최고</span><b>${monthSc.length ? Math.max(...monthSc) : '-'}</b></div>
       <div><span>게임</span><b>${monthSc.length}</b></div>
       <div><span>지난달보다</span><b class="${diff == null ? '' : diff >= 0 ? 'up' : 'down'}">${diff == null ? '-' : (diff >= 0 ? '+' : '') + f1(diff)}</b></div></div></div>
@@ -766,7 +787,7 @@ async function renderList() {
   app.innerHTML = h;
   $('#newDay').onclick = () => go('#edit/new');
   $('#photoDay').onclick = () => { photoStart = true; $('#filePick').value = ''; $('#filePick').click(); };
-  app.querySelectorAll('[data-hb]').forEach(b => b.onclick = () => { homeSel = b.dataset.hb; renderList(); });
+  app.querySelectorAll('[data-hb]').forEach(b => b.onclick = () => { homeSel = b.dataset.hb; renderList().then(refreshInst); });
 }
 
 /* ---------- photos (all uploaded game photos) ---------- */
@@ -1857,6 +1878,7 @@ async function renderSettings() {
   const canShare = !!(navigator.canShare && navigator.canShare({ files: [new File(['x'], 't.json', { type: 'application/json' })] }));
   app.innerHTML = `<h2>설정</h2>
     ${DEMO ? '' : '<div class="card" id="srvCard"></div>'}
+    ${instMode() ? '<div class="card"><b>앱으로 설치</b><div class="inst-slot" data-where="settings"></div></div>' : ''}
     <div class="card"><b>메인에 보일 점수판</b>
       <p class="hint" style="margin:4px 0 10px">여러 개 고를 수 있어요. 2개 이상이면 메인에서 위 단추를 눌러 바꿔 봐요. 이 휴대폰의 모든 사람에게 같이 적용돼요.</p>
       <div id="hbOpts">${HB_OPTS.map(([k, t, d]) => `<label class="optrow${hb.keys.includes(k) ? ' on' : ''}"><input type="checkbox" value="${k}"${hb.keys.includes(k) ? ' checked' : ''}><span style="flex:1;min-width:0"><span class="t">${t}</span><span class="d">${d}</span></span></label>`).join('')}</div>
@@ -2136,6 +2158,137 @@ function topBar() {
   btn.className = 'st-btn' + (cls ? ' ' + cls : ''); btn.innerHTML = `<i class="ti ${icon}" aria-hidden="true"></i>`;
   btn.setAttribute('aria-label', txt + ' (설정)');
 }
+/* ---------- 앱으로 설치 (홈 화면 추가) ----------
+   안드로이드 크롬·삼성 인터넷: beforeinstallprompt 를 잡아 두었다가 [설치] 단추로 prompt().
+   아이폰 사파리: 단추로는 안 되니 [공유] → [홈 화면에 추가] 안내. 카톡 등 앱 안 브라우저: 바깥 브라우저로 열게 안내.
+   이미 설치해서 연 경우(standalone)와 체험 모드에서는 아무것도 안 띄운다. ?install=1 로 열면 첫 화면에서 바로 안내. */
+const INST = (() => {
+  const ua = navigator.userAgent || '';
+  const ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  const kakao = /KAKAOTALK/i.test(ua);
+  const inApp = kakao || /Instagram|FBAN|FBAV|FB_IAB|\bLine\/|NAVER\(inapp|DaumApps|\bBAND\//i.test(ua);
+  return { ios, android: /Android/i.test(ua), kakao, inApp, safari: ios && !inApp && !/CriOS|FxiOS|EdgiOS|OPiOS|Whale|GSA\//.test(ua), evt: null, forced: false };
+})();
+const INST_HIDE = 'bowling-diary-inst-hide', INST_DAYS = 7;
+function instDone() {
+  try { return matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches || navigator.standalone === true; }
+  catch (e) { return false; }
+}
+function instHidden() { try { return Date.now() - (+localStorage.getItem(INST_HIDE) || 0) < INST_DAYS * 864e5; } catch (e) { return false; } }
+function instHide() { try { localStorage.setItem(INST_HIDE, String(Date.now())); } catch (e) { /* ignore */ } }
+// 여기서 할 수 있는 것: 'prompt' 단추로 설치 | 'ios' 공유→홈 화면 | 'inapp' 바깥 브라우저로 | 'menu' 브라우저 메뉴로 | '' 없음
+function instMode() {
+  if (DEMO || instDone()) return '';
+  if (INST.inApp) return 'inapp';
+  if (INST.evt) return 'prompt';
+  if (INST.ios) return 'ios';
+  if (INST.android) return 'menu';
+  return '';
+}
+function instURL() { const u = new URL(location.href); u.searchParams.delete('demo'); u.searchParams.set('install', '1'); u.hash = ''; return u.href; }
+function instBarHTML(where) {
+  const m = instMode(); if (!m) return '';
+  if (where !== 'settings' && (m === 'menu' || (instHidden() && !INST.forced))) return '';
+  const [ic, t, s, b] = {
+    prompt: ['ti-download', '앱으로 설치하기', '홈 화면에 아이콘이 생기고, 와이파이가 약해도 열려요.', '설치'],
+    ios: ['ti-square-arrow-up', '홈 화면에 추가하기', '[공유] → [홈 화면에 추가]로 앱처럼 써요.', '방법 보기'],
+    inapp: ['ti-external-link', INST.ios ? '사파리에서 열어 주세요' : '크롬에서 열어 주세요', '이 앱 안에서는 설치가 안 되고, 기록도 따로 저장돼요.', INST.ios ? '사파리로' : '크롬으로'],
+    menu: ['ti-download', '홈 화면에 추가하기', '브라우저 메뉴 → [홈 화면에 추가] 또는 [앱 설치]', '방법 보기']
+  }[m];
+  return `<div class="inst" role="region" aria-label="앱으로 설치"><i class="ti ${ic}" aria-hidden="true"></i><div class="t"><b>${t}</b><span>${s}</span></div>
+    <button type="button" class="btn primary small" data-inst="go">${b}</button>${where === 'settings' ? '' : '<button type="button" class="x" data-inst="x" aria-label="며칠 동안 안 보기">✕</button>'}</div>`;
+}
+function refreshInst() { document.querySelectorAll('.inst-slot').forEach(el => { el.innerHTML = instBarHTML(el.dataset.where); }); }
+async function instPrompt() {
+  const ev = INST.evt; if (!ev) return openInstSheet('menu');
+  INST.evt = null; closeInstSheet(false);
+  try { ev.prompt(); const r = await ev.userChoice; if (r && r.outcome === 'accepted') toast('설치했어요. 홈 화면의 볼링일지 아이콘으로 여세요'); }
+  catch (e) { openInstSheet('menu'); return; }
+  refreshInst();
+}
+function instOpenOutside() {
+  const url = instURL(), u = new URL(url);
+  if (INST.android) location.href = `intent://${u.host}${u.pathname}${u.search}#Intent;scheme=https;package=com.android.chrome;end`;
+  else if (INST.kakao) location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(url);
+  else return openInstSheet('inapp');
+  // 바깥 브라우저가 안 열리고 이 화면에 그대로 있으면 손으로 여는 방법을 보여 준다
+  setTimeout(() => { if (document.visibilityState === 'visible') openInstSheet('inapp'); }, 1500);
+}
+async function instCopy() {
+  try { await navigator.clipboard.writeText(instURL()); toast('주소를 복사했어요. 브라우저 주소창에 붙여 넣으세요'); }
+  catch (e) { prompt('이 주소를 길게 눌러 복사하세요', instURL()); }
+}
+const IK = (t, ic) => `<span class="ikey">${ic ? `<i class="ti ${ic}" aria-hidden="true"></i>` : ''}${t}</span>`;
+let instSheet = null;
+function closeInstSheet(remember = true) {
+  if (!instSheet) return;
+  instSheet.remove(); document.removeEventListener('keydown', instKey); instSheet = null;
+  if (remember) { instHide(); INST.forced = false; refreshInst(); }
+}
+function instKey(e) { if (e.key === 'Escape') closeInstSheet(); }
+function openInstSheet(m = instMode()) {
+  if (!m) return;
+  closeInstSheet(false);
+  let title, body, acts = '', arrow = '', mid = false;
+  if (m === 'prompt') {
+    title = ['ti-download', '앱으로 설치하기'];
+    body = '<p>아래 [앱으로 설치]를 누르고, 나오는 창에서 ' + IK('설치') + '를 누르면 홈 화면에 아이콘이 생겨요.</p>';
+    acts = '<button type="button" class="btn primary big" data-inst="prompt"><i class="ti ti-download" aria-hidden="true"></i> 앱으로 설치</button>';
+  } else if (m === 'ios' && INST.safari) {
+    title = ['ti-square-arrow-up', '홈 화면에 추가하기']; mid = true;
+    body = `<ol><li>화면 맨 아래 ${IK('공유', 'ti-share-2')} 단추를 눌러요<br><span class="hint">안 보이면 오른쪽 아래 ${IK('⋯')} → ${IK('공유')}</span></li>
+      <li>목록을 위로 올려 ${IK('홈 화면에 추가', 'ti-square-plus')}</li><li>오른쪽 위 ${IK('추가')}</li></ol>
+      <p class="hint">그다음부터는 홈 화면의 <b>볼링일지</b> 아이콘으로 여세요. 기록은 아이콘으로 연 곳에 저장돼요.</p>`;
+    arrow = '<div class="arrow" aria-hidden="true"><small>여기 [공유]</small>↓</div>';
+  } else if (m === 'ios') {
+    title = ['ti-square-arrow-up', '홈 화면에 추가하기'];
+    body = `<ol><li>주소창 옆 ${IK('공유', 'ti-share-2')} 단추를 눌러요</li><li>${IK('홈 화면에 추가', 'ti-square-plus')} → ${IK('추가')}</li></ol>
+      <p class="hint">목록에 [홈 화면에 추가]가 없으면 주소를 복사해 <b>사파리</b>에서 열어 주세요.</p>`;
+    acts = '<button type="button" class="btn" data-inst="copy"><i class="ti ti-copy" aria-hidden="true"></i> 주소 복사</button>';
+  } else if (m === 'inapp') {
+    const where = INST.ios ? '사파리' : '크롬';
+    title = ['ti-external-link', where + '에서 열어 주세요'];
+    body = `<p>카톡 같은 앱 안에서 열면 <b>설치가 안 되고</b>, 기록도 그 앱 안에 따로 저장돼요. ${where}에서 열어 설치해 주세요.</p>
+      <p class="hint">${INST.kakao && INST.ios ? `단추가 안 되면 오른쪽 아래 ${IK('⋯')} → ${IK('사파리로 열기')}`
+        : INST.kakao ? `단추가 안 되면 오른쪽 위 ${IK('⋮')} → ${IK('다른 브라우저로 열기')}`
+        : `오른쪽 위 ${IK('⋯')} 또는 ${IK('⋮')} → ${IK('외부 브라우저로 열기')}`}</p>`;
+    acts = (INST.android || INST.kakao ? `<button type="button" class="btn primary big" data-inst="out"><i class="ti ti-external-link" aria-hidden="true"></i> ${INST.ios ? '사파리로' : '크롬으로'} 열기</button>` : '')
+      + '<button type="button" class="btn" data-inst="copy"><i class="ti ti-copy" aria-hidden="true"></i> 주소 복사</button>';
+  } else {
+    title = ['ti-download', '홈 화면에 추가하기'];
+    body = `<ol><li>브라우저 메뉴를 열어요 — 크롬은 오른쪽 위 ${IK('⋮')}, 삼성 인터넷은 아래 ${IK('≡')}</li>
+      <li>${IK('홈 화면에 추가')} 또는 ${IK('앱 설치')}</li><li>${IK('설치')} 또는 ${IK('추가')}</li></ol>`;
+  }
+  instSheet = document.createElement('div');
+  instSheet.className = 'isheet noprint' + (mid ? ' mid' : '');
+  instSheet.innerHTML = `<div class="box" role="dialog" aria-modal="true" aria-labelledby="instTitle"><h3 id="instTitle"><i class="ti ${title[0]}" aria-hidden="true"></i>${title[1]}</h3>${body}
+    <div class="acts">${acts}<button type="button" class="btn" data-inst="close">닫기</button></div></div>${arrow}`;
+  instSheet.addEventListener('click', e => { if (e.target === instSheet) closeInstSheet(); });
+  document.addEventListener('keydown', instKey);
+  document.body.append(instSheet);
+  const f = instSheet.querySelector('.acts .btn'); if (f) f.focus();
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-inst]'); if (!b) return;
+  const a = b.dataset.inst, m = instMode();
+  if (a === 'x') { instHide(); INST.forced = false; refreshInst(); }
+  else if (a === 'close') closeInstSheet();
+  else if (a === 'copy') instCopy();
+  else if (a === 'out') instOpenOutside();
+  else if (a === 'prompt' || (a === 'go' && m === 'prompt')) instPrompt();
+  else if (a === 'go' && m === 'inapp' && (INST.android || INST.kakao)) instOpenOutside();
+  else if (a === 'go') openInstSheet(m);
+});
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); INST.evt = e; refreshInst(); });
+window.addEventListener('appinstalled', () => { INST.evt = null; closeInstSheet(false); refreshInst(); });
+function instStart() {
+  const q = new URLSearchParams(location.search);
+  INST.forced = q.has('install');
+  if (INST.forced) { q.delete('install'); const s = q.toString().replace(/=(&|$)/g, '$1'); history.replaceState(null, '', location.pathname + (s ? '?' + s : '') + location.hash); }
+  if (DEMO || instDone()) return;
+  if (INST.forced) setTimeout(() => { if (!instSheet) openInstSheet(); }, INST.android && !INST.inApp ? 1200 : 400); // 안드로이드는 설치 신호를 잠깐 기다린다
+  else if ((INST.safari || INST.inApp) && !instHidden()) setTimeout(() => { if (!instSheet) openInstSheet(); }, 800);
+}
 /* ---------- start ---------- */
 $('#whoBtn').onclick = () => go('#who');
 window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
@@ -2160,6 +2313,7 @@ window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); 
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
   window.addEventListener('hashchange', onRoute);
   render();
+  instStart();
   if (SYNC.on) setTimeout(syncNow, 300);
   window.addEventListener('online', () => syncNow());
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') syncNow(); });
