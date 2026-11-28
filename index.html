@@ -16,8 +16,8 @@ if(fix){m.content=v==='dark'?'#0b1424':'#f2f7fd';m.removeAttribute('media')}else
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
 :root{
   --bg:#f2f7fd;--card:#fff;--ink:#10233f;--muted:#48607f;--line:#d3e2f4;
@@ -398,7 +398,7 @@ table.st th{color:var(--muted);font-weight:700;font-size:12px}
 <div id="toast" role="status"></div>
 <script>
 'use strict';
-const APP_VER = '0.7.1';
+const APP_VER = '0.7.2';
 const MAXG = 10;
 const DEMO = new URLSearchParams(location.search).has('demo'); // 체험 모드: 따로 저장 공간, 서버 안 씀
 const app = document.getElementById('app');
@@ -524,7 +524,7 @@ const DB = {
         for (const s of ['profiles', 'balls', 'days', 'photos']) db.createObjectStore(s, { keyPath: 'id' });
         db.createObjectStore('meta', { keyPath: 'key' });
       };
-      rq.onsuccess = () => { this.db = rq.result; res(); };
+      rq.onsuccess = () => { this.db = rq.result; this.db.onversionchange = () => this.db.close(); res(); };
       rq.onerror = () => rej(rq.error);
     });
   },
@@ -556,6 +556,9 @@ async function photoURL(id) {
 async function cleanupPhotos() {
   try {
     const used = new Set((await DB.all('days')).flatMap(d => (d.games || []).map(g => g.photoId).filter(Boolean)));
+    // keep photos of the diary being written (not saved yet) — sync can call this mid-edit
+    for (const g of (ED && ED.games) || []) if (g.photoId) used.add(g.photoId);
+    if (startPhoto) used.add(startPhoto);
     for (const p of await DB.all('photos')) if (!used.has(p.id)) await DB.del('photos', p.id);
   } catch (e) { /* ignore */ }
 }
@@ -1050,8 +1053,11 @@ async function onGameClick(e) {
       }
       const ph = await DB.get('photos', g.photoId); if (!ph) return;
       g._ai = { state: 'busy' }; updateCard(i);
+      const ed = ED;
       try {
         const out = await readScoreboard(ph.blob);
+        // left this diary while the AI was reading (10~40s) -> drop the result
+        if (ED !== ed || !ED.games.includes(g) || !location.hash.startsWith('#edit')) { g._ai = null; return; }
         const players = (out.players || []).filter(p => (p.frames || []).some(fr => (fr.marks || []).length));
         if (!players.length) g._ai = { state: 'err', msg: '사진에서 점수판을 찾지 못했어요. 점수판이 크게 나오게 다시 찍어 보세요.' + (out.notes ? ' (AI 메모: ' + out.notes + ')' : '') };
         else if (players.length === 1) applyAI(g, players[0], out.notes);
@@ -1625,10 +1631,17 @@ async function renderServerCard() {
   $('#sbOut').onclick = async () => {
     const wasOn = SYNC.on;
     if (!wasOn && !confirm('로그아웃할까요? (이 휴대폰의 기록은 그대로 남아요)')) return;
+    let pend = 0;
+    if (wasOn) { await outboxChain; pend = Object.keys(await loadOutbox()).length; }
     if (wasOn && !(await disableSync())) return;
     // 서버에 올라간 기록이면 이 기기에서 지울 수 있게 (같이 쓰는 PC·휴대폰에서 다음 사람에게 안 보이게)
-    const wipe = wasOn && confirm('로그아웃할까요?\n\n이 기기에 남은 기록과 AI 키도 지울까요?\n서버에 올라간 기록은 그대로 있어서, 다시 로그인하면 받아 와요.\n\n[확인] 지우고 로그아웃 (같이 쓰는 기기라면 이쪽)\n[취소] 이 기기에 남기고 로그아웃');
-    try { await (await sbClient()).auth.signOut(); } catch (e) { /* 인터넷이 없어도 이 휴대폰에서는 로그아웃 */ }
+    // not offered while something is not uploaded yet — wiping would lose it for good
+    const wipe = wasOn && !pend && confirm('로그아웃할까요?\n\n이 기기에 남은 기록과 AI 키도 지울까요?\n서버에 올라간 기록은 그대로 있어서, 다시 로그인하면 받아 와요.\n\n[확인] 지우고 로그아웃 (같이 쓰는 기기라면 이쪽)\n[취소] 이 기기에 남기고 로그아웃');
+    try {
+      const sb = await sbClient(), { error } = await sb.auth.signOut();
+      if (error) await sb.auth.signOut({ scope: 'local' });  // offline: still log out on this phone
+    } catch (e) { /* 인터넷이 없어도 이 휴대폰에서는 로그아웃 */ }
+    try { localStorage.removeItem('bowling-diary-auth'); } catch (e) { /* ignore */ }  // signOut keeps it when offline
     if (wipe) { await wipeLocal(true); toast('로그아웃하고 이 기기 기록을 지웠어요'); renderSettings(); return; }
     toast('로그아웃했어요'); renderServerCard();
   };
@@ -1665,6 +1678,9 @@ const FROM_SRV = {
   days: r => ({ id: r.id, pid: r.pid, date: r.date, kind: r.kind || undefined, match: r.match || undefined, place: r.place, lane: r.lane, ballId: r.ball_id, memo: r.memo, games: r.games, created: r.created, updated: Date.parse(r.updated_at) })
 };
 const photoPath = (uid, id) => `${uid}/${id}.jpg`;
+// the server (jsonb) returns object keys in its own order, so compare with sorted keys
+const sortKeys = (k, x) => x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.entries(x).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0)) : x;
+const sameRec = (a, b) => JSON.stringify(a, sortKeys) === JSON.stringify(b, sortKeys);
 async function syncNow() {
   if (!SYNC.on) return;
   if (SYNC.running) { SYNC.again = true; return; }
@@ -1744,7 +1760,7 @@ async function syncPull(sb) {
         const cur = await DB.get(s, r.id);
         if (r.deleted) { if (cur) { await RAW.del(s, r.id); changed++; } continue; }
         const nv = { ...(cur || {}), ...FROM_SRV[s](r) };
-        if (cur && JSON.stringify({ ...nv, updated: 0 }) === JSON.stringify({ ...cur, updated: 0 })) continue;
+        if (cur && sameRec({ ...nv, updated: 0 }, { ...cur, updated: 0 })) continue;
         await RAW.put(s, nv); changed++;
       }
       if (data.length) since = data[data.length - 1].updated_at;
@@ -1955,19 +1971,59 @@ async function exportBackup(share) {
   await setMeta('lastBackup', Date.now());
   if (location.hash === '#settings') renderSettings();
 }
+// checks a backup file before anything is changed; values that go into the page HTML must have a safe shape
+async function backupCheck(data) {
+  const ID = /^[\w-]{1,64}$/, num = v => v == null || v === '' || (Number.isFinite(+v) && String(v).trim() !== '');
+  const list = (k, f) => {
+    const a = data[k] == null ? [] : data[k];
+    if (!Array.isArray(a)) throw new Error(k + ' 형식');
+    a.forEach((r, n) => { if (!r || typeof r !== 'object' || !ID.test(r.id)) throw new Error(`${k} ${n + 1}번 id`); f(r, n); });
+    return a;
+  };
+  const out = {
+    profiles: list('profiles', () => {}),
+    balls: list('balls', (b, n) => { if (!num(b.weight)) throw new Error(`볼 ${n + 1}번 무게`); }),
+    days: list('days', (d, n) => {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(d.date)) throw new Error(`일지 ${n + 1}번 날짜`);
+      if (d.games != null && !Array.isArray(d.games)) throw new Error(`일지 ${n + 1}번 게임`);
+      for (const g of d.games || []) {
+        if (!g || typeof g !== 'object' || (g.photoId != null && !ID.test(g.photoId))) throw new Error(`일지 ${n + 1}번 사진`);
+        for (const k of ['score', 'strike', 'split', 'open']) if (g[k] != null && !Number.isFinite(g[k])) throw new Error(`일지 ${n + 1}번 ${k}`);
+      }
+    }),
+    photos: []
+  };
+  for (const p of list('photos', p => { if (typeof p.data !== 'string' || !p.data.startsWith('data:')) throw new Error('사진 형식'); })) {
+    out.photos.push({ id: p.id, blob: await (await fetch(p.data)).blob() });
+  }
+  return out;
+}
 $('#backupPick').addEventListener('change', async e => {
   const f = e.target.files[0]; if (!f) return;
   let data;
   try { data = JSON.parse(await f.text()); } catch (err) { return alert('백업 파일을 읽을 수 없어요.'); }
   if (!data || data.app !== 'bowling-diary') return alert('볼링 연습일지 백업 파일이 아니에요.');
-  if (!confirm(`백업 파일(${(data.exportedAt || '').slice(0, 10)})로 바꿀까요?\n지금 이 휴대폰에 있는 기록은 모두 지워지고 백업 내용으로 바뀌어요.`)) return;
+  let rec;
+  try { rec = await backupCheck(data); }
+  catch (err) { return alert('백업 파일 내용이 이상해서 불러오지 않았어요. 지금 기록은 그대로예요.\n(' + err.message + ')'); }
+  if (!confirm(`백업 파일(${String(data.exportedAt || '').slice(0, 10)})로 바꿀까요?\n지금 이 휴대폰에 있는 기록은 모두 지워지고 백업 내용으로 바뀌어요.`)) return;
+  const STORES = ['profiles', 'balls', 'days', 'photos'], old = {};
+  for (const s of STORES) old[s] = (await DB.all(s)).map(r => r.id);
+  // one transaction: either the whole backup goes in, or nothing changes
   try {
-    for (const s of ['profiles', 'balls', 'days', 'photos']) await DB.clear(s);
-    for (const p of data.profiles || []) await DB.put('profiles', p);
-    for (const b of data.balls || []) await DB.put('balls', b);
-    for (const d of data.days || []) await DB.put('days', d);
-    for (const p of data.photos || []) await DB.put('photos', { id: p.id, blob: await (await fetch(p.data)).blob() });
-  } catch (err) { return alert('불러오다 멈췄어요: ' + err.message); }
+    await new Promise((res, rej) => {
+      const t = DB.db.transaction(STORES, 'readwrite');
+      for (const s of STORES) { const o = t.objectStore(s); o.clear(); for (const r of rec[s]) o.put(r); }
+      t.oncomplete = res; t.onerror = () => rej(t.error); t.onabort = () => rej(t.error || new Error('abort'));
+    });
+  } catch (err) { return alert('불러오지 못했어요. 지금 기록은 그대로예요.\n(' + err.message + ')'); }
+  if (SYNC.on) {   // tell the server: new/changed records up, records gone from this phone deleted
+    for (const s of STORES) {
+      const now = new Set(rec[s].map(r => r.id));
+      for (const id of old[s]) if (!now.has(id)) markSync(s, id, 'del');
+      if (s !== 'photos') for (const id of now) markSync(s, id, 'put');
+    }
+  }
   urlCache.clear(); await loadProfiles(); CUR = null; await setMeta('cur', null);
   toast('불러왔어요'); go('#who');
 });
